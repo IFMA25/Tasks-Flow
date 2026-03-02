@@ -56,15 +56,6 @@
             "createdAt": "Створено",
             "action": "Дія"
         },
-        "filters": {
-        "allRoles": "Всі",
-        "admins": "Адміністратори",
-        "users": "Користувачі",
-        "newestFirst": "Новіші спочатку",
-        "oldestFirst": "Старіші спочатку",
-        "nameAsc": "Ім'я A-Z",
-        "nameDesc": "Ім'я Z-A"
-        },
         "loadMore": "Завантажити ще",
         "emptyState": {
             "title": "Записів не знайдено",
@@ -87,7 +78,9 @@
         "userName": "Повне ім'я"
     },
     "lists": {
+        "lists": "Списки",
         "title": "Керуйте всіма своїми групами завдань в одному місці",
+        "titleOverview": "Огляд списків",
         "createListBtn": "Створити список",
         "createListModal": {
             "title": "Створити новий список",
@@ -96,18 +89,43 @@
             "labelColor": "Колір списку",
             "createBtn": "Створити"
         },
+        "listFormModal": {
+            "title": "Редагувати список",
+            "labelName": "Назва списку",
+            "labelColor": "Колір списку",
+            "saveBtn": "Зберігти зміни"
+        },
          "editListModal": {
             "title": "Змінити список",
             "labelName": "Назва списку",
             "labelColor": "Колір списку",
             "saveBtn": "Зберігти"
         },
-        "cancel": "Cancel",
+        "cancel": "Скасувати",
         "tasks": "завдань",
         "completed": "виконано",
         "editList": "Редагувати список",
-        "deleteList": "Видалити список"
-    }
+        "deleteList": {
+            "title": "Видалити список",
+            "contentTitle": "Ви впевнені, що хочете видалити цей список?",
+            "contentSubtitle": "Всі завдання всередині цього списку будуть остаточно видалені"
+        },
+            "usersLists": "Списки користувачів",
+            "myLists": "Мої списки"
+    },
+    "filters": {
+        "role": "Роль",
+        "sort": "Сортувати за",
+        "allRoles": "Всі ролі",
+        "admins": "Адміністратори",
+        "users": "Користувачі",
+        "newestFirst": "Новіші спочатку",
+        "oldestFirst": "Старіші спочатку",
+        "nameAsc": "Ім'я A-Z",
+        "nameDesc": "Ім'я Z-A",
+        "recentlyCreated": "Нещодавно створені",
+        "recentlyUpdated": "Нещодавно оновлені"
+        }
     
 
 }

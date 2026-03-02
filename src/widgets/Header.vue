@@ -10,6 +10,10 @@ const route = useRoute();
 const { t } = useI18n();
 
 const title = computed(() => {
+  if (route.name === RouteNames.lists) {
+    const tab = route.query.tab;
+    return tab === "usersLists" ? t("lists.titleOverview") : t("lists.title");
+  }
   const metaTitle = route.meta.titleHeader;
   return typeof metaTitle === "string" ? t(metaTitle) : "";
 });

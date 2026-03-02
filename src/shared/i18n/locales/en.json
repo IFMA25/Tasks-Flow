@@ -57,15 +57,6 @@
             "action": "Action"
         },
         "loadMore": "Load More",
-        "filters": {
-            "allRoles": "All roles",
-            "admins": "Admins",
-            "users": "Users",
-            "newestFirst": "Newest first",
-            "oldestFirst": "Oldest first",
-            "nameAsc": "Name A-Z",
-            "nameDesc": "Name Z-A"
-        },
         "emptyState": {
             "title": "No records found",
             "subtitle": "There is no data to display at the moment."
@@ -87,7 +78,9 @@
         "userName": "Full name"
     },
     "lists": {
+        "lists": "Lists",
         "title": "Manage all your task groups in one place",
+        "titleOverview": "Lists Overview",
         "createListBtn": "Create new list",
         "createListModal": {
             "title": "Create new list",
@@ -96,7 +89,7 @@
             "labelColor": "List color",
             "createBtn": "Create list"
         },
-        "editListModal": {
+        "listFormModal": {
             "title": "Edit list",
             "labelName": "List name",
             "labelColor": "List color",
@@ -106,6 +99,25 @@
         "tasks": "tasks",
         "completed": "completed",
         "editList": "Edit list",
-        "deleteList": "Delete list"
-    }
+        "deleteList": {
+            "title": "Delete list",
+            "contentTitle": "Are you sure you want to delete this list?",
+            "contentSubtitle": "All tasks inside this list will be permanently removed"
+        },
+        "usersLists": "Users lists",
+        "myLists": "My lists"
+    },
+    "filters": {
+        "role": "Roles",
+        "sort": "Sort by",
+            "allRoles": "All roles",
+            "admins": "Admins",
+            "users": "Users",
+            "newestFirst": "Newest first",
+            "oldestFirst": "Oldest first",
+            "nameAsc": "Name A-Z",
+            "nameDesc": "Name Z-A",
+            "recentlyCreated": "Recently created",
+            "recentlyUpdated": "Recently updated"
+        }
 }

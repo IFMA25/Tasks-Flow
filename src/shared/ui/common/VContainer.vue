@@ -39,7 +39,7 @@ const {
     </div>
     <div
       v-if="$slots.default"
-      class="flex flex-col gap-8 p-4"
+      class="flex flex-col gap-8"
     >
       <slot />
     </div>

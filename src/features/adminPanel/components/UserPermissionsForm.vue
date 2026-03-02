@@ -6,11 +6,11 @@ import { toast } from "vue-sonner";
 import PermissionsControl from "./PermissionsControl.vue";
 import { useUpdateUserPermissions, useUpdateUserRole } from "../api/useAdminPanelRequests";
 import { usePermissionsManager } from "../composables/usePermissionsManager";
-import { Category, Permission, PermissionRole, RoleOption } from "../types";
+import { Category, Permission, PermissionRole } from "../types";
 import { sameArray } from "../utils";
 import PermissionsList from "./PermissionsList.vue";
 
-import { User } from "@/shared/types";
+import { RoleOption, User } from "@/shared/types";
 import VButton from "@/shared/ui/common/VButton.vue";
 
 const { t } = useI18n();

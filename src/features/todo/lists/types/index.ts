@@ -6,7 +6,6 @@ export interface ListsResponse {
 export interface ListData {
   id: string;
   title: string;
-  deadline: string;
   owner: {
     id: string;
     email: string;
@@ -37,8 +36,7 @@ interface TasksData {
   isWeeklyGoal: boolean;
 }
 
-export interface UpdateListData {
+export interface RequestBodyListData {
   title: string;
-  deadline: string;
   hexColor: string;
 }

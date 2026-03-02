@@ -26,3 +26,24 @@ export interface Pagination {
   currentPage: number;
   totalPages: number;
 }
+
+export interface Actions {
+  key: string;
+  label: string;
+}
+
+export interface RoleOption {
+  label: string;
+  value: string | undefined;
+  [key: string]: unknown;
+}
+
+export interface SortOption {
+  key: string;
+  label: string;
+  params: {
+    sort: string;
+    order: "asc" | "desc";
+  };
+  [key: string]: unknown;
+}

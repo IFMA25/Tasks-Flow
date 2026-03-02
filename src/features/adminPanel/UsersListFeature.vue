@@ -13,15 +13,12 @@ import {
   useUsersDataRequest,
 } from "./api/useAdminPanelRequests";
 import ToolbarTable from "./components/ToolbarTable.vue";
-import {
-  RoleOption,
-  SortOption,
-} from "./types";
 import { formatDate } from "./utils";
+import LangSwitcher from "../translation/components/LangSwitcher.vue";
 
 import { useModal } from "@/shared/composables/useModal";
 import { RouteNames } from "@/shared/config/routeNames";
-import { User } from "@/shared/types";
+import { RoleOption, SortOption, User } from "@/shared/types";
 import VButton from "@/shared/ui/common/VButton.vue";
 import VTitle from "@/shared/ui/common/VTitle.vue";
 import VDropdown from "@/shared/ui/common/dropdown/VDropdown.vue";
@@ -45,29 +42,31 @@ const actions = computed(() => [
 ]);
 
 const roleOptions = computed<RoleOption[]>(() => [
-  { label: t("table.filters.allRoles"), value: undefined },
-  { label: t("table.filters.admins"), value: "admin" },
-  { label: t("table.filters.users"), value: "user" },
+  { label: t("filters.allRoles"), value: undefined },
+  { label: t("filters.admins"), value: "admin" },
+  { label: t("filters.users"), value: "user" },
 ]);
 
 const sortOptions = computed<SortOption[]>(() => [
-  { key: "newestFirst", label: t("table.filters.newestFirst"), params: { sort: "createdAt", order: "desc" } },
-  { key: "oldestFirst", label: t("table.filters.oldestFirst"), params: { sort: "createdAt", order: "asc" } },
-  { key: "nameAsc", label: t("table.filters.nameAsc"), params: { sort: "name", order: "asc" } },
-  { key: "nameDesc", label: t("table.filters.nameDesc"), params: { sort: "name", order: "desc" } },
+  { key: "newestFirst", label: t("filters.newestFirst"), params: { sort: "createdAt", order: "desc" } },
+  { key: "oldestFirst", label: t("filters.oldestFirst"), params: { sort: "createdAt", order: "asc" } },
+  { key: "nameAsc", label: t("filters.nameAsc"), params: { sort: "name", order: "asc" } },
+  { key: "nameDesc", label: t("filters.nameDesc"), params: { sort: "name", order: "desc" } },
 ]);
 
 const selectedUser = ref<User | null>(null);
+const selectedRole = ref<RoleOption>(roleOptions.value[0]);
+const selectedSort = ref<SortOption>(sortOptions.value[0]);
 
-const selectedRole = computed({
-  get: () => roleOptions.value[0],
-  set: (option: RoleOption) => option,
-});
+// const selectedRole = computed({
+//   get: () => roleOptions.value[0],
+//   set: (option: RoleOption) => option,
+// });
 
-const selectedSort = computed({
-  get: () => sortOptions.value[0],
-  set: (option: SortOption) => option,
-});
+// const selectedSort = computed({
+//   get: () => sortOptions.value[0],
+//   set: (option: SortOption) => option,
+// });
 const modelSearch = ref<string>("");
 const debouncedSearch = refDebounced(modelSearch, 800);
 const currentLimit = ref<number>(20);
@@ -141,6 +140,7 @@ const handelAction = (user: User, action: string) => {
       />
     </template>
   </VModal>
+  <LangSwitcher class="absolute top-4 right-6" />
   <div class="h-full flex flex-col gap-6">
     <VTitle :text="$t('usersList.title')" />
     <VTable

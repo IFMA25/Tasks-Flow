@@ -3,31 +3,29 @@ import { computed } from "vue";
 
 import { ListData } from "../types";
 
-import { useModal } from "@/shared/composables/useModal";
 import { colorsList } from "@/shared/config/colorMap";
 import VColorRadio from "@/shared/ui/colorRadioBtn/VColorRadio.vue";
 import VButton from "@/shared/ui/common/VButton.vue";
 import VInput from "@/shared/ui/common/VInput.vue";
 import VModal from "@/shared/ui/modal/VModal.vue";
 
-const { close: closeListEditModal } = useModal("listEditModal");
-
 const { selectedListData, loading } = defineProps<{
-  selectedListData: ListData | null;
   loading: boolean;
+  selectedListData?: ListData | null;
 }>();
 
 const editListName = defineModel<string>("name");
 const editListColor = defineModel<string>("color");
 
-const emit = defineEmits(["updateList"]);
+const emit = defineEmits(["saveChanges", "close"]);
 
 const isDataChanged = computed(() => {
-  if (!selectedListData) return false;
+  if (!selectedListData){
+    return editListName.value !== "";
+  };
 
   const isNameChanged = editListName.value !== selectedListData.title;
   const isColorChanged = editListColor.value !== (selectedListData.hexColor || colorsList[0]);
-
   return isNameChanged || isColorChanged;
 });
 
@@ -35,18 +33,20 @@ const isDataChanged = computed(() => {
 
 <template>
   <VModal
-    id="listEditModal"
-    :title="$t('lists.editListModal.title')"
+    id="listFormModal"
+    :title="selectedListData ? $t('lists.listFormModal.title') : $t('lists.createListModal.title')"
     max-width="md"
+    @close="emit('close')"
   >
     <template #default>
       <VInput
         v-model="editListName"
-        :label="$t('lists.editListModal.labelName')"
+        :label="$t('lists.listFormModal.labelName')"
+        :placeholder="$t('lists.createListModal.placeholder')"
         class="text-sm text-secondary font-medium leading-[1.2] mb-4"
       />
       <p class="text-sm text-secondary font-medium leading-[1.2] mb-2">
-        {{ $t('lists.editListModal.labelColor') }}
+        {{ $t('lists.listFormModal.labelColor') }}
       </p>
       <div class="flex gap-4">
         <VColorRadio
@@ -62,15 +62,15 @@ const isDataChanged = computed(() => {
         type="text"
         :text="$t('lists.cancel')"
         variant="outline"
-        @click="closeListEditModal"
+        @click="emit('close')"
       />
       <VButton
-        :text="$t('lists.editListModal.saveBtn')"
+        :text="$t('lists.listFormModal.saveBtn')"
         variant="outline"
         :disabled="!isDataChanged"
         :loading="loading"
         load-color="text-disabled"
-        @click="emit('updateList')"
+        @click="emit('saveChanges')"
       />
     </template>
   </VModal>
