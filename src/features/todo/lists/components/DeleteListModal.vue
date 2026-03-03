@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ListData } from "../types";
+import { ListData } from "../../types";
 
 import VButton from "@/shared/ui/common/VButton.vue";
 import VModal from "@/shared/ui/modal/VModal.vue";

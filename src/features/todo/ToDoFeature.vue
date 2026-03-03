@@ -7,6 +7,7 @@ import {
 } from "vue-router";
 
 import ListsFeature from "./lists/ListsFeature.vue";
+import TasksFeature from "./tasks/TaskFeature.vue";
 import { useListModalState } from "./lists/composable/useListModalState";
 
 import VButton from "@/shared/ui/common/VButton.vue";
@@ -16,6 +17,12 @@ import VTab from "@/shared/ui/common/VTab.vue";
 const { t } = useI18n();
 const route = useRoute();
 const router = useRouter();
+const listId = computed(() => {
+  const id = route.query.id;
+  return typeof id === "string" ? id : undefined;
+});
+
+const isTasksMode = computed(() => !!listId.value);
 
 const {
   openCreateModal,
@@ -42,15 +49,16 @@ const activeTab = computed({
     <VButton
       icon="icon-plus"
       variant="primary"
-      :text="$t('lists.createListBtn')"
-      @click="openCreateModal"
+      :text="isTasksMode ? $t('tasks.createTasksBtn') : $t('lists.createListBtn')"
+      @click="isTasksMode ? null : openCreateModal()"
     />
   </Teleport>
   <div class="border border-subtle p-1 rounded-2xl w-fit mb-7">
     <VTab
+    v-if="!isTasksMode"
       v-model="activeTab"
       :tab-items="tabs"
     />
   </div>
-  <ListsFeature :active-tab="activeTab" />
+  <component :is="isTasksMode ? TasksFeature : ListsFeature" :active-tab="activeTab" />
 </template>

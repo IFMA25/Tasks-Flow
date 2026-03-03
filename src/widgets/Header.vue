@@ -11,6 +11,7 @@ const route = useRoute();
 const { t } = useI18n();
 
 const title = computed(() => {
+   if (route.name === RouteNames.lists && route.query.id) return;
   if (route.name === RouteNames.lists) {
     const tab = route.query.tab;
     return tab === "usersLists" ? t("lists.titleOverview") : t("lists.title");
@@ -19,25 +20,30 @@ const title = computed(() => {
   return typeof metaTitle === "string" ? t(metaTitle) : "";
 });
 
-const variant = {
-  headerProfile: {
-    wrapper: "rounded-xl border border-surface p-6",
-    innerContainer: "flex w-full h-full",
-  },
-  headerMain: {
-    wrapper: "bg-border-gradient p-[2px] rounded-xl",
-    innerContainer: "flex items-center w-full h-full bg-bgSecondary px-3 py-4 rounded-[10px]",
-  },
-};
 const styleHeader = computed(() => {
-  return route.name === RouteNames.profile ? variant.headerProfile : variant.headerMain;
+  if (route.name !== RouteNames.profile && !route.query.id) {
+    return {
+      wrapper: "bg-border-gradient p-[2px] rounded-xl",
+      innerContainer: "flex items-center w-full h-full bg-bgSecondary px-3 py-4 rounded-[10px]",
+    };
+  }
+
+  const baseWrapper = "rounded-xl border border-surface";
+  const baseInner = "flex w-full h-full";
+  
+  const paddingClass = route.query.id ? "p-4" : "p-6";
+
+  return {
+    wrapper: `${baseWrapper} ${paddingClass}`,
+    innerContainer: baseInner,
+  };
 });
 </script>
 
 <template>
   <div :class="styleHeader.wrapper">
     <div :class="styleHeader.innerContainer">
-      <div class="flex-1 min-w-0">
+      <div v-if="!route.query.id" class="flex-1 min-w-0">
         <VTitle
           v-if="title"
           :text="title"

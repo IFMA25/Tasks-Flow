@@ -113,6 +113,9 @@
             "usersLists": "Списки користувачів",
             "myLists": "Мої списки"
     },
+    "tasks": {
+        "createTasksBtn": "Додати завдання"
+    },
     "filters": {
         "role": "Роль",
         "sort": "Сортувати за",

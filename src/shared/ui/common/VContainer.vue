@@ -8,7 +8,7 @@ const {
   icon,
   colorIcon,
 } = defineProps<{
-  titleText: string;
+  titleText?: string;
   as?: string;
   icon?: string;
   colorIcon?: string;
@@ -32,10 +32,12 @@ const {
           :style="{ color: colorIcon }"
         />
       </slot>
-      <VTitle
-        :text="titleText"
-        variant="containerTitle"
-      />
+      <slot name="title">
+        <VTitle
+          :text="titleText"
+          variant="containerTitle"
+        />
+      </slot>
     </div>
     <div
       v-if="$slots.default"

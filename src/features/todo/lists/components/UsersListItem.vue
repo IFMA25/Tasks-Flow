@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { useI18n } from "vue-i18n";
 
-import { ListData } from "../types";
+import { ListData } from "../../types";
 
 import VButton from "@/shared/ui/common/VButton.vue";
 import VContainer from "@/shared/ui/common/VContainer.vue";

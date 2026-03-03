@@ -7,7 +7,7 @@ import {
 } from "@ametie/vue-muza-use";
 import { MaybeRefOrGetter, toValue } from "vue";
 
-import { ListData, ListsResponse, RequestBodyListData } from "../types";
+import { ListData, ListsResponse, RequestBodyListData } from "../../types";
 
 export const useListsDataRequest = (options?: UseApiOptions<ListsResponse>) => {
   return useApiGet("/lists", {

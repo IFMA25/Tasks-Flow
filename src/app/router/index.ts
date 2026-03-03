@@ -29,6 +29,10 @@ const routes: RouteRecordRaw[] = [
       permission: "read:list",
       titleMenu: "lists",
       iconMenu: "lists",
+      parent: {
+        textKey: "userInfo.backAllUsers",
+        to: "/users",
+      },
     },
   },
   {

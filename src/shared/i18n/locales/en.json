@@ -107,6 +107,9 @@
         "usersLists": "Users lists",
         "myLists": "My lists"
     },
+    "tasks": {
+        "createTasksBtn": "Add task"
+    },
     "filters": {
         "role": "Roles",
         "sort": "Sort by",

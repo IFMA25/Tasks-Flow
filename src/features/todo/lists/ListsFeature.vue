@@ -20,7 +20,7 @@ import ListFormModal from "./components/ListFormModal.vue";
 import ListItem from "./components/ListItem.vue";
 import UsersListItem from "./components/UsersListItem.vue";
 import { useListModalState } from "./composable/useListModalState";
-import { ListData } from "./types";
+import { ListData } from "../types";
 
 import { SortOption } from "@/shared/types";
 import VEmptyState from "@/shared/ui/EmptyState.vue";
@@ -132,7 +132,9 @@ const isLoading = computed(() =>
   updateListLoading.value,
 );
 
-watch([activeTab], () => {
+// ??? нужен ли тут вотчер
+
+watch(() => activeTab, () => {
   selectedSort.value = sortOptions.value[0];
   modelSearch.value = "";
 });

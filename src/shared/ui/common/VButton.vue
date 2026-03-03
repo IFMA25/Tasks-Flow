@@ -1,11 +1,9 @@
 <script setup lang="ts">
 import { computed } from "vue";
-import { RouterLink, useLink } from "vue-router";
-
+import { RouteLocationRaw, RouterLink, useLink } from "vue-router";
 
 import VIcon from "./VIcon.vue";
 import VLoader from "./VLoader.vue";
-
 
 const props = withDefaults(
   defineProps<{
@@ -15,7 +13,7 @@ const props = withDefaults(
     type?: string;
     variant?: string;
     disabled?: boolean;
-    to?: string | null;
+    to?: RouteLocationRaw | null;
     icon?: string;
     iconSize?: string;
     collapsed?: boolean;
@@ -40,6 +38,7 @@ const btnStyles = {
   navItem: "py-3 text-secondaryText font-medium hover:text-shadow-btnHover hover:text-primaryBg hover:drop-shadow-btnHover disabled:text-disabled ",
   "navItem-active": "py-3 text-primaryTextDark font-medium",
   authMode: "text-primaryTextDark font-medium hover:text-shadow-tabHover hover:text-primaryBg",
+  cardTitle: "text-lg font-semibold text-primary hover:text-primaryBg",
   danger: "bg-danger py-3 px-4 text-base font-medium border-2 border-danger rounded-xl hover:bg-dangerHover disabled:bg-disabled disabled:text-muted disabled:border-disabled",
 };
 

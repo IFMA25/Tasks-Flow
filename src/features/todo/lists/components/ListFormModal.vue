@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { computed } from "vue";
 
-import { ListData } from "../types";
+import { ListData } from "../../types";
 
 import { colorsList } from "@/shared/config/colorMap";
 import VColorRadio from "@/shared/ui/colorRadioBtn/VColorRadio.vue";

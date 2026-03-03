@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { useI18n } from "vue-i18n";
 
-import { ListData } from "../types";
+import { ListData } from "../../types";
 
 import { Actions } from "@/shared/types";
 import VButton from "@/shared/ui/common/VButton.vue";
@@ -22,11 +22,17 @@ const { t } = useI18n();
 
 <template>
   <VContainer
-    :title-text="data.title"
     icon="circle"
     :color-icon="data.hexColor"
     class=" flex flex-col gap-4 max-h-[8rem]"
   >
+  <template #title>
+    <VButton
+      :text="data.title"
+      :to="{ path: '/lists', query: { id: data.id } }"
+      variant="cardTitle"
+      />
+  </template>
     <template #default>
       <div class="flex gap-4">
         <p class="text-secondary">

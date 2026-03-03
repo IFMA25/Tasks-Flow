@@ -1,6 +1,6 @@
 import { ref } from "vue";
 
-import { ListData } from "../types";
+import { ListData } from "../../types";
 
 import { useModal } from "@/shared/composables/useModal";
 import { colorsList } from "@/shared/config/colorMap";

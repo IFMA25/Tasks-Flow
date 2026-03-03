@@ -59,18 +59,26 @@ const sortOptions = computed<SortOption[]>(() => [
 ]);
 
 const selectedUser = ref<User | null>(null);
-const selectedRole = ref<RoleOption>(roleOptions.value[0]);
-const selectedSort = ref<SortOption>(sortOptions.value[0]);
+const activeRoleKey = ref<string>(roleOptions.value[0].value);
+const activeSortKey = ref<string>(sortOptions.value[0].key);
 
-// const selectedRole = computed({
-//   get: () => roleOptions.value[0],
-//   set: (option: RoleOption) => option,
-// });
+const selectedRole = computed({
+  get: () => roleOptions.value
+    .find(option => option.value === activeRoleKey.value)
+      || roleOptions.value[0],
+  set: (option: RoleOption) => {
+    activeRoleKey.value = option.value;
+  },
+});
 
-// const selectedSort = computed({
-//   get: () => sortOptions.value[0],
-//   set: (option: SortOption) => option,
-// });
+const selectedSort = computed({
+  get: () => sortOptions.value
+    .find(option => option.key === activeSortKey.value)
+      || sortOptions.value[0],
+  set: (option: SortOption) => {
+    activeSortKey.value = option.key;
+  },
+});
 const modelSearch = ref<string>("");
 const debouncedSearch = refDebounced(modelSearch, 800);
 const currentLimit = ref<number>(20);
