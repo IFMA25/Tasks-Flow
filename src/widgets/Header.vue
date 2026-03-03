@@ -1,10 +1,11 @@
 <script setup lang="ts">
-import { computed } from "vue";
-import { useI18n } from "vue-i18n";
-import { useRoute } from "vue-router";
+import { computed } from 'vue';
 
-import { RouteNames } from "@/shared/config/routeNames";
-import VTitle from "@/shared/ui/common/VTitle.vue";
+import { useI18n } from 'vue-i18n';
+import { useRoute } from 'vue-router';
+
+import { RouteNames } from '@/shared/config/routeNames';
+import VTitle from '@/shared/ui/common/VTitle.vue';
 
 const route = useRoute();
 const { t } = useI18n();

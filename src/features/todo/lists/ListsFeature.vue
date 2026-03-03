@@ -1,19 +1,31 @@
 <script setup lang="ts">
+
+
 import { refDebounced } from "@vueuse/core";
-import { computed, ref } from "vue";
+import {
+  computed,
+  ref,
+  watch,
+} from "vue";
 import { useI18n } from "vue-i18n";
 
-import { useCreateNewList, useDeleteList, useListsDataRequest, useUpdateList } from "./api/useListsRequest";
+import {
+  useCreateNewList,
+  useDeleteList,
+  useListsDataRequest,
+  useUpdateList,
+} from "./api/useListsRequest";
 import DeleteListModal from "./components/DeleteListModal.vue";
 import ListFormModal from "./components/ListFormModal.vue";
 import ListItem from "./components/ListItem.vue";
-import ToolbarLists from "./components/ToolbarLists.vue";
-import UserListItem from "./components/UserListItem.vue";
+import UsersListItem from "./components/UsersListItem.vue";
 import { useListModalState } from "./composable/useListModalState";
 import { ListData } from "./types";
 
 import { SortOption } from "@/shared/types";
+import VEmptyState from "@/shared/ui/EmptyState.vue";
 import VLoader from "@/shared/ui/common/VLoader.vue";
+import AppToolbar from "@/shared/ui/toolbar/AppToolbar.vue";
 
 const { t } = useI18n();
 
@@ -37,7 +49,6 @@ const listsData = ref<ListData[]>([]);
 const modelSearch = ref<string>("");
 const debouncedSearch = refDebounced(modelSearch, 800);
 const currentLimit = ref<number>(20);
-// const activeRoleValue = ref<string | undefined>(undefined);
 const activeSortKey = ref<string>(sortOptions.value[0].label);
 
 const selectedSort = computed({
@@ -67,14 +78,13 @@ const {
   watch: [selectedSort, debouncedSearch,() => activeTab],
   params: () => ({
     limit: currentLimit.value,
-    q: debouncedSearch.value.trim() || undefined,
+    q: debouncedSearch.value || undefined,
     sort: selectedSort.value.params.sort,
     order: selectedSort.value.params.order,
     isOwn: activeTab === "myLists" ? true : undefined,
   }),
   onSuccess: () => {
     listsData.value = ListsResponse.value?.data || [];
-    console.log("Fetched lists data:", listsData.value);
   },
 });
 
@@ -122,8 +132,11 @@ const isLoading = computed(() =>
   updateListLoading.value,
 );
 
+watch([activeTab], () => {
+  selectedSort.value = sortOptions.value[0];
+  modelSearch.value = "";
+});
 </script>
-
 
 <template>
   <ListFormModal
@@ -140,43 +153,56 @@ const isLoading = computed(() =>
     @close="handleCloseDeleteModal"
     @confirm-delete="deleteList"
   />
-  <Transition
-    enter-active-class="transition-opacity duration-200"
-    leave-active-class="transition-opacity duration-200"
-    enter-from-class="opacity-0"
-    leave-to-class="opacity-0"
-  >
-    <div
-      v-if="isLoading"
-      class="absolute inset-0 z-20 flex items-center justify-center backdrop-blur-sm"
-    >
-      <VLoader
-        color="primaryDark"
-        size="h-[100px]"
-      />
-    </div>
-  </Transition>
-  <ToolbarLists
+  <AppToolbar
     v-model:search="modelSearch"
     v-model:sort="selectedSort"
+    :placeholder-search="$t('search.placeholder')"
     :active-tab="activeTab"
     :sort-options="sortOptions"
   />
-  <div class="grid grid-cols-[repeat(auto-fit,minmax(320px,1fr))] gap-6">
+  <div
+    v-if="listsData.length > 0"
+    class="relative min-h-96 grid grid-cols-[repeat(auto-fill,minmax(320px,1fr))] gap-6"
+  >
+    <Transition
+      enter-active-class="transition-opacity duration-300"
+      leave-active-class="transition-opacity duration-300"
+      enter-from-class="opacity-0"
+      leave-to-class="opacity-0"
+    >
+      <div
+        v-if="isLoading"
+        class="absolute inset-0 z-20 flex items-center justify-center backdrop-blur-sm"
+      >
+        <VLoader
+          color="primaryDark"
+          size="h-[100px]"
+        />
+      </div>
+    </Transition>
     <template
       v-for="data in listsData"
       :key="data.id"
     >
-      <UserListItem
+      <ListItem
         v-if="activeTab === 'myLists'"
         :actions="actions"
         :data="data"
         @action="handleAction"
       />
-      <ListItem
+      <UsersListItem
         v-else-if="activeTab === 'usersLists'"
         :data="data"
       />
     </template>
+  </div>
+  <div
+    v-else-if="!isLoading && listsData.length === 0"
+    class="py-16 px-4"
+  >
+    <VEmptyState
+      :title="$t('table.emptyState.title')"
+      :subtitle="$t('table.emptyState.subtitle')"
+    />
   </div>
 </template>

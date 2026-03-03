@@ -1,13 +1,17 @@
 <script setup>
 import { computed } from "vue";
 import { useI18n } from "vue-i18n";
-import { useRoute, useRouter } from "vue-router";
+import {
+  useRoute,
+  useRouter,
+} from "vue-router";
 
 import ListsFeature from "./lists/ListsFeature.vue";
 import { useListModalState } from "./lists/composable/useListModalState";
 
 import VButton from "@/shared/ui/common/VButton.vue";
 import VTab from "@/shared/ui/common/VTab.vue";
+
 
 const { t } = useI18n();
 const route = useRoute();
@@ -42,10 +46,11 @@ const activeTab = computed({
       @click="openCreateModal"
     />
   </Teleport>
-  <VTab
-    v-model="activeTab"
-    :tab-items="tabs"
-    class="mb-7"
-  />
+  <div class="border border-subtle p-1 rounded-2xl w-fit mb-7">
+    <VTab
+      v-model="activeTab"
+      :tab-items="tabs"
+    />
+  </div>
   <ListsFeature :active-tab="activeTab" />
 </template>

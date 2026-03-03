@@ -12,18 +12,22 @@ import {
   useUserDelete,
   useUsersDataRequest,
 } from "./api/useAdminPanelRequests";
-import ToolbarTable from "./components/ToolbarTable.vue";
 import { formatDate } from "./utils";
 import LangSwitcher from "../translation/components/LangSwitcher.vue";
 
 import { useModal } from "@/shared/composables/useModal";
 import { RouteNames } from "@/shared/config/routeNames";
-import { RoleOption, SortOption, User } from "@/shared/types";
+import {
+  RoleOption,
+  SortOption,
+  User,
+} from "@/shared/types";
 import VButton from "@/shared/ui/common/VButton.vue";
 import VTitle from "@/shared/ui/common/VTitle.vue";
 import VDropdown from "@/shared/ui/common/dropdown/VDropdown.vue";
 import VModal from "@/shared/ui/modal/VModal.vue";
 import VTable from "@/shared/ui/table/VTable.vue";
+import AppToolbar from "@/shared/ui/toolbar/AppToolbar.vue";
 import { capitalizeFirstLetter } from "@/shared/utils";
 
 
@@ -151,14 +155,13 @@ const handelAction = (user: User, action: string) => {
       @load-more="loadMore"
     >
       <template #toolbar>
-        <ToolbarTable
+        <AppToolbar
           v-model:search="modelSearch"
           v-model:role="selectedRole"
           v-model:sort="selectedSort"
-          :options="{
-            roleOptions: roleOptions,
-            sortOptions: sortOptions
-          }"
+          :placeholder-search="$t('search.placeholder')"
+          :role-options="roleOptions"
+          :sort-options="sortOptions"
         />
       </template>
       <template #cell-member="{ row }">
