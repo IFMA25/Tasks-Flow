@@ -7,8 +7,8 @@ import {
 } from "vue-router";
 
 import ListsFeature from "./lists/ListsFeature.vue";
-import TasksFeature from "./tasks/TaskFeature.vue";
 import { useListModalState } from "./lists/composable/useListModalState";
+import TasksFeature from "./tasks/TaskFeature.vue";
 
 import VButton from "@/shared/ui/common/VButton.vue";
 import VTab from "@/shared/ui/common/VTab.vue";
@@ -55,10 +55,13 @@ const activeTab = computed({
   </Teleport>
   <div class="border border-subtle p-1 rounded-2xl w-fit mb-7">
     <VTab
-    v-if="!isTasksMode"
+      v-if="!isTasksMode"
       v-model="activeTab"
       :tab-items="tabs"
     />
   </div>
-  <component :is="isTasksMode ? TasksFeature : ListsFeature" :active-tab="activeTab" />
+  <component
+    :is="isTasksMode ? TasksFeature : ListsFeature"
+    :active-tab="activeTab"
+  />
 </template>

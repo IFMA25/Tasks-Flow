@@ -8,7 +8,6 @@ import {
   useRouter,
 } from "vue-router";
 
-
 import {
   usePermissionsRequest,
   usePermissionsRoleRequest,
@@ -16,10 +15,11 @@ import {
 } from "./api/useAdminPanelRequests";
 import UserProfileHeader from "./components/UserProfileHeader.vue";
 import { formatDate } from "./utils";
-import { useProfileStore } from "../../shared/stores/useProfileStore";
 
 import { RouteNames } from "@/shared/config/routeNames";
+import { useProfileStore } from "@/shared/stores/useProfileStore";
 import VTitle from "@/shared/ui/common/VTitle.vue";
+
 
 const UserPermissionsForm = defineAsyncComponent(() => import("./components/UserPermissionsForm.vue"));
 const UserProfileForm = defineAsyncComponent(() => import("./components/UserProfileForm.vue"));
@@ -62,17 +62,12 @@ const isLoading = computed(() => isAdminMode.value ? isLoadingPage.value : profi
 </script>
 
 <template>
-  <Teleport
-    to="#header-content"
-    defer
-  >
-    <UserProfileHeader
-      :loading="isLoading"
-      :title="userData?.name"
-      :subtitle="userData?.email"
-      :date="formatDate(userData?.createdAt, { month: 'long', year: 'numeric' })"
-    />
-  </Teleport>
+  <UserProfileHeader
+    :loading="isLoading"
+    :title="userData?.name"
+    :subtitle="userData?.email"
+    :date="formatDate(userData?.createdAt, { month: 'long', year: 'numeric' })"
+  />
   <VTitle
     :text="isAdminMode ? $t('userInfo.titleUserAcc') : $t('userInfo.titleOwnAcc')"
     class="mb-6"

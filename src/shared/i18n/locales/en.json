@@ -29,9 +29,7 @@
         "hasNumber": "Must contain min 1 number",
         "requiredTrimmed": "The field must not be empty"
     },
-    "search": {
-        "placeholder": "Search by name or email…"
-    },
+    
     "usersList": {
         "title": "User management",
         "userProfile": "User profile",
@@ -43,7 +41,8 @@
             "confirmRemove": "Remove user",
             "cancel": "Cancel",
             "msgDeleteSuccess": "User successfully deleted"
-        }
+        },
+        "searchPlaceholder": "Search lists..."
     },
     "roles": {
             "admin": "Admin",
@@ -105,7 +104,8 @@
             "contentSubtitle": "All tasks inside this list will be permanently removed"
         },
         "usersLists": "Users lists",
-        "myLists": "My lists"
+        "myLists": "My lists",
+        "searchPlaceholder": "Search lists…"
     },
     "tasks": {
         "createTasksBtn": "Add task"

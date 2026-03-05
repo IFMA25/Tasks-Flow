@@ -6,6 +6,7 @@ import {
   useApiPost,
 } from "@ametie/vue-muza-use";
 import { MaybeRefOrGetter, toValue } from "vue";
+
 import { TaskData } from "../../types";
 
 export const useTasks = () => {
@@ -13,7 +14,7 @@ export const useTasks = () => {
     return useApiGet<TaskData>(() => `tasks/lists/${toValue(listId)}`, {
       ...options,
     });
-  }
+  };
 
   return { getAllTasks };
-}
+};

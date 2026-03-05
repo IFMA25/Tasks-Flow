@@ -6,7 +6,7 @@ declare module 'vue-router' {
     permission?: string
     showHeader?: boolean
     showInMenu?: boolean
-    titleHeader?: string
+    titleHeader?: string | ((route: RouteLocationNormalized) => string)
     parent?: {
       textKey: string
       to: string

@@ -77,6 +77,6 @@ export interface RequestBodyTaskData {
   order: number;
 }
 
-export interface RequestCompletedTask{
+export interface RequestCompletedTask {
   completed: boolean;
 }

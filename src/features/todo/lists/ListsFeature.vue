@@ -9,6 +9,7 @@ import {
 } from "vue";
 import { useI18n } from "vue-i18n";
 
+import { ListData } from "../types";
 import {
   useCreateNewList,
   useDeleteList,
@@ -18,14 +19,13 @@ import {
 import DeleteListModal from "./components/DeleteListModal.vue";
 import ListFormModal from "./components/ListFormModal.vue";
 import ListItem from "./components/ListItem.vue";
+import ListsToolbar from "./components/ListsToolbar.vue";
 import UsersListItem from "./components/UsersListItem.vue";
 import { useListModalState } from "./composable/useListModalState";
-import { ListData } from "../types";
 
 import { SortOption } from "@/shared/types";
 import VEmptyState from "@/shared/ui/EmptyState.vue";
 import VLoader from "@/shared/ui/common/VLoader.vue";
-import AppToolbar from "@/shared/ui/toolbar/AppToolbar.vue";
 
 const { t } = useI18n();
 
@@ -41,8 +41,6 @@ const actions = computed(() => [
 const sortOptions = computed<SortOption[]>(() => [
   { key: "recentlyCreated", label: t("filters.recentlyCreated"), params: { sort: "createdAt", order: "asc" } },
   { key: "recentlyUpdated", label: t("filters.recentlyUpdated"), params: { sort: "updatedAt", order: "desc" } },
-  { key: "nameAsc", label: t("filters.nameAsc"), params: { sort: "title", order: "asc" } },
-  { key: "nameDesc", label: t("filters.nameDesc"), params: { sort: "title", order: "desc" } },
 ]);
 
 const listsData = ref<ListData[]>([]);
@@ -155,10 +153,9 @@ watch(() => activeTab, () => {
     @close="handleCloseDeleteModal"
     @confirm-delete="deleteList"
   />
-  <AppToolbar
+  <ListsToolbar
     v-model:search="modelSearch"
     v-model:sort="selectedSort"
-    :placeholder-search="$t('search.placeholder')"
     :active-tab="activeTab"
     :sort-options="sortOptions"
   />

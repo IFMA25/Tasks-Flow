@@ -7,7 +7,6 @@ import {
 
 import { useProfileStore } from "@/shared/stores/useProfileStore";
 import VButton from "@/shared/ui/common/VButton.vue";
-import VLoader from "@/shared/ui/common/VLoader.vue";
 import VToaster from "@/shared/ui/toaster/VToaster.vue";
 import Header from "@/widgets/Header.vue";
 import Sidebar from "@/widgets/sidebar/Sidebar.vue";
@@ -34,7 +33,7 @@ const navItems = computed(() => {
 
 const showHeader = computed(() => route.meta.showHeader !== false);
 const parentLink = computed(() => {
-  if (route.meta.parent && route.query.id) {
+  if (route.meta.parent) {
     return route.meta.parent;
   }
   return null;
@@ -42,24 +41,11 @@ const parentLink = computed(() => {
 </script>
 
 <template>
-  <div class="h-full flex justify-center items-center">
-    <VLoader
-      v-if="profileStore.loading"
-      color="primaryDark"
-      size="w-[100px] h-[100px]"
-    />
-    <div
-      v-else
-      class="flex w-full h-full"
-    >
-      <Sidebar :nav-items="navItems" />
-      <VToaster />
-      <div
-        id="actions"
-        class="mb-6 min-h-[40px]"
-      />
-      <div class="flex-1 px-12 py-6">
-        <div
+  <div class="flex w-full h-full">
+    <Sidebar :nav-items="navItems" />
+    <VToaster />
+    <div class="flex-1 px-12 py-6">
+      <!-- <div
           v-if="parentLink"
           class="inline-block mb-6"
         >
@@ -69,13 +55,12 @@ const parentLink = computed(() => {
             :text="$t(parentLink.textKey)"
             icon="chevron-left"
           />
-        </div>
-        <Header
-          v-if="showHeader"
-          class="mb-6"
-        />
-        <router-view />
-      </div>
+        </div> -->
+      <Header
+        v-if="showHeader"
+        class="mb-6"
+      />
+      <router-view />
     </div>
   </div>
 </template>

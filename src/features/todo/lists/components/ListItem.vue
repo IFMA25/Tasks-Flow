@@ -26,13 +26,13 @@ const { t } = useI18n();
     :color-icon="data.hexColor"
     class=" flex flex-col gap-4 max-h-[8rem]"
   >
-  <template #title>
-    <VButton
-      :text="data.title"
-      :to="{ path: '/lists', query: { id: data.id } }"
-      variant="cardTitle"
+    <template #title>
+      <VButton
+        :text="data.title"
+        :to="{ path: '/lists', query: { id: data.id } }"
+        variant="cardTitle"
       />
-  </template>
+    </template>
     <template #default>
       <div class="flex gap-4">
         <p class="text-secondary">

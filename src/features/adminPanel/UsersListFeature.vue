@@ -12,6 +12,7 @@ import {
   useUserDelete,
   useUsersDataRequest,
 } from "./api/useAdminPanelRequests";
+import UsersTableToolbar from "./components/UsersTableToolbar.vue";
 import { formatDate } from "./utils";
 import LangSwitcher from "../translation/components/LangSwitcher.vue";
 
@@ -27,7 +28,6 @@ import VTitle from "@/shared/ui/common/VTitle.vue";
 import VDropdown from "@/shared/ui/common/dropdown/VDropdown.vue";
 import VModal from "@/shared/ui/modal/VModal.vue";
 import VTable from "@/shared/ui/table/VTable.vue";
-import AppToolbar from "@/shared/ui/toolbar/AppToolbar.vue";
 import { capitalizeFirstLetter } from "@/shared/utils";
 
 
@@ -163,13 +163,14 @@ const handelAction = (user: User, action: string) => {
       @load-more="loadMore"
     >
       <template #toolbar>
-        <AppToolbar
+        <UsersTableToolbar
           v-model:search="modelSearch"
           v-model:role="selectedRole"
           v-model:sort="selectedSort"
-          :placeholder-search="$t('search.placeholder')"
-          :role-options="roleOptions"
-          :sort-options="sortOptions"
+          :options="{
+            roleOptions: roleOptions,
+            sortOptions: sortOptions
+          }"
         />
       </template>
       <template #cell-member="{ row }">

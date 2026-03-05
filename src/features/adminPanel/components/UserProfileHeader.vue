@@ -10,7 +10,7 @@ defineProps<{
 </script>
 
 <template>
-  <div class="flex justify-between items-start">
+  <div class="flex justify-between items-start rounded-xl border border-surface p-6 mb-6">
     <div>
       <template v-if="loading">
         <VSkeleton

@@ -4,10 +4,11 @@ import { computed } from "vue";
 import { ListData } from "../../types";
 
 import { colorsList } from "@/shared/config/colorMap";
-import VColorRadio from "@/shared/ui/colorRadioBtn/VColorRadio.vue";
 import VButton from "@/shared/ui/common/VButton.vue";
+import VColorRadio from "@/shared/ui/common/VColorRadio.vue";
 import VInput from "@/shared/ui/common/VInput.vue";
 import VModal from "@/shared/ui/modal/VModal.vue";
+
 
 const { selectedListData, loading } = defineProps<{
   loading: boolean;
