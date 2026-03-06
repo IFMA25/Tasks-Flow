@@ -6,7 +6,7 @@ import { useRouter } from "vue-router";
 import { useProfileRequest } from "../composables/api/useProfileRequest";
 import { User } from "../types";
 
-import { RouteNames } from "@/shared/config/routeNames";
+import { RouteNames } from "@/shared/types/routeNames";
 
 
 export const useProfileStore = defineStore("profile", () => {

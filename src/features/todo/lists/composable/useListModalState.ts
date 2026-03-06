@@ -3,7 +3,7 @@ import { ref } from "vue";
 import { ListData } from "../../types";
 
 import { useModal } from "@/shared/composables/useModal";
-import { colorsList } from "@/shared/config/colorMap";
+import { colorsList } from "@/shared/variables/colorMap";
 
 export function useListModalState() {
 

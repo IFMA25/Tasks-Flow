@@ -7,7 +7,7 @@ import { toast } from "vue-sonner";
 import App from "./App.vue";
 import router from "./router";
 import "./main.scss";
-import { RouteNames } from "../shared/config/routeNames";
+import { RouteNames } from "@/shared/types/routeNames";
 
 import i18n from "@/shared/i18n";
 import "vue-multiselect/dist/vue-multiselect.min.css";

@@ -1,6 +1,6 @@
 import { RouteRecordRaw } from "vue-router";
 
-import { RouteNames } from "../../../shared/config/routeNames";
+import { RouteNames } from "@/shared/types/routeNames";
 
 const authRoutes: RouteRecordRaw[] = [
   {

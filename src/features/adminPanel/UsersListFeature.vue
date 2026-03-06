@@ -17,7 +17,7 @@ import { formatDate } from "./utils";
 import LangSwitcher from "../translation/components/LangSwitcher.vue";
 
 import { useModal } from "@/shared/composables/useModal";
-import { RouteNames } from "@/shared/config/routeNames";
+import { RouteNames } from "@/shared/types/routeNames";
 import {
   RoleOption,
   SortOption,

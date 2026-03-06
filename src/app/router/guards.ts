@@ -1,7 +1,7 @@
 import { tokenManager } from "@ametie/vue-muza-use";
 import { RouteLocationNormalized } from "vue-router";
 
-import { RouteNames } from "@/shared/config/routeNames";
+import { RouteNames } from "@/shared/types/routeNames";
 import { useProfileStore } from "@/shared/stores/useProfileStore";
 
 export const guards = async (to: RouteLocationNormalized) => {

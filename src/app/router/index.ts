@@ -7,7 +7,7 @@ import {
 
 import authRoutes from "./auth";
 import { guards } from "./guards";
-import { RouteNames } from "../../shared/config/routeNames";
+import { RouteNames } from "@/shared/types/routeNames";
 
 const routes: RouteRecordRaw[] = [
   {
@@ -31,10 +31,6 @@ const routes: RouteRecordRaw[] = [
       permission: "read:list",
       titleMenu: "lists",
       iconMenu: "lists",
-      parent: {
-        textKey: "userInfo.backAllUsers",
-        to: "/users",
-      },
     },
   },
   {
@@ -55,10 +51,6 @@ const routes: RouteRecordRaw[] = [
       titleMenu: "profile",
       iconMenu: "profile",
       showHeader: false,
-      parent: {
-        textKey: "userInfo.backAllUsers",
-        to: "/users",
-      },
     },
   },
   {

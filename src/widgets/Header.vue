@@ -13,7 +13,7 @@ const title = computed(() => {
   if (typeof metaTitle === "function") {
     return t(metaTitle(route));
   }
-  return t(metaTitle);
+  return typeof metaTitle === "string" ? t(metaTitle) : "";
 });
 </script>
 
