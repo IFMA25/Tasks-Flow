@@ -1,37 +1,30 @@
 <script setup lang="ts">
-
-
-import { refDebounced } from "@vueuse/core";
+import { useDebounceFn } from "@vueuse/core";
 import {
   computed,
   ref,
-  watch,
 } from "vue";
 import { useI18n } from "vue-i18n";
+import { useRoute, useRouter } from "vue-router";
 
-import { ListData } from "../types";
-import {
-  useCreateNewList,
-  useDeleteList,
-  useListsDataRequest,
-  useUpdateList,
-} from "./api/useListsRequest";
+import { useListsRequests } from "./api/useListsRequest";
 import DeleteListModal from "./components/DeleteListModal.vue";
 import ListFormModal from "./components/ListFormModal.vue";
 import ListItem from "./components/ListItem.vue";
 import ListsToolbar from "./components/ListsToolbar.vue";
 import UsersListItem from "./components/UsersListItem.vue";
-import { useListModalState } from "./composable/useListModalState";
+import { useDeleteList } from "./composable/useDeleteList";
+import { useListForm } from "./composable/useListForm";
+import { useListModalManager } from "./composable/useListModalManager";
+import { useListsStore } from "./store/useListsStore";
 
 import { SortOption } from "@/shared/types";
 import VEmptyState from "@/shared/ui/EmptyState.vue";
+import VButton from "@/shared/ui/common/VButton.vue";
 import VLoader from "@/shared/ui/common/VLoader.vue";
+import VTab from "@/shared/ui/common/VTab.vue";
 
 const { t } = useI18n();
-
-const { activeTab } = defineProps<{
-  activeTab: string;
-}>();
 
 const actions = computed(() => [
   { key: "edit", label: t("lists.editList") },
@@ -43,11 +36,21 @@ const sortOptions = computed<SortOption[]>(() => [
   { key: "recentlyUpdated", label: t("filters.recentlyUpdated"), params: { sort: "updatedAt", order: "desc" } },
 ]);
 
-const listsData = ref<ListData[]>([]);
+const tabs = computed(() => [
+  { value: "myLists", label: t("lists.myLists") },
+  { value: "usersLists", label: t("lists.usersLists") },
+]);
+
 const modelSearch = ref<string>("");
-const debouncedSearch = refDebounced(modelSearch, 800);
 const currentLimit = ref<number>(20);
-const activeSortKey = ref<string>(sortOptions.value[0].label);
+const activeSortKey = ref<string>(sortOptions.value[0].key);
+
+const route = useRoute();
+const router = useRouter();
+
+const onSearchInput = useDebounceFn(() => {
+  fetchListsData();
+}, 800);
 
 const selectedSort = computed({
   get: () => sortOptions.value
@@ -58,87 +61,80 @@ const selectedSort = computed({
   },
 });
 
+const activeTab = computed({
+  get: () => {
+    const tab = route.query.tab;
+    return typeof tab === "string" ? tab : "myLists";
+  },
+  set: (value) => {
+    activeSortKey.value = sortOptions.value[0].key;
+    modelSearch.value = "";
+    router.replace({ query: { ...route.query, tab: value } });
+  },
+});
+
 const {
   selectedList,
   editListName,
   editListColor,
   handleCloseFormModal,
   handleCloseDeleteModal,
+  openCreateModal,
   handleAction,
-} = useListModalState();
+} = useListModalManager();
+
+const { getAllLists } = useListsRequests();
+const listsStore = useListsStore();
 
 const {
   execute: fetchListsData,
   loading: fetchListsLoading,
-  data: ListsResponse,
-} = useListsDataRequest({
+  data: listsDataResponse,
+} = getAllLists({
   immediate: true,
-  watch: [selectedSort, debouncedSearch,() => activeTab],
+  watch: [selectedSort, () => activeTab.value],
   params: () => ({
     limit: currentLimit.value,
-    q: debouncedSearch.value || undefined,
+    q: modelSearch.value || undefined,
     sort: selectedSort.value.params.sort,
     order: selectedSort.value.params.order,
-    isOwn: activeTab === "myLists" ? true : undefined,
+    isOwn: activeTab.value === "myLists" ? true : undefined,
   }),
   onSuccess: () => {
-    listsData.value = ListsResponse.value?.data || [];
+    listsStore.setLists(listsDataResponse.value?.data);
   },
 });
 
-const submitOptions = {
-  data: () => ({
-    title: editListName.value,
-    hexColor: editListColor.value,
-  }),
-  onSuccess: () => {
-    fetchListsData();
-    handleCloseFormModal();
-  },
-};
+const { deleteListExecute, deleteListLoading } = useDeleteList(
+  selectedList,
+  () => { fetchListsData(); handleCloseDeleteModal(); },
+);
 
-const {
-  execute: createNewList,
-  loading: createListLoading,
-} = useCreateNewList(submitOptions);
-const {
-  execute: updateSelectedList,
-  loading: updateListLoading }
-  = useUpdateList(() => selectedList.value?.id, submitOptions);
-
-const {
-  execute: deleteList,
-  loading: deleteListLoading,
-} = useDeleteList(() => selectedList.value?.id, {
-  onSuccess: () => {
-    fetchListsData();
-    handleCloseDeleteModal();
-  },
-});
-
-const handleSubmit = () => {
-  if (selectedList.value?.id) {
-    updateSelectedList();
-  } else {
-    createNewList();
-  }
-};
+const { handleSubmit, createListLoading, updateListLoading } = useListForm(
+  selectedList,
+  { name: editListName, color: editListColor },
+  () => { fetchListsData(); handleCloseFormModal(); },
+);
 
 const isLoading = computed(() =>
   fetchListsLoading.value ||
   createListLoading.value ||
   updateListLoading.value,
 );
-
-// ??? нужен ли тут вотчер
-
-watch(() => activeTab, () => {
-  selectedSort.value = sortOptions.value[0];
-  modelSearch.value = "";
-});
 </script>
 
 <template>
+  <Teleport
+    to="#header-actions"
+    defer
+  >
+    <VButton
+      icon="icon-plus"
+      variant="primary"
+      :text="$t('tasks.createTasksBtn')"
+      @click="openCreateModal()"
+    />
+  </Teleport>
   <ListFormModal
     v-model:name="editListName"
     v-model:color="editListColor"
@@ -151,16 +147,23 @@ watch(() => activeTab, () => {
     :selected-list-data="selectedList"
     :loading="deleteListLoading"
     @close="handleCloseDeleteModal"
-    @confirm-delete="deleteList"
+    @confirm-delete="deleteListExecute"
   />
   <ListsToolbar
     v-model:search="modelSearch"
     v-model:sort="selectedSort"
     :active-tab="activeTab"
     :sort-options="sortOptions"
+    @update:search="onSearchInput"
   />
+  <div class="border border-subtle p-1 rounded-2xl w-fit mb-7">
+    <VTab
+      v-model="activeTab"
+      :tab-items="tabs"
+    />
+  </div>
   <div
-    v-if="listsData.length > 0"
+    v-if="listsStore.listsData.length"
     class="relative min-h-96 grid grid-cols-[repeat(auto-fill,minmax(320px,1fr))] gap-6"
   >
     <Transition
@@ -180,7 +183,7 @@ watch(() => activeTab, () => {
       </div>
     </Transition>
     <template
-      v-for="data in listsData"
+      v-for="data in listsStore.listsData"
       :key="data.id"
     >
       <ListItem
@@ -196,7 +199,7 @@ watch(() => activeTab, () => {
     </template>
   </div>
   <div
-    v-else-if="!isLoading && listsData.length === 0"
+    v-else-if="!isLoading && !listsStore.listsData.length"
     class="py-16 px-4"
   >
     <VEmptyState

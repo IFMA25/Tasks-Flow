@@ -17,12 +17,12 @@ import { formatDate } from "./utils";
 import LangSwitcher from "../translation/components/LangSwitcher.vue";
 
 import { useModal } from "@/shared/composables/useModal";
-import { RouteNames } from "@/shared/types/routeNames";
 import {
   RoleOption,
   SortOption,
   User,
 } from "@/shared/types";
+import { RouteNames } from "@/shared/types/routeNames";
 import VButton from "@/shared/ui/common/VButton.vue";
 import VTitle from "@/shared/ui/common/VTitle.vue";
 import VDropdown from "@/shared/ui/common/dropdown/VDropdown.vue";

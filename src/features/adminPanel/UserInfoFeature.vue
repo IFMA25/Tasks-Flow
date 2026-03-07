@@ -16,8 +16,8 @@ import {
 import UserProfileHeader from "./components/UserProfileHeader.vue";
 import { formatDate } from "./utils";
 
-import { RouteNames } from "@/shared/types/routeNames";
 import { useProfileStore } from "@/shared/stores/useProfileStore";
+import { RouteNames } from "@/shared/types/routeNames";
 import VTitle from "@/shared/ui/common/VTitle.vue";
 
 

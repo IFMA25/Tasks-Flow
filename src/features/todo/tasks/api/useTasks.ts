@@ -1,9 +1,6 @@
 import {
-  useApiDelete,
   useApiGet,
   UseApiOptions,
-  useApiPatch,
-  useApiPost,
 } from "@ametie/vue-muza-use";
 import { MaybeRefOrGetter, toValue } from "vue";
 

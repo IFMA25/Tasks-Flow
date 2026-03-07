@@ -5,7 +5,7 @@ import { ListData } from "../../types";
 import { useModal } from "@/shared/composables/useModal";
 import { colorsList } from "@/shared/variables/colorMap";
 
-export function useListModalState() {
+export const useListModalManager = () => {
 
   const selectedList = ref<ListData | null>(null);
   const editListName = ref<string>("");
@@ -64,4 +64,4 @@ export function useListModalState() {
     openCreateModal,
     handleAction,
   };
-}
+};

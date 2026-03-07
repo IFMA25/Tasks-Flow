@@ -1,8 +1,9 @@
 <script setup lang="ts">
+import { useI18n } from "vue-i18n";
+
 import { RouteNames } from "@/shared/types/routeNames";
 import VButton from "@/shared/ui/common/VButton.vue";
 import VSkeleton from "@/shared/ui/common/VSkeleton.vue";
-import { useI18n } from "vue-i18n";
 
 defineProps<{
   title?: string;
@@ -15,7 +16,7 @@ const { t } = useI18n();
 </script>
 
 <template>
-   <div class="inline-block mb-6">
+  <div class="inline-block mb-6">
     <VButton
       variant="navItem"
       :to="RouteNames.users"

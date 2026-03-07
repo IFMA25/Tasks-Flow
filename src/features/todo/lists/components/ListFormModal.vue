@@ -3,11 +3,11 @@ import { computed } from "vue";
 
 import { ListData } from "../../types";
 
-import { colorsList } from "@/shared/variables/colorMap";
 import VButton from "@/shared/ui/common/VButton.vue";
 import VColorRadio from "@/shared/ui/common/VColorRadio.vue";
 import VInput from "@/shared/ui/common/VInput.vue";
 import VModal from "@/shared/ui/modal/VModal.vue";
+import { colorsList } from "@/shared/variables/colorMap";
 
 
 const { selectedListData, loading } = defineProps<{

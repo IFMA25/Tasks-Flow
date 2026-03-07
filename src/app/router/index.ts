@@ -7,6 +7,7 @@ import {
 
 import authRoutes from "./auth";
 import { guards } from "./guards";
+
 import { RouteNames } from "@/shared/types/routeNames";
 
 const routes: RouteRecordRaw[] = [
@@ -31,6 +32,15 @@ const routes: RouteRecordRaw[] = [
       permission: "read:list",
       titleMenu: "lists",
       iconMenu: "lists",
+    },
+  },
+  {
+    path: "/lists/:id",
+    name: RouteNames.tasks,
+    component: () => import("@/pages/Tasks/index.vue"),
+    meta: {
+      permission: "read:list",
+      showInMenu: false,
     },
   },
   {

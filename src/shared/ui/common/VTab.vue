@@ -1,24 +1,19 @@
 <script setup lang="ts">
 
-export type TabValue = string;
-
-export interface TabItem {
+type TabValue = string;
+interface TabItem {
   value: TabValue;
   label: string;
   disabled?: boolean;
 }
 
-const { tabItems, modelValue } = defineProps<{
-  tabItems: TabItem[];
-  modelValue: TabValue;
-}>();
+const { tabItems } = defineProps<{ tabItems: TabItem[] }>();
 
-const emit = defineEmits(["update:modelValue"]);
+const modelValue = defineModel<TabValue>({ required: true });
 
 const handleTabClick = (tab: TabItem) => {
-  if (tab.disabled || modelValue === tab.value) return;
-
-  emit("update:modelValue", tab.value);
+  if (tab.disabled || modelValue.value === tab.value) return;
+  modelValue.value = tab.value;
 };
 </script>
 

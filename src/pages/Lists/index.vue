@@ -1,7 +1,7 @@
 <script setup>
-import ToDoFeature from "@/features/todo/ToDoFeature.vue";
+import ListsFeature from "@/features/todo/lists/ListsFeature.vue";
 </script>
 
 <template>
-  <ToDoFeature />
+  <ListsFeature />
 </template>

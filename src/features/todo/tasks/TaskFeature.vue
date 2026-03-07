@@ -5,7 +5,7 @@ import { useRoute } from "vue-router";
 import { useTasks } from "./api/useTasks";
 
 const route = useRoute();
-const listId = computed(() => String(route.query.id));
+const listId = computed(() => String(route.params.listId));
 
 const { getAllTasks } = useTasks();
 const { data } = getAllTasks(() => listId.value, {
@@ -18,5 +18,8 @@ const { data } = getAllTasks(() => listId.value, {
 </script>
 
 <template>
-  <div />
+  <div>
+    Tasks
+    {{ data }}
+  </div>
 </template>
