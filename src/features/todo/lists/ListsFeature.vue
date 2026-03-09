@@ -3,19 +3,17 @@ import { useDebounceFn } from "@vueuse/core";
 import {
   computed,
   ref,
+  watch,
 } from "vue";
 import { useI18n } from "vue-i18n";
 import { useRoute, useRouter } from "vue-router";
 
-import { useListsRequests } from "./api/useListsRequest";
+import { ListData } from "../types";
 import DeleteListModal from "./components/DeleteListModal.vue";
 import ListFormModal from "./components/ListFormModal.vue";
 import ListItem from "./components/ListItem.vue";
 import ListsToolbar from "./components/ListsToolbar.vue";
 import UsersListItem from "./components/UsersListItem.vue";
-import { useDeleteList } from "./composable/useDeleteList";
-import { useListForm } from "./composable/useListForm";
-import { useListModalManager } from "./composable/useListModalManager";
 import { useListsStore } from "./store/useListsStore";
 
 import { SortOption } from "@/shared/types";
@@ -48,10 +46,6 @@ const activeSortKey = ref<string>(sortOptions.value[0].key);
 const route = useRoute();
 const router = useRouter();
 
-const onSearchInput = useDebounceFn(() => {
-  fetchListsData();
-}, 800);
-
 const selectedSort = computed({
   get: () => sortOptions.value
     .find(option => option.key === activeSortKey.value)
@@ -67,60 +61,50 @@ const activeTab = computed({
     return typeof tab === "string" ? tab : "myLists";
   },
   set: (value) => {
-    activeSortKey.value = sortOptions.value[0].key;
     modelSearch.value = "";
     router.replace({ query: { ...route.query, tab: value } });
   },
 });
 
-const {
-  selectedList,
-  editListName,
-  editListColor,
-  handleCloseFormModal,
-  handleCloseDeleteModal,
-  openCreateModal,
-  handleAction,
-} = useListModalManager();
-
-const { getAllLists } = useListsRequests();
 const listsStore = useListsStore();
 
-const {
-  execute: fetchListsData,
-  loading: fetchListsLoading,
-  data: listsDataResponse,
-} = getAllLists({
-  immediate: true,
-  watch: [selectedSort, () => activeTab.value],
-  params: () => ({
+const formModalRef = ref<InstanceType<typeof ListFormModal> | null>(null);
+const deleteModalRef = ref<InstanceType<typeof DeleteListModal> | null>(null);
+
+const handleAction = (list: ListData, action: string) => {
+  if (action === "edit") {
+    formModalRef.value?.open(list);
+  } else if (action === "delete") {
+    deleteModalRef.value?.open(list);
+  }
+};
+
+const openCreateModal = () => {
+  formModalRef.value?.open();
+};
+
+const updateLists = () => {
+  listsStore.fetchFilteredLists({
     limit: currentLimit.value,
     q: modelSearch.value || undefined,
     sort: selectedSort.value.params.sort,
     order: selectedSort.value.params.order,
     isOwn: activeTab.value === "myLists" ? true : undefined,
-  }),
-  onSuccess: () => {
-    listsStore.setLists(listsDataResponse.value?.data);
+  });
+};
+
+const onSearchInput = useDebounceFn(() => {
+  updateLists();
+}, 800);
+
+watch(
+  [() => route.query.tab, activeSortKey],
+  () => {
+    updateLists();
   },
-});
-
-const { deleteListExecute, deleteListLoading } = useDeleteList(
-  selectedList,
-  () => { fetchListsData(); handleCloseDeleteModal(); },
+  { immediate: true },
 );
 
-const { handleSubmit, createListLoading, updateListLoading } = useListForm(
-  selectedList,
-  { name: editListName, color: editListColor },
-  () => { fetchListsData(); handleCloseFormModal(); },
-);
-
-const isLoading = computed(() =>
-  fetchListsLoading.value ||
-  createListLoading.value ||
-  updateListLoading.value,
-);
 </script>
 
 <template>
@@ -129,26 +113,15 @@ const isLoading = computed(() =>
     defer
   >
     <VButton
+      v-if="activeTab === 'myLists'"
       icon="icon-plus"
       variant="primary"
-      :text="$t('tasks.createTasksBtn')"
+      :text="$t('lists.createListBtn')"
       @click="openCreateModal()"
     />
   </Teleport>
-  <ListFormModal
-    v-model:name="editListName"
-    v-model:color="editListColor"
-    :selected-list-data="selectedList"
-    :loading="updateListLoading"
-    @save-changes="handleSubmit"
-    @close="handleCloseFormModal"
-  />
-  <DeleteListModal
-    :selected-list-data="selectedList"
-    :loading="deleteListLoading"
-    @close="handleCloseDeleteModal"
-    @confirm-delete="deleteListExecute"
-  />
+  <ListFormModal ref="formModalRef" />
+  <DeleteListModal ref="deleteModalRef" />
   <ListsToolbar
     v-model:search="modelSearch"
     v-model:sort="selectedSort"
@@ -173,7 +146,7 @@ const isLoading = computed(() =>
       leave-to-class="opacity-0"
     >
       <div
-        v-if="isLoading"
+        v-if="listsStore.isLoading"
         class="absolute inset-0 z-20 flex items-center justify-center backdrop-blur-sm"
       >
         <VLoader
@@ -199,7 +172,7 @@ const isLoading = computed(() =>
     </template>
   </div>
   <div
-    v-else-if="!isLoading && !listsStore.listsData.length"
+    v-else-if="!listsStore.isLoading && !listsStore.listsData.length"
     class="py-16 px-4"
   >
     <VEmptyState

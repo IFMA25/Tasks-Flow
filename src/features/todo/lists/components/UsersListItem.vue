@@ -24,17 +24,15 @@ const { t } = useI18n();
     :title-text="data.owner?.name"
     class=" max-h-40"
   >
-    <template #default>
-      <div class="flex flex-col gap-2 border-b border-default pb-2">
-        <p class="text-xs text-muted">
-          {{ data.owner?.email }}
-        </p>
-        <p class="text-sm text-secondary leading-[1.3]">
-          <span class=" font-semibold leading-[1.2] text-primary">Role:
-          </span>{{ capitalizeFirstLetter(data.owner?.role || '') }}
-        </p>
-      </div>
-    </template>
+    <div class="flex flex-col gap-2 border-b border-default pb-2">
+      <p class="text-xs text-muted">
+        {{ data.owner?.email }}
+      </p>
+      <p class="text-sm text-secondary leading-[1.3]">
+        <span class=" font-semibold leading-[1.2] text-primary">Role:
+        </span>{{ capitalizeFirstLetter(data.owner?.role || '') }}
+      </p>
+    </div>
     <template #container-actions>
       <div class="mt-2">
         <VDropdown>

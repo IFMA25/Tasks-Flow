@@ -33,16 +33,14 @@ const { t } = useI18n();
         variant="cardTitle"
       />
     </template>
-    <template #default>
-      <div class="flex gap-4">
-        <p class="text-secondary">
-          {{ data.totalTasks }} {{ t('lists.tasks') }}
-        </p>
-        <p class="text-muted">
-          {{ data.completedTasks }} {{ t('lists.completed') }}
-        </p>
-      </div>
-    </template>
+    <div class="flex gap-4">
+      <p class="text-secondary">
+        {{ data.totalTasks }} {{ t('lists.tasks') }}
+      </p>
+      <p class="text-muted">
+        {{ data.completedTasks }} {{ t('lists.completed') }}
+      </p>
+    </div>
     <template #container-actions>
       <div class="absolute top-2 right-2">
         <VDropdown>

@@ -24,9 +24,9 @@ import {
 } from "@/shared/types";
 import { RouteNames } from "@/shared/types/routeNames";
 import VButton from "@/shared/ui/common/VButton.vue";
+import VModal from "@/shared/ui/common/VModal.vue";
 import VTitle from "@/shared/ui/common/VTitle.vue";
 import VDropdown from "@/shared/ui/common/dropdown/VDropdown.vue";
-import VModal from "@/shared/ui/modal/VModal.vue";
 import VTable from "@/shared/ui/table/VTable.vue";
 import { capitalizeFirstLetter } from "@/shared/utils";
 
@@ -129,15 +129,13 @@ const handelAction = (user: User, action: string) => {
     :title="$t('usersList.removeUserModal.title')"
     max-width="md"
   >
-    <template #default>
-      <p class="font-semibold mb-2">
-        {{ $t('usersList.removeUserModal.titleContent') }}
-        {{ selectedUser?.name }} ({{ selectedUser?.email }})?
-      </p>
-      <p class="text-xs">
-        {{ $t('usersList.removeUserModal.subtitleContent') }}
-      </p>
-    </template>
+    <p class="font-semibold mb-2">
+      {{ $t('usersList.removeUserModal.titleContent') }}
+      {{ selectedUser?.name }} ({{ selectedUser?.email }})?
+    </p>
+    <p class="text-xs">
+      {{ $t('usersList.removeUserModal.subtitleContent') }}
+    </p>
     <template #footer>
       <VButton
         :text="$t('usersList.removeUserModal.cancel')"

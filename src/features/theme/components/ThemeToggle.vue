@@ -20,8 +20,6 @@ const themeValue = computed({
     class="theme-toggle"
     variant="themeSwitch"
   >
-    <template #default>
-      <div class="w-[20px] h-[20px] rounded-full bg-switchBg" />
-    </template>
+    <div class="w-[20px] h-[20px] rounded-full bg-switchBg" />
   </VSwitch>
 </template>

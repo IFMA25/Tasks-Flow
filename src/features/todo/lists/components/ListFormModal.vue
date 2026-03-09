@@ -1,77 +1,82 @@
 <script setup lang="ts">
-import { computed } from "vue";
+import { ref } from "vue";
 
 import { ListData } from "../../types";
+import { useListForm } from "../composable/useListForm";
 
+import { useModal } from "@/shared/composables/useModal";
 import VButton from "@/shared/ui/common/VButton.vue";
 import VColorRadio from "@/shared/ui/common/VColorRadio.vue";
 import VInput from "@/shared/ui/common/VInput.vue";
-import VModal from "@/shared/ui/modal/VModal.vue";
+import VModal from "@/shared/ui/common/VModal.vue";
 import { colorsList } from "@/shared/variables/colorMap";
 
+const { open: openModal, close } = useModal("listFormModal");
 
-const { selectedListData, loading } = defineProps<{
-  loading: boolean;
-  selectedListData?: ListData | null;
-}>();
+const selectedList = ref<ListData | null>(null);
+const name = ref("");
+const selectedColor = ref(colorsList[0]);
 
-const editListName = defineModel<string>("name");
-const editListColor = defineModel<string>("color");
+const open = (list?: ListData) => {
+  selectedList.value = list || null;
+  name.value = list?.title || "";
+  selectedColor.value = list?.hexColor || colorsList[0];
 
-const emit = defineEmits(["saveChanges", "close"]);
+  openModal();
+};
 
-const isDataChanged = computed(() => {
-  if (!selectedListData){
-    return editListName.value !== "";
-  };
+defineExpose({ open });
 
-  const isNameChanged = editListName.value !== selectedListData.title;
-  const isColorChanged = editListColor.value !== (selectedListData.hexColor || colorsList[0]);
-  return isNameChanged || isColorChanged;
-});
+const listsForm = useListForm(selectedList, { name, color: selectedColor });
 
+const onSubmit = async () => {
+  const success = await listsForm.handleSubmit();
+  if (success) {
+    close();
+  }
+};
 </script>
 
 <template>
   <VModal
     id="listFormModal"
-    :title="selectedListData ? $t('lists.listFormModal.title') : $t('lists.createListModal.title')"
+    :title="selectedList?.title
+      ? $t('lists.listFormModal.title')
+      : $t('lists.createListModal.title')"
     max-width="md"
-    @close="emit('close')"
+    @close="close()"
   >
-    <template #default>
-      <VInput
-        v-model="editListName"
-        :label="$t('lists.listFormModal.labelName')"
-        :placeholder="$t('lists.createListModal.placeholder')"
-        class="text-sm text-secondary font-medium leading-[1.2] mb-4"
+    <VInput
+      v-model="name"
+      :label="$t('lists.listFormModal.labelName')"
+      :placeholder="$t('lists.createListModal.placeholder')"
+      class="text-sm text-secondary font-medium leading-[1.2] mb-4"
+    />
+    <p class="text-sm text-secondary font-medium leading-[1.2] mb-2">
+      {{ $t('lists.listFormModal.labelColor') }}
+    </p>
+    <div class="flex gap-4">
+      <VColorRadio
+        v-for="color in colorsList"
+        :key="color"
+        v-model="selectedColor"
+        :color="color"
       />
-      <p class="text-sm text-secondary font-medium leading-[1.2] mb-2">
-        {{ $t('lists.listFormModal.labelColor') }}
-      </p>
-      <div class="flex gap-4">
-        <VColorRadio
-          v-for="color in colorsList"
-          :key="color"
-          v-model="editListColor"
-          :color="color"
-        />
-      </div>
-    </template>
+    </div>
     <template #footer>
       <VButton
         type="text"
         :text="$t('lists.cancel')"
         variant="outline"
-        @click="emit('close')"
+        @click="close()"
       />
       <VButton
         :text="$t('lists.listFormModal.saveBtn')"
         variant="outline"
-        :disabled="!isDataChanged"
-        :loading="loading"
+        :disabled="listsForm.isSubmitDisabled.value"
+        :loading="listsForm.isLoading.value"
         load-color="text-disabled"
-        @click="emit('saveChanges')"
+        @click="onSubmit"
       />
     </template>
   </VModal>

@@ -2,7 +2,7 @@
 import { useModal } from "@/shared/composables/useModal";
 import { useProfileStore } from "@/shared/stores/useProfileStore";
 import  VButton  from "@/shared/ui/common/VButton.vue";
-import VModal from "@/shared/ui/modal/VModal.vue";
+import VModal from "@/shared/ui/common/VModal.vue";
 
 defineProps<{
   collapsed?: boolean
@@ -18,14 +18,12 @@ const { open: openLogoutModal, close: closeLogoutModal } = useModal("logout");
     :title="$t('auth.logout.modalTitle')"
     max-width="md"
   >
-    <template #default>
-      <p class="font-semibold mb-2">
-        {{ $t('auth.logout.modalContentTitle') }}
-      </p>
-      <p class="text-xs">
-        {{ $t('auth.logout.modalContentSubtitle') }}
-      </p>
-    </template>
+    <p class="font-semibold mb-2">
+      {{ $t('auth.logout.modalContentTitle') }}
+    </p>
+    <p class="text-xs">
+      {{ $t('auth.logout.modalContentSubtitle') }}
+    </p>
     <template #footer>
       <VButton
         :text="$t('auth.logout.modalCancel')"
