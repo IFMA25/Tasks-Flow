@@ -1,25 +1,36 @@
 <script setup lang="ts">
-import { computed } from "vue";
-import { useRoute } from "vue-router";
+import { watchEffect } from 'vue';
 
-import { useTasks } from "./api/useTasks";
+import VButton from '@/shared/ui/common/VButton.vue';
 
-const route = useRoute();
-const listId = computed(() => String(route.params.listId));
+import { useTasksStore } from './store/useTasksStore';
 
-const { getAllTasks } = useTasks();
-const { data } = getAllTasks(() => listId.value, {
-  immediate: true,
-  onSuccess: () => {
-    console.log("tasks", data.value);
-  },
+const props = defineProps<{
+  listId: string;
+}>();
+
+const tasksStore = useTasksStore();
+
+watchEffect(() => {
+  tasksStore.fetchTasksForList(props.listId);
 });
 
 </script>
 
 <template>
+  <Teleport
+    to="#header-actions"
+    defer
+  >
+    <VButton
+      icon="icon-plus"
+      variant="primary"
+      :text="$t('tasks.createTasksBtn')"
+      @click="openCreateModal()"
+    />
+  </Teleport>
   <div>
     Tasks
-    {{ data }}
+    {{ tasks.tasksData }}
   </div>
 </template>

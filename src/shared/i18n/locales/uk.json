@@ -113,7 +113,17 @@
         "searchPlaceholder": "Пошук списків..."
     },
     "tasks": {
-        "createTasksBtn": "Додати завдання"
+        "createTasksBtn": "Додати завдання",
+        "createTaskModal": {
+            "title": "Додати нове завдання",
+            "labelName": "Назва завдання",
+            "placeholderTaskName": "Введіть назву завдання",
+            "labelPriority": "Пріоритет",
+            "labelDeadline": "Термін",
+            "labelTags": "Теги",
+            "placeholderTags": "Додайте до 3 тегів",
+            "createBtn": "Додати"
+        }
     },
     "filters": {
         "role": "Роль",

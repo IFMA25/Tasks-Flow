@@ -1,26 +1,30 @@
 <script setup lang="ts">
-import { useDebounceFn } from "@vueuse/core";
 import {
   computed,
   ref,
   watch,
-} from "vue";
-import { useI18n } from "vue-i18n";
-import { useRoute, useRouter } from "vue-router";
+} from 'vue';
 
-import { ListData } from "../types";
-import DeleteListModal from "./components/DeleteListModal.vue";
-import ListFormModal from "./components/ListFormModal.vue";
-import ListItem from "./components/ListItem.vue";
-import ListsToolbar from "./components/ListsToolbar.vue";
-import UsersListItem from "./components/UsersListItem.vue";
-import { useListsStore } from "./store/useListsStore";
+import { useI18n } from 'vue-i18n';
+import {
+  useRoute,
+  useRouter,
+} from 'vue-router';
 
-import { SortOption } from "@/shared/types";
-import VEmptyState from "@/shared/ui/EmptyState.vue";
-import VButton from "@/shared/ui/common/VButton.vue";
-import VLoader from "@/shared/ui/common/VLoader.vue";
-import VTab from "@/shared/ui/common/VTab.vue";
+import { SortOption } from '@/shared/types';
+import VButton from '@/shared/ui/common/VButton.vue';
+import VLoader from '@/shared/ui/common/VLoader.vue';
+import VTab from '@/shared/ui/common/VTab.vue';
+import VEmptyState from '@/shared/ui/EmptyState.vue';
+import { useDebounceFn } from '@vueuse/core';
+
+import { ListData } from '../types';
+import DeleteListModal from './components/DeleteListModal.vue';
+import ListFormModal from './components/ListFormModal.vue';
+import ListItem from './components/ListItem.vue';
+import ListsToolbar from './components/ListsToolbar.vue';
+import UsersListItem from './components/UsersListItem.vue';
+import { useListsStore } from './store/useListsStore';
 
 const { t } = useI18n();
 
@@ -40,7 +44,6 @@ const tabs = computed(() => [
 ]);
 
 const modelSearch = ref<string>("");
-const currentLimit = ref<number>(20);
 const activeSortKey = ref<string>(sortOptions.value[0].key);
 
 const route = useRoute();
@@ -85,7 +88,6 @@ const openCreateModal = () => {
 
 const updateLists = () => {
   listsStore.fetchFilteredLists({
-    limit: currentLimit.value,
     q: modelSearch.value || undefined,
     sort: selectedSort.value.params.sort,
     order: selectedSort.value.params.order,
@@ -104,7 +106,6 @@ watch(
   },
   { immediate: true },
 );
-
 </script>
 
 <template>

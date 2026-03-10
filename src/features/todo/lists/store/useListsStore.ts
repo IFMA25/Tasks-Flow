@@ -1,9 +1,10 @@
-import { defineStore } from "pinia";
-import { computed, ref } from "vue";
+import { ref } from 'vue';
 
-import { useListsRequests } from "../api/useListsRequest";
+import { defineStore } from 'pinia';
 
-export interface ListsQueryParams {
+import { useListsRequests } from '../api/useListsRequest';
+
+export interface ListsParams {
   limit?: number;
   q?: string;
   sort?: string;
@@ -12,19 +13,22 @@ export interface ListsQueryParams {
 }
 
 export const useListsStore = defineStore("lists", () => {
+  const listsData = ref([]);
+
   const { getAllLists } = useListsRequests();
 
-  const currentParams = ref<ListsQueryParams>({ limit: 20 });
+  const currentParams = ref<ListsParams>({ limit: 20 });
 
   const {
-    data: response,
+    data,
     loading: isLoading,
     execute,
   } = getAllLists({
     params: () => currentParams.value,
+    onSuccess: () => {
+      listsData.value = data.value?.data || [];
+    }
   });
-
-  const listsData = computed(() => response.value?.data || []);
 
   const fetchFilteredLists = async (newParams: Partial<typeof currentParams.value> = {}) => {
     currentParams.value = { ...currentParams.value, ...newParams };

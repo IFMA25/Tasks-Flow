@@ -35,6 +35,15 @@ interface TasksData {
   status: string;
   isWeeklyGoal: boolean;
 }
+interface ListInfo {
+  createdAt: string;
+  deadline: string | null;
+  hexColor: string;
+  id: string;
+  ownerId: string;
+  title: string;
+  updatedAt: string;
+}
 
 export interface RequestBodyListData {
   title: string;
@@ -43,6 +52,7 @@ export interface RequestBodyListData {
 
 export interface TasksResponse {
   data: TaskData[];
+  listInfo: ListInfo;
   pagination: PaginationData;
 }
 
@@ -65,16 +75,16 @@ export interface TaskData {
 
 export interface RequestBodyTaskData {
   title: string;
-  description: string;
-  longDescription: string;
-  status: string;
   priority: string;
   tags: string[];
   dueDate: string;
-  deadline: string;
-  isStarred: boolean;
-  isWeeklyGoal: boolean;
-  order: number;
+  description?: string;
+  longDescription?: string;
+  status?: string;
+  deadline?: string;
+  isStarred?: boolean;
+  isWeeklyGoal?: boolean;
+  order?: number;
 }
 
 export interface RequestCompletedTask {

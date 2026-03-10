@@ -1,14 +1,14 @@
 <script setup lang="ts">
-import { useI18n } from "vue-i18n";
+import { useI18n } from 'vue-i18n';
 
-import { ListData } from "../../types";
+import { Actions } from '@/shared/types';
+import { RouteNames } from '@/shared/types/routeNames';
+import VDropdown from '@/shared/ui/common/dropdown/VDropdown.vue';
+import VButton from '@/shared/ui/common/VButton.vue';
+import VContainer from '@/shared/ui/common/VContainer.vue';
+import { capitalizeFirstLetter } from '@/shared/utils';
 
-import { Actions } from "@/shared/types";
-import { RouteNames } from "@/shared/types/routeNames";
-import VButton from "@/shared/ui/common/VButton.vue";
-import VContainer from "@/shared/ui/common/VContainer.vue";
-import VDropdown from "@/shared/ui/common/dropdown/VDropdown.vue";
-import { capitalizeFirstLetter } from "@/shared/utils";
+import { ListData } from '../../types';
 
 const { data, actions } = defineProps<{
   data: ListData;
@@ -29,7 +29,7 @@ const { t } = useI18n();
     <template #title>
       <VButton
         :text="data.title"
-        :to="{ name: RouteNames.tasks, params: { id: data.id } }"
+        :to="{ name: RouteNames.tasks, params: { listId: data.id } }"
         variant="cardTitle"
       />
     </template>

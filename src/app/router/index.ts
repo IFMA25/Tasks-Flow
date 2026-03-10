@@ -3,12 +3,12 @@ import {
   createWebHashHistory,
   RouteLocationNormalized,
   RouteRecordRaw,
-} from "vue-router";
+} from 'vue-router';
 
-import authRoutes from "./auth";
-import { guards } from "./guards";
+import { RouteNames } from '@/shared/types/routeNames';
 
-import { RouteNames } from "@/shared/types/routeNames";
+import authRoutes from './auth';
+import { guards } from './guards';
 
 const routes: RouteRecordRaw[] = [
   {
@@ -35,9 +35,10 @@ const routes: RouteRecordRaw[] = [
     },
   },
   {
-    path: "/lists/:id",
+    path: "/lists/:listId",
     name: RouteNames.tasks,
     component: () => import("@/pages/Tasks/index.vue"),
+    props: true,
     meta: {
       permission: "read:list",
       showInMenu: false,

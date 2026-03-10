@@ -108,7 +108,17 @@
         "searchPlaceholder": "Search lists…"
     },
     "tasks": {
-        "createTasksBtn": "Add task"
+        "createTasksBtn": "Add task",
+        "createTaskModal": {
+            "title": "Add new task",
+            "labelName": "Task name",
+            "placeholderTaskName": "Enter task name",
+            "labelPriority": "Priority",
+            "labelDeadline": "Due",
+            "labelTags": "Tags",
+            "placeholderTags": "Add up to 3 tags",
+            "createBtn": "Add task"
+        }
     },
     "filters": {
         "role": "Roles",
