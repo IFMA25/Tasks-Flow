@@ -1,8 +1,12 @@
 <script setup lang="ts">
-import { watchEffect } from 'vue';
+import {
+  ref,
+  watchEffect,
+} from 'vue';
 
 import VButton from '@/shared/ui/common/VButton.vue';
 
+import TaskFormModal from './components/TaskFormModal.vue';
 import { useTasksStore } from './store/useTasksStore';
 
 const props = defineProps<{
@@ -11,6 +15,12 @@ const props = defineProps<{
 
 const tasksStore = useTasksStore();
 
+const formModalRef = ref<InstanceType<typeof TaskFormModal> | null>(null);
+
+const openCreateModal = () => {
+  formModalRef.value?.open();
+};
+
 watchEffect(() => {
   tasksStore.fetchTasksForList(props.listId);
 });
@@ -18,6 +28,7 @@ watchEffect(() => {
 </script>
 
 <template>
+  <TaskFormModal ref="formModalRef" />
   <Teleport
     to="#header-actions"
     defer
@@ -31,6 +42,6 @@ watchEffect(() => {
   </Teleport>
   <div>
     Tasks
-    {{ tasks.tasksData }}
+    {{ tasksStore.tasksData }}
   </div>
 </template>

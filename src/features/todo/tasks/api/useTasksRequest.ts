@@ -27,13 +27,14 @@ export const useTasksRequest = () => {
     listId: MaybeRefOrGetter<string>,
     options?: UseApiOptions<TasksResponse, RequestBodyTaskData>,
   ) => {
-    return useApiPatch(() => `/lists/${toValue(listId)}`, options);
+    return useApiPatch(() => `/tasks/lists/${toValue(listId)}`, options);
   };
 
   const createNewTask = (
+    listId: MaybeRefOrGetter<string>,
     options?: UseApiOptions<TasksResponse, RequestBodyTaskData>,
   ) => {
-    return useApiPost("/tasks", options);
+    return useApiPost(`/tasks/lists/${toValue(listId)}`, options);
   };
 
   const deleteTask = (

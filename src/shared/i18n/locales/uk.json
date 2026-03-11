@@ -122,7 +122,17 @@
             "labelDeadline": "Термін",
             "labelTags": "Теги",
             "placeholderTags": "Додайте до 3 тегів",
-            "createBtn": "Додати"
+            "createBtn": "Додати",
+            "select": {
+                "low": "Низький",
+                "medium": "Середній",
+                "high": "Високий",
+                "noDeadline": "Без терміну",
+                "today": "Сьогодні",
+                "tomorrow": "Завтра",
+                "thisWeek": "Цей тиждень",
+                "nextWeek": "Наступний тиждень"
+            }
         }
     },
     "filters": {
