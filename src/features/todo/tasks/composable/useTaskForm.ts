@@ -1,17 +1,18 @@
 import {
   computed,
   Ref,
-} from 'vue';
+} from "vue";
 
 import {
   RequestBodyTaskData,
   TaskData,
-} from '../../types';
-import { useTasksRequest } from '../api/useTasksRequest';
-import { useTasksStore } from '../store/useTasksStore';
+} from "../../types";
+import { useTasksRequest } from "../api/useTasksRequest";
+import { useTasksStore } from "../store/useTasksStore";
+import { mapDueDateToISO } from "../utils";
 
 export const useTaskForm = (
-  listId: string,
+  listId: Ref<string>,
   selectedTask: Ref<TaskData | null>,
   formData: {
     taskName: Ref<string>;
@@ -21,29 +22,28 @@ export const useTaskForm = (
   },
 ) => {
 
-  const { createNewTask, updateTask } = useTasksRequest();
+  const { createNewTask } = useTasksRequest();
+
   const tasksStore = useTasksStore();
 
   const submitData = computed<RequestBodyTaskData>(() => ({
-  title: formData.taskName.value.trim(),
-  tags: formData.tags.value ? formData.tags.value : [],
-  priority: formData.priority.value || 'medium', 
-  dueDate: formData.dueDate.value || new Date().toISOString(),
-  description: "",
-  longDescription: "",
-  status: "todo",
-  deadline: "",
-  isStarred: false,
-  isWeeklyGoal: false,
-  order: 1
-}));
+    title: formData.taskName.value.trim(),
+    tags: formData.tags.value ? formData.tags.value : [],
+    priority: formData.priority.value || "medium",
+    dueDate: mapDueDateToISO(formData.dueDate.value),
+  // description: "",
+  // longDescription: "",
+  // status: "todo",
+  // deadline: "",
+  // isStarred: false,
+  // isWeeklyGoal: false,
+  // order: 1
+  }));
 
-  const { execute: createNewTaskExecute, loading: createTaskLoading } = createNewTask(()=>listId, {
-    data:submitData,
+  const { execute: createNewTaskExecute } = createNewTask(() => listId.value, {
+    data: submitData,
     onSuccess: () => {
-      formData.taskName.value = "";
-      formData.tags.value = [];
-      tasksStore.fetchTasksForList(listId);
+      tasksStore.fetchTasksForList(listId.value);
     },
   });
 
@@ -71,25 +71,25 @@ export const useTaskForm = (
 
   // const isSubmitDisabled = computed(() => !(isValid.value && isDataChanged.value));
 
-  // const handleSubmit = async () => {
-  //   if (isSubmitDisabled.value) return;
+  const handleSubmit = async () => {
+    // if (isSubmitDisabled.value) return;
 
-  //   try {
-  //     if (selectedTask.value?.id) {
-  //       await updateSelectedTaskExecute();
-  //     } else {
-  //       await createNewTaskExecute();
-  //     }
-  //     return true;
-  //   } catch (error) {
-  //     return false;
-  //   }
-  // };
+    try {
+      if (selectedTask.value?.id) {
+        // await updateSelectedTaskExecute();
+      } else {
+        await createNewTaskExecute();
+      }
+      return true;
+    } catch (error) {
+      return false;
+    }
+  };
 
   // const isLoading = computed(() => createTaskLoading.value || updateTaskLoading.value);
 
   return {
-    // handleSubmit,
+    handleSubmit,
     // isSubmitDisabled,
     // isLoading,
   };

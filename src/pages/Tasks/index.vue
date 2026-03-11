@@ -1,8 +1,9 @@
 <script setup lang="ts">
-import TaskFeature from "@/features/todo/tasks/TaskFeature.vue";
+import TasksFeature from "@/features/todo/tasks/TasksFeature.vue";
+
 
 </script>
 
 <template>
-  <TaskFeature />
+  <TasksFeature />
 </template>

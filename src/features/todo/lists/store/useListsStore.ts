@@ -1,8 +1,8 @@
-import { ref } from 'vue';
+import { defineStore } from "pinia";
+import { ref } from "vue";
 
-import { defineStore } from 'pinia';
 
-import { useListsRequests } from '../api/useListsRequest';
+import { useListsRequests } from "../api/useListsRequest";
 
 export interface ListsParams {
   limit?: number;
@@ -27,7 +27,7 @@ export const useListsStore = defineStore("lists", () => {
     params: () => currentParams.value,
     onSuccess: () => {
       listsData.value = data.value?.data || [];
-    }
+    },
   });
 
   const fetchFilteredLists = async (newParams: Partial<typeof currentParams.value> = {}) => {

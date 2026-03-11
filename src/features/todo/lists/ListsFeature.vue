@@ -1,30 +1,31 @@
 <script setup lang="ts">
+
+
+import { useDebounceFn } from "@vueuse/core";
 import {
   computed,
   ref,
   watch,
-} from 'vue';
-
-import { useI18n } from 'vue-i18n';
+} from "vue";
+import { useI18n } from "vue-i18n";
 import {
   useRoute,
   useRouter,
-} from 'vue-router';
+} from "vue-router";
 
-import { SortOption } from '@/shared/types';
-import VButton from '@/shared/ui/common/VButton.vue';
-import VLoader from '@/shared/ui/common/VLoader.vue';
-import VTab from '@/shared/ui/common/VTab.vue';
-import VEmptyState from '@/shared/ui/EmptyState.vue';
-import { useDebounceFn } from '@vueuse/core';
+import { ListData } from "../types";
+import DeleteListModal from "./components/DeleteListModal.vue";
+import ListFormModal from "./components/ListFormModal.vue";
+import ListItem from "./components/ListItem.vue";
+import ListsToolbar from "./components/ListsToolbar.vue";
+import UsersListItem from "./components/UsersListItem.vue";
+import { useListsStore } from "./store/useListsStore";
 
-import { ListData } from '../types';
-import DeleteListModal from './components/DeleteListModal.vue';
-import ListFormModal from './components/ListFormModal.vue';
-import ListItem from './components/ListItem.vue';
-import ListsToolbar from './components/ListsToolbar.vue';
-import UsersListItem from './components/UsersListItem.vue';
-import { useListsStore } from './store/useListsStore';
+import { SortOption } from "@/shared/types";
+import VEmptyState from "@/shared/ui/EmptyState.vue";
+import VButton from "@/shared/ui/common/VButton.vue";
+import VLoader from "@/shared/ui/common/VLoader.vue";
+import VTab from "@/shared/ui/common/VTab.vue";
 
 const { t } = useI18n();
 

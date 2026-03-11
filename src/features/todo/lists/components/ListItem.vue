@@ -1,14 +1,15 @@
 <script setup lang="ts">
-import { useI18n } from 'vue-i18n';
+import { useI18n } from "vue-i18n";
 
-import { Actions } from '@/shared/types';
-import { RouteNames } from '@/shared/types/routeNames';
-import VDropdown from '@/shared/ui/common/dropdown/VDropdown.vue';
-import VButton from '@/shared/ui/common/VButton.vue';
-import VContainer from '@/shared/ui/common/VContainer.vue';
-import { capitalizeFirstLetter } from '@/shared/utils';
+import { ListData } from "../../types";
 
-import { ListData } from '../../types';
+import { Actions } from "@/shared/types";
+import { RouteNames } from "@/shared/types/routeNames";
+import VButton from "@/shared/ui/common/VButton.vue";
+import VContainer from "@/shared/ui/common/VContainer.vue";
+import VDropdown from "@/shared/ui/common/dropdown/VDropdown.vue";
+import { capitalizeFirstLetter } from "@/shared/utils";
+
 
 const { data, actions } = defineProps<{
   data: ListData;

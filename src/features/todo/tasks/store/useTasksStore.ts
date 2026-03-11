@@ -1,29 +1,25 @@
-import { ref } from 'vue';
+import { defineStore } from "pinia";
+import { ref } from "vue";
 
-import { defineStore } from 'pinia';
-
-import { TasksResponse } from '../../types';
-import { useTasksRequest } from '../api/useTasksRequest';
+import { useTasksRequest } from "../api/useTasksRequest";
 
 export const useTasksStore = defineStore("tasks", () => {
 
-    const tasksData = ref<TasksResponse | null>(null);
-    const currentListId = ref<string | null>(null);
-    
-    const { getAllTasks } = useTasksRequest();
-    
-    const { execute, data, loading } = getAllTasks(() => currentListId.value, {
-        onSuccess: () => {
-            tasksData.value = data.value || null;
-            console.log("tasks", data.value);
-        },
-    });
+  const currentListId = ref<string | null>(null);
 
-    const fetchTasksForList = async (listId: string) => {
-        currentListId.value = listId;
-        await execute();
-    };
+  const { getAllTasks } = useTasksRequest();
 
-    return { tasksData, loading, fetchTasksForList };
-    
-})
+  const {
+    execute,
+    data: tasksData,
+    loading: fetchTaskLoading,
+  } = getAllTasks(() => currentListId.value);
+
+  const fetchTasksForList = async (listId: string) => {
+    currentListId.value = listId;
+    await execute();
+  };
+
+  return { tasksData, fetchTaskLoading, fetchTasksForList };
+
+});
