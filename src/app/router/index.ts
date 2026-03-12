@@ -5,7 +5,6 @@ import {
   RouteRecordRaw,
 } from "vue-router";
 
-
 import authRoutes from "./auth";
 import { guards } from "./guards";
 

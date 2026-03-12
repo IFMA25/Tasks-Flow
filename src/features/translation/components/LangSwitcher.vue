@@ -30,15 +30,12 @@ const currentLangDisplay = computed({
 </script>
 
 <template>
-  <div data-theme="dark">
-    <VSelect
-      id="language-switcher"
-      v-model="currentLangDisplay"
-      :options="localeOptions"
-      label="label"
-      track-by="value"
-      :close-on-select="true"
-      class="min-w-[4.375rem]"
-    />
-  </div>
+  <VSelect
+    id="language-switcher"
+    v-model="currentLangDisplay"
+    :options="localeOptions"
+    label="label"
+    track-by="value"
+    :close-on-select="true"
+  />
 </template>

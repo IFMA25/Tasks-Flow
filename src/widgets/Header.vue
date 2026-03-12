@@ -3,6 +3,8 @@ import { computed } from "vue";
 import { useI18n } from "vue-i18n";
 import { useRoute } from "vue-router";
 
+import ThemeToggle from "@/features/theme/components/ThemeToggle.vue";
+import LangSwitcher from "@/features/translation/components/LangSwitcher.vue";
 import VTitle from "@/shared/ui/common/VTitle.vue";
 
 const route = useRoute();
@@ -19,7 +21,7 @@ const title = computed(() => {
 
 <template>
   <div class="bg-border-gradient p-[2px] rounded-xl">
-    <div class="flex items-center w-full h-full bg-bgSecondary px-3 py-4 rounded-[10px] p-4">
+    <div class="flex items-center w-full h-full bg-bgSecondary p-3 rounded-[10px] p-4">
       <div
         v-if="!route.query.id"
         class="flex-1 min-w-0"
@@ -31,7 +33,11 @@ const title = computed(() => {
         />
         <div id="header-content" />
       </div>
-      <div id="header-actions" />
+      <div class="flex gap-2">
+        <ThemeToggle />
+        <LangSwitcher />
+        <div id="header-actions" />
+      </div>
     </div>
   </div>
 </template>

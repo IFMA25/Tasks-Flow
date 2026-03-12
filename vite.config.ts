@@ -16,7 +16,22 @@ export default ({mode}: any) => {
         base: "/ToDoList-Vue/",
         plugins: [
             vue(),
-            svgLoader(),
+            svgLoader({
+                svgoConfig: {
+                    plugins: [
+                    {
+                        name: 'preset-default',
+                        params: {
+                        overrides: {
+                            removeViewBox: false,
+                        },
+                        },
+                    },
+                    'removeDimensions',
+                    'removeXMLProcInst',
+                    ]
+                }
+            }),
             VueI18nPlugin({
                 include: fileURLToPath(new URL('./src/shared/i18n/locales/**\/*.json', import.meta.url)),
                 runtimeOnly: false,

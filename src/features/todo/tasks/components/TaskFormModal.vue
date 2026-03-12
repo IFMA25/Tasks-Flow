@@ -14,7 +14,6 @@ import VInput from "@/shared/ui/common/VInput.vue";
 import VModal from "@/shared/ui/common/VModal.vue";
 import VSelect from "@/shared/ui/common/VSelect.vue";
 
-
 const { t } = useI18n();
 
 const priorityOptions = computed(() => [

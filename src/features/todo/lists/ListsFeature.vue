@@ -1,6 +1,4 @@
 <script setup lang="ts">
-
-
 import { useDebounceFn } from "@vueuse/core";
 import {
   computed,
@@ -28,6 +26,12 @@ import VLoader from "@/shared/ui/common/VLoader.vue";
 import VTab from "@/shared/ui/common/VTab.vue";
 
 const { t } = useI18n();
+const route = useRoute();
+const router = useRouter();
+const listsStore = useListsStore();
+
+const formModalRef = ref<InstanceType<typeof ListFormModal> | null>(null);
+const deleteModalRef = ref<InstanceType<typeof DeleteListModal> | null>(null);
 
 const actions = computed(() => [
   { key: "edit", label: t("lists.editList") },
@@ -47,9 +51,6 @@ const tabs = computed(() => [
 const modelSearch = ref<string>("");
 const activeSortKey = ref<string>(sortOptions.value[0].key);
 
-const route = useRoute();
-const router = useRouter();
-
 const selectedSort = computed({
   get: () => sortOptions.value
     .find(option => option.key === activeSortKey.value)
@@ -58,7 +59,7 @@ const selectedSort = computed({
     activeSortKey.value = option.key;
   },
 });
-
+//onclick передалать - перевод! (emit)
 const activeTab = computed({
   get: () => {
     const tab = route.query.tab;
@@ -70,21 +71,12 @@ const activeTab = computed({
   },
 });
 
-const listsStore = useListsStore();
-
-const formModalRef = ref<InstanceType<typeof ListFormModal> | null>(null);
-const deleteModalRef = ref<InstanceType<typeof DeleteListModal> | null>(null);
-
 const handleAction = (list: ListData, action: string) => {
   if (action === "edit") {
     formModalRef.value?.open(list);
   } else if (action === "delete") {
     deleteModalRef.value?.open(list);
   }
-};
-
-const openCreateModal = () => {
-  formModalRef.value?.open();
 };
 
 const updateLists = () => {
@@ -119,7 +111,7 @@ watch(
       icon="icon-plus"
       variant="primary"
       :text="$t('lists.createListBtn')"
-      @click="openCreateModal()"
+      @click="formModalRef?.open"
     />
   </Teleport>
   <ListFormModal ref="formModalRef" />
@@ -139,7 +131,7 @@ watch(
   </div>
   <div
     v-if="listsStore.listsData.length"
-    class="relative min-h-96 grid grid-cols-[repeat(auto-fill,minmax(320px,1fr))] gap-6"
+    class="relative grid grid-cols-[repeat(auto-fill,minmax(320px,1fr))] gap-6"
   >
     <Transition
       enter-active-class="transition-opacity duration-300"

@@ -19,10 +19,9 @@ export default {
               88: '22rem',
           },
           backgroundImage: {
-            switch: "var(--color-switchBorder)",
-            thumb: "var(--color-thumbBg)",
+            switch: "var(--color-bgGradient)",
+            thumb: "var(--color-themeThumb)",
             sidebarOverlay: "var(--color-sidebarOverlay)",
-            bgGradient: "var(--color-bgGradient)",
             authBg: "url('@/shared/assets/bg/bg-1.png')",
             'border-gradient': 'linear-gradient(to right, #3E0DA8, #5F86EF)',
           },
@@ -39,6 +38,14 @@ export default {
            dropShadow: {
             btnHover: '0 0 7px #1F5AFF',
             tabHover: '0 0 4px #1F5AFF',
+            glow: [
+              '0 0 1.26px currentColor',
+              '0 0 2.52px currentColor'
+            ],
+            'glow-white': [
+              '0 0 1.26px rgba(255, 255, 255, 1)',
+              '0 0 2.52px rgba(255, 255, 255, 1)'
+            ]
           },
           keyframes: {
             shimmer: {
@@ -55,7 +62,7 @@ export default {
     createThemes({
       light: {
         'activeBtn': '#4B5BFF',
-        'bgGradient': 'linear-gradient(180deg, #1E004C66 0%, #000CF066 100%)',
+        'bgGradient': 'linear-gradient(#422CD0, #7592FF)',
         'base': '#FFFFFF',
         'bgBase': "#F9FAFB",
         'bgSecondary': '#FFFFFF',
@@ -83,6 +90,8 @@ export default {
         'secondaryText': '#A6ADCF',
         'subtle': '#F0F1F3',
         'toggle': '#283F78',
+        'themeSwitch': '#D3E0FC',
+        'themeThumb': "url('@/shared/assets/bg/thumb-light.png')",
         'surface': '#C6D3F4',
         'warning': '#F59E0B',
         'skeletonBase': '#E2E8F0',
@@ -99,6 +108,7 @@ export default {
       
       dark: {
         'activeBtn': '#4B5BFF',
+        'bgGradient': 'linear-gradient(#161C33, #183BC4)',
         'base': '#FFFFFF',
         'bgBase': "#0B0F1A",
         'bgSecondary': '#11162A',
@@ -122,6 +132,8 @@ export default {
         'secondary': '#A6ADCF',
         'secondaryText': '#A6ADCF',
         'subtle': '#1B2240',
+        'themeSwitch': '#4F5B9D',
+        'themeThumb': "url('@/shared/assets/bg/thumb-dark.png')",
         'toggle': '#C6D3F4',
         'surface': '#283F78',
         'warning': '#F59E0B',

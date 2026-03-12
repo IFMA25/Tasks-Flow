@@ -10,6 +10,7 @@ import VContainer from "@/shared/ui/common/VContainer.vue";
 import VDropdown from "@/shared/ui/common/dropdown/VDropdown.vue";
 import { capitalizeFirstLetter } from "@/shared/utils";
 
+const { t } = useI18n();
 
 const { data, actions } = defineProps<{
   data: ListData;
@@ -17,15 +18,13 @@ const { data, actions } = defineProps<{
 }>();
 
 const emit = defineEmits(["action"]);
-
-const { t } = useI18n();
 </script>
 
 <template>
   <VContainer
     icon="circle"
     :color-icon="data.hexColor"
-    class=" flex flex-col gap-4 max-h-[8rem]"
+    class=" flex flex-col gap-4"
   >
     <template #title>
       <VButton

@@ -20,8 +20,6 @@ const open = (list: ListData) => {
   openModal();
 };
 
-defineExpose({ open });
-
 const { execute, loading } = deleteList(
   () => selectedList.value?.id,
   {
@@ -31,6 +29,8 @@ const { execute, loading } = deleteList(
     },
   },
 );
+
+defineExpose({ open });
 </script>
 
 <template>

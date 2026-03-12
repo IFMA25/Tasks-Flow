@@ -25,8 +25,6 @@ const open = (list?: ListData) => {
   openModal();
 };
 
-defineExpose({ open });
-
 const listsForm = useListForm(selectedList, { name, color: selectedColor });
 
 const onSubmit = async () => {
@@ -35,6 +33,8 @@ const onSubmit = async () => {
     close();
   }
 };
+
+defineExpose({ open });
 </script>
 
 <template>

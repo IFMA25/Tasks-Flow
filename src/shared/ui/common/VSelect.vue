@@ -44,13 +44,12 @@ const model = defineModel<Option | null>();
 const closeOnSelectComputed = computed(() =>
   closeOnSelectProp ?? !multiple,
 );
-
-
 </script>
 
 <template>
   <div class="flex gap-2 items-center text-[1rem] leading-6 text-primary">
     <label
+      v-if="labelText"
       :for="id"
       class="whitespace-nowrap"
     >{{ labelText }}</label>
@@ -89,7 +88,7 @@ const closeOnSelectComputed = computed(() =>
 
 <style scoped>
 :deep(.multiselect) {
-  @apply text-primary;
+  @apply text-primary ;
   width: fit-content;
 }
 
@@ -98,7 +97,7 @@ const closeOnSelectComputed = computed(() =>
 }
 
 :deep(.multiselect__tags) {
-  @apply min-h-8 border-2 border-default rounded-lg py-[0.5rem] pl-[0.625rem]
+  @apply min-h-8 border-2 border-default rounded-lg py-2 pl-[0.625rem]
   pr-[2.4rem] focus:outline-none transition-colors duration-300
   ease-in-out text-primary bg-secondaryBg;
 }
@@ -109,7 +108,7 @@ const closeOnSelectComputed = computed(() =>
 
 :deep(.multiselect__single),
 :deep(.multiselect__placeholder) {
-  @apply m-0 p-0 bg-transparent placeholder-disabled;
+  @apply m-0 p-0 bg-transparent placeholder-disabled align-middle;
 }
 
 :deep(.multiselect__content-wrapper) {

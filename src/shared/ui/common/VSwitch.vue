@@ -39,8 +39,8 @@ const variantStyles = computed(() => {
     defaultSwitchColor = "bg-elevated border-subtle";
   }
 
-  const themeBaseThumb = "w-[22px] h-[22px] bg-thumb";
-  const themeBaseSwitch = "w-[64px] h-[26px] bg-switch bg-cover bg-center";
+  const themeBaseThumb = "w-7 h-7 bg-thumb bg-default";
+  const themeBaseSwitch = "w-[3.75rem] h-9 bg-switch bg-cover bg-center border-2 border-themeSwitch";
 
   return {
     default: {
@@ -81,9 +81,10 @@ const thumbPositionClass = computed(() => {
       </span>
     </slot>
     <div
-      class="relative rounded-full transition-all duration-300 shrink-0"
+      class="relative rounded-full transition-all duration-300"
       :class="currentStyle.switch"
     >
+      <slot />
       <div
         class="absolute top-1/2 -translate-y-1/2 rounded-full transition-all
         duration-300 flex items-center justify-center"

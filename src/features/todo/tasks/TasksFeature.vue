@@ -13,7 +13,6 @@ import { useTasksStore } from "./store/useTasksStore";
 import VButton from "@/shared/ui/common/VButton.vue";
 import VLoader from "@/shared/ui/common/VLoader.vue";
 
-
 const route = useRoute();
 const tasksStore = useTasksStore();
 
