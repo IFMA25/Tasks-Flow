@@ -90,3 +90,12 @@ export interface RequestBodyTaskData {
 export interface RequestCompletedTask {
   completed: boolean;
 }
+
+
+export interface ListsParams {
+  limit: number;
+  q: string;
+  sort: string;
+  order: string;
+  isOwn: boolean;
+}

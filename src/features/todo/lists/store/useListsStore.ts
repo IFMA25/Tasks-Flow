@@ -1,39 +1,16 @@
-import { defineStore } from "pinia";
-import { ref } from "vue";
+import { defineStore } from 'pinia';
 
-
-import { useListsRequests } from "../api/useListsRequest";
-
-export interface ListsParams {
-  limit?: number;
-  q?: string;
-  sort?: string;
-  order?: string;
-  isOwn?: boolean;
-}
+import { useListsRequests } from '../api/useListsRequest';
 
 export const useListsStore = defineStore("lists", () => {
-  const listsData = ref([]);
 
   const { getAllLists } = useListsRequests();
 
-  const currentParams = ref<ListsParams>({ limit: 20 });
-
   const {
-    data,
+    execute: fetchLists,
     loading: isLoading,
-    execute,
-  } = getAllLists({
-    params: () => currentParams.value,
-    onSuccess: () => {
-      listsData.value = data.value?.data || [];
-    },
-  });
+    data: dataLists,
+  } = getAllLists();
 
-  const fetchFilteredLists = async (newParams: Partial<typeof currentParams.value> = {}) => {
-    currentParams.value = { ...currentParams.value, ...newParams };
-    await execute();
-  };
-
-  return { listsData, fetchFilteredLists, isLoading };
+  return { dataLists, fetchLists, isLoading };
 });

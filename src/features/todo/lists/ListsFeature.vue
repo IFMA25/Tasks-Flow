@@ -1,29 +1,33 @@
 <script setup lang="ts">
-import { useDebounceFn } from "@vueuse/core";
 import {
   computed,
   ref,
   watch,
-} from "vue";
-import { useI18n } from "vue-i18n";
+} from 'vue';
+
+import { useI18n } from 'vue-i18n';
 import {
   useRoute,
   useRouter,
-} from "vue-router";
+} from 'vue-router';
 
-import { ListData } from "../types";
-import DeleteListModal from "./components/DeleteListModal.vue";
-import ListFormModal from "./components/ListFormModal.vue";
-import ListItem from "./components/ListItem.vue";
-import ListsToolbar from "./components/ListsToolbar.vue";
-import UsersListItem from "./components/UsersListItem.vue";
-import { useListsStore } from "./store/useListsStore";
+import { SortOption } from '@/shared/types';
+import VButton from '@/shared/ui/common/VButton.vue';
+import VLoader from '@/shared/ui/common/VLoader.vue';
+import VTab from '@/shared/ui/common/VTab.vue';
+import VEmptyState from '@/shared/ui/EmptyState.vue';
+import { useDebounceFn } from '@vueuse/core';
 
-import { SortOption } from "@/shared/types";
-import VEmptyState from "@/shared/ui/EmptyState.vue";
-import VButton from "@/shared/ui/common/VButton.vue";
-import VLoader from "@/shared/ui/common/VLoader.vue";
-import VTab from "@/shared/ui/common/VTab.vue";
+import {
+  ListData,
+  ListsParams,
+} from '../types';
+import DeleteListModal from './components/DeleteListModal.vue';
+import ListFormModal from './components/ListFormModal.vue';
+import ListItem from './components/ListItem.vue';
+import ListsToolbar from './components/ListsToolbar.vue';
+import UsersListItem from './components/UsersListItem.vue';
+import { useListsStore } from './store/useListsStore';
 
 const { t } = useI18n();
 const route = useRoute();
@@ -32,6 +36,8 @@ const listsStore = useListsStore();
 
 const formModalRef = ref<InstanceType<typeof ListFormModal> | null>(null);
 const deleteModalRef = ref<InstanceType<typeof DeleteListModal> | null>(null);
+
+const limit = 20;
 
 const actions = computed(() => [
   { key: "edit", label: t("lists.editList") },
@@ -79,13 +85,16 @@ const handleAction = (list: ListData, action: string) => {
   }
 };
 
+const getFetchParams = computed(() => ({
+  limit: listsStore.dataLists?.pagination.limit,
+  q: modelSearch.value || undefined,
+  sort: selectedSort.value.params.sort,
+  order: selectedSort.value.params.order,
+  isOwn: activeTab.value === "myLists" ? true : undefined,
+}));
+
 const updateLists = () => {
-  listsStore.fetchFilteredLists({
-    q: modelSearch.value || undefined,
-    sort: selectedSort.value.params.sort,
-    order: selectedSort.value.params.order,
-    isOwn: activeTab.value === "myLists" ? true : undefined,
-  });
+  listsStore.fetchLists({params: getFetchParams});
 };
 
 const onSearchInput = useDebounceFn(() => {
@@ -130,7 +139,7 @@ watch(
     />
   </div>
   <div
-    v-if="listsStore.listsData.length"
+    v-if="listsStore.dataLists?.data.length"
     class="relative grid grid-cols-[repeat(auto-fill,minmax(320px,1fr))] gap-6"
   >
     <Transition
@@ -150,7 +159,7 @@ watch(
       </div>
     </Transition>
     <template
-      v-for="data in listsStore.listsData"
+      v-for="data in listsStore.dataLists?.data"
       :key="data.id"
     >
       <ListItem
@@ -166,7 +175,7 @@ watch(
     </template>
   </div>
   <div
-    v-else-if="!listsStore.isLoading && !listsStore.listsData.length"
+    v-else-if="!listsStore.isLoading && !listsStore.dataLists?.data.length"
     class="py-16 px-4"
   >
     <VEmptyState
