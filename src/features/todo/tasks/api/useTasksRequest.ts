@@ -26,10 +26,10 @@ export const useTasksRequest = () => {
   };
 
   const updateTask = (
-    listId: MaybeRefOrGetter<string>,
+    taskId: MaybeRefOrGetter<string>,
     options?: UseApiOptions<TasksResponse, RequestBodyTaskData>,
   ) => {
-    return useApiPatch(() => `/tasks/lists/${toValue(listId)}`, options);
+    return useApiPatch(() => `/tasks/${toValue(taskId)}`, options);
   };
 
   const createNewTask = (
@@ -40,12 +40,18 @@ export const useTasksRequest = () => {
   };
 
   const deleteTask = (
-    listId: MaybeRefOrGetter<string>,
+    taskId: MaybeRefOrGetter<string>,
     options?: UseApiOptions<TasksResponse>,
   ) => {
-    return useApiDelete(() => `/tasks/${toValue(listId)}`, options);
+    return useApiDelete(() => `/tasks/${toValue(taskId)}`, options);
   };
 
+  const completeTask = (
+    taskId: MaybeRefOrGetter<string>,
+    options?: UseApiOptions<TasksResponse>,
+  ) => {
+    return useApiPatch(() => `/tasks/${toValue(taskId)}/complete`, options);
+  };
 
-  return { getAllTasks, updateTask, createNewTask, deleteTask };
+  return { getAllTasks, updateTask, createNewTask, deleteTask, completeTask };
 };

@@ -80,7 +80,7 @@ const inputClass = computed(() => {
   >
     <p
       v-if="props.label"
-      class="text-sm leading-[1.2] font-medium mb-1.5"
+      class="leading-[1.2] font-medium mb-1.5"
       :class="hasError ? 'text-danger' : ''"
     >{{ props.label }}</p>
     <div class="relative">

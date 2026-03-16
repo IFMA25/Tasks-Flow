@@ -61,7 +61,7 @@ watch(
     <VButton
       type="submit"
       variant="primary"
-      :text="$t('userInfo.saveBtnText')"
+      :text="$t('saveBtnText')"
       :loading="loading"
       :disabled="loading || !isChanged"
     />

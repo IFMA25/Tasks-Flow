@@ -1,7 +1,10 @@
+import useVuelidate from "@vuelidate/core";
+import { required } from "@vuelidate/validators";
 import {
   computed,
   Ref,
 } from "vue";
+import { useI18n } from "vue-i18n";
 
 import {
   RequestBodyTaskData,
@@ -11,86 +14,101 @@ import { useTasksRequest } from "../api/useTasksRequest";
 import { useTasksStore } from "../store/useTasksStore";
 import { mapDueDateToISO } from "../utils";
 
+import { createValidationRules, parseTags } from "@/shared/utils";
+
+interface FormData {
+  taskName: Ref<string>;
+  tags: Ref<string>;
+  priority: Ref<string>;
+  dueDate: Ref<string>;
+}
+
 export const useTaskForm = (
   listId: Ref<string>,
   selectedTask: Ref<TaskData | null>,
-  formData: {
-    taskName: Ref<string>;
-    tags: Ref<string[]>;
-    priority: Ref<string>;
-    dueDate: Ref<string>;
-  },
+  formData: FormData,
 ) => {
 
-  const { createNewTask } = useTasksRequest();
+  const { t } = useI18n();
+  const rules = createValidationRules(t);
 
+  const v$ = useVuelidate(
+    {
+      taskName: { required },
+      tags: { maxTags: rules.maxTags(3) },
+    },
+    { taskName: formData.taskName, tags: formData.tags },
+  );
+
+  const { createNewTask, updateTask } = useTasksRequest();
   const tasksStore = useTasksStore();
 
   const submitData = computed<RequestBodyTaskData>(() => ({
-    title: formData.taskName.value.trim(),
-    tags: formData.tags.value ? formData.tags.value : [],
+    title: formData.taskName.value,
+    tags: parseTags(formData.tags?.value),
     priority: formData.priority.value || "medium",
     dueDate: mapDueDateToISO(formData.dueDate.value),
-  // description: "",
-  // longDescription: "",
-  // status: "todo",
-  // deadline: "",
-  // isStarred: false,
-  // isWeeklyGoal: false,
-  // order: 1
   }));
 
-  const { execute: createNewTaskExecute } = createNewTask(() => listId.value, {
-    data: submitData,
-    onSuccess: () => {
-      tasksStore.fetchTasksForList(listId.value);
-    },
+  const {
+    execute: createNewTaskExecute,
+    loading: createNewTaskLoading,
+  }
+    = createNewTask(() => listId.value, {
+      data: submitData,
+      onSuccess: () => {
+        tasksStore.fetchTasksForList(listId.value);
+      },
+    });
+
+  const { execute: updateSelectedTaskExecute, loading: updateTaskLoading } = updateTask(
+    () => selectedTask.value?.id, {
+      data: submitData,
+      onSuccess: () => {
+        tasksStore.fetchTasksForList(listId.value);
+      },
+    });
+
+  const isDataChanged = computed(() => {
+    if (!selectedTask.value) return true;
+
+    const isNameChanged = formData.taskName.value !== selectedTask.value.title;
+    const isTagsChanged = formData.tags.value !== (selectedTask.value.tags?.join(", ") || "");
+    const isPriorityChanged = formData.priority.value !== (selectedTask.value.priority ?? "low");
+    const isDeadlineChanged = formData.dueDate.value !== (selectedTask.value.deadline ?? "noDate");
+
+    return isNameChanged || isTagsChanged || isPriorityChanged || isDeadlineChanged;
   });
 
-  // const { execute: updateSelectedTaskExecute, loading: updateTaskLoading } = updateTask(
-  //   () => selectedTask.value?.id, {
-  //     data: submitData,
-  //     onSuccess: () => {
-  //       formData.name.value = "";
-  //       formData.color.value = colorsList[0];
-  //       listsStore.fetchFilteredLists();
-  //     },
-  //   });
-
-  // const isValid = computed(() => !!formData.name.value);
-
-  // const isDataChanged = computed(() => {
-  //   if (!selectedList.value) {
-  //     return true;
-  //   }
-
-  //   const isNameChanged = formData.name.value !== selectedList.value.title;
-  //   const isColorChanged = formData.color.value !== (selectedList.value.hexColor || colorsList[0]);
-  //   return isNameChanged || isColorChanged;
-  // });
-
-  // const isSubmitDisabled = computed(() => !(isValid.value && isDataChanged.value));
+  const isSubmitDisabled = computed(() => !isDataChanged.value || v$.value.$invalid);
 
   const handleSubmit = async () => {
-    // if (isSubmitDisabled.value) return;
+    await v$.value.$validate();
+    if (v$.value.$invalid) return false;
 
     try {
       if (selectedTask.value?.id) {
-        // await updateSelectedTaskExecute();
+        await updateSelectedTaskExecute();
       } else {
         await createNewTaskExecute();
       }
       return true;
-    } catch (error) {
+    } catch {
       return false;
     }
   };
 
-  // const isLoading = computed(() => createTaskLoading.value || updateTaskLoading.value);
+  const resetValidation = () => v$.value.$reset();
+
+  const isLoading = computed(() => updateTaskLoading.value || createNewTaskLoading.value);
 
   return {
+    v$,
     handleSubmit,
-    // isSubmitDisabled,
-    // isLoading,
+    isDataChanged,
+    isSubmitDisabled,
+    resetValidation,
+    isLoading,
   };
 };
+

@@ -52,7 +52,7 @@ const emit = defineEmits(["action"]);
               @click="toggle"
             />
           </template>
-          <ul class="cursor-pointer flex flex-col gap-2">
+          <ul class="cursor-pointer flex flex-col gap-2 py-3 px-5 ">
             <li
               v-for="action in actions"
               :key="action.key"

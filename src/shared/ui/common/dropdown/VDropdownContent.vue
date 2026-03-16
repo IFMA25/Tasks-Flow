@@ -13,7 +13,8 @@ const props = withDefaults(defineProps<{
 });
 
 const placeVariant = {
-  bottom: "top-full right-3",
+  bottom: "top-full right-0",
+  bottomRight: "top-full left-[-1rem]",
   top: "bottom-full right-3",
 };
 
@@ -28,7 +29,7 @@ const propContentClass = computed(() => {
     <div
       v-if="props.isOpen"
       class="absolute text-nowrap min-w-40 border border-default bg-bgBase
-        shadow-dropdown rounded py-3 px-5 text-primary text-base z-10
+        shadow-dropdown rounded text-primary text-base z-10
         translate-all duration-300"
       :class="propContentClass"
       v-bind="$attrs"

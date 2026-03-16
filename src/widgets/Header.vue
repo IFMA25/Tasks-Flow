@@ -7,8 +7,8 @@ import ThemeToggle from "@/features/theme/components/ThemeToggle.vue";
 import LangSwitcher from "@/features/translation/components/LangSwitcher.vue";
 import VTitle from "@/shared/ui/common/VTitle.vue";
 
-const route = useRoute();
 const { t } = useI18n();
+const route = useRoute();
 
 const title = computed(() => {
   const metaTitle = route.meta.titleHeader;
@@ -33,7 +33,7 @@ const title = computed(() => {
         />
         <div id="header-content" />
       </div>
-      <div class="flex gap-2">
+      <div class="flex items-center gap-2">
         <ThemeToggle />
         <LangSwitcher />
         <div id="header-actions" />

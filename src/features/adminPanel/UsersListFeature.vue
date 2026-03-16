@@ -14,9 +14,9 @@ import {
 } from "./api/useAdminPanelRequests";
 import UsersTableToolbar from "./components/UsersTableToolbar.vue";
 import { formatDate } from "./utils";
-import LangSwitcher from "../translation/components/LangSwitcher.vue";
 
 import { useModal } from "@/shared/composables/useModal";
+import { useSelectedOption } from "@/shared/composables/useSelectedOption";
 import {
   RoleOption,
   SortOption,
@@ -62,23 +62,24 @@ const selectedUser = ref<User | null>(null);
 const activeRoleKey = ref<string>(roleOptions.value[0].value);
 const activeSortKey = ref<string>(sortOptions.value[0].key);
 
-const selectedRole = computed({
-  get: () => roleOptions.value
-    .find(option => option.value === activeRoleKey.value)
-      || roleOptions.value[0],
-  set: (option: RoleOption) => {
-    activeRoleKey.value = option.value;
+const selectedRole = useSelectedOption<RoleOption>(
+  roleOptions,
+  activeRoleKey,
+  (value) => {
+    activeRoleKey.value = String(value);
   },
-});
+  "value",
+);
 
-const selectedSort = computed({
-  get: () => sortOptions.value
-    .find(option => option.key === activeSortKey.value)
-      || sortOptions.value[0],
-  set: (option: SortOption) => {
-    activeSortKey.value = option.key;
+const selectedSort = useSelectedOption<SortOption>(
+  sortOptions,
+  activeSortKey,
+  (value) => {
+    activeSortKey.value = String(value);
   },
-});
+  "key",
+);
+
 const modelSearch = ref<string>("");
 const debouncedSearch = refDebounced(modelSearch, 800);
 const currentLimit = ref<number>(20);
@@ -150,7 +151,6 @@ const handelAction = (user: User, action: string) => {
       />
     </template>
   </VModal>
-  <LangSwitcher class="absolute top-4 right-6" />
   <div class="h-full flex flex-col gap-6">
     <VTitle :text="$t('usersList.title')" />
     <VTable
@@ -197,7 +197,7 @@ const handelAction = (user: User, action: string) => {
               @click="toggle"
             />
           </template>
-          <ul class="cursor-pointer flex flex-col gap-2">
+          <ul class="cursor-pointer flex flex-col gap-2 py-3 px-5">
             <li
               v-for="action in actions"
               :key="action.key"

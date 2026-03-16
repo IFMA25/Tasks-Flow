@@ -4,13 +4,10 @@ import { computed } from "vue";
 import {
   useLanguageStore,
 } from "@/features/translation/store/useLanguageStore";
+import { useSelectedOption } from "@/shared/composables/useSelectedOption";
 import { supportedLocales } from "@/shared/config/locale";
+import type { Option } from "@/shared/types";
 import VSelect from "@/shared/ui/common/VSelect.vue";
-
-interface Option {
-  label: string;
-  value: string;
-}
 
 const language = useLanguageStore();
 
@@ -21,12 +18,14 @@ const localeOptions = computed(
   })));
 
 
-const currentLangDisplay = computed({
-  get: () => localeOptions.value.find((option: Option) => option.value === language.currentLang),
-  set: (option: Option) => {
-    language.setLanguage(option.value);
+const currentLangDisplay = useSelectedOption<Option>(
+  localeOptions,
+  () => language.currentLang,
+  (val: string) => {
+    language.setLanguage(val);
   },
-});
+  "value",
+);
 </script>
 
 <template>

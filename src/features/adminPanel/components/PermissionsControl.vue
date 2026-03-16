@@ -1,12 +1,11 @@
 <script setup lang="ts">
-import { computed } from 'vue';
+import { computed } from "vue";
+import { useI18n } from "vue-i18n";
 
-import { useI18n } from 'vue-i18n';
-
-import { RoleOption } from '@/shared/types';
-import VCheckbox from '@/shared/ui/common/VCheckbox.vue';
-import VSelect from '@/shared/ui/common/VSelect.vue';
-import VSkeleton from '@/shared/ui/common/VSkeleton.vue';
+import { RoleOption } from "@/shared/types";
+import VCheckbox from "@/shared/ui/common/VCheckbox.vue";
+import VSelect from "@/shared/ui/common/VSelect.vue";
+import VSkeleton from "@/shared/ui/common/VSkeleton.vue";
 
 const {
   roleOptions,
@@ -65,7 +64,7 @@ const labelCheckbox = computed(() =>
     </template>
     <div
       v-else
-      class="min-w-[20%]"
+      class="w-[35%]"
     >
       <VCheckbox
         width="w-5"

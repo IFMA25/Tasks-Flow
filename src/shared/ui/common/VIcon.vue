@@ -1,11 +1,11 @@
 <script setup lang="ts">
-import type { Component } from 'vue';
+import type { Component } from "vue";
 import {
   computed,
   defineAsyncComponent,
-} from 'vue';
+} from "vue";
 
-const {type, size='w-5 h-5'} = defineProps<{
+const { type, size="w-5 h-5" } = defineProps<{
   type: string;
   size?: string;
 }>();

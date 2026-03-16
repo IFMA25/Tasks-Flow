@@ -71,7 +71,7 @@ defineExpose({ open });
         @click="close()"
       />
       <VButton
-        :text="$t('lists.listFormModal.saveBtn')"
+        :text="$t('saveBtnText')"
         variant="outline"
         :disabled="listsForm.isSubmitDisabled.value"
         :loading="listsForm.isLoading.value"

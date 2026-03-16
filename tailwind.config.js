@@ -89,6 +89,7 @@ export default {
         'secondary': '#475569',
         'secondaryText': '#A6ADCF',
         'subtle': '#F0F1F3',
+        "success": "#22C55E",
         'toggle': '#283F78',
         'themeSwitch': '#D3E0FC',
         'themeThumb': "url('@/shared/assets/bg/thumb-light.png')",

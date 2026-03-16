@@ -91,11 +91,15 @@ export interface RequestCompletedTask {
   completed: boolean;
 }
 
-
 export interface ListsParams {
   limit: number;
   q: string;
   sort: string;
   order: string;
   isOwn: boolean;
+}
+
+export interface UserListGroup {
+  owner: ListData["owner"];
+  lists: ListData[];
 }

@@ -1,15 +1,13 @@
 <script setup lang="ts">
-
-type TabValue = string;
 interface TabItem {
-  value: TabValue;
+  value: string;
   label: string;
   disabled?: boolean;
 }
 
 const { tabItems } = defineProps<{ tabItems: TabItem[] }>();
 
-const modelValue = defineModel<TabValue>({ required: true });
+const modelValue = defineModel<string>({ required: true });
 
 const handleTabClick = (tab: TabItem) => {
   if (tab.disabled || modelValue.value === tab.value) return;

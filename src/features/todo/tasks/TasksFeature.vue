@@ -6,19 +6,26 @@ import {
 } from "vue";
 import { useRoute } from "vue-router";
 
+import { TaskData } from "../types";
 import TaskFormModal from "./components/TaskFormModal.vue";
 import TasksList from "./components/TasksList.vue";
-import { useTasksStore } from "./store/useTasksStore";
+import { useTasksFeature } from "./composable/useTasksFeature";
 
+import { ActionKey } from "@/shared/types";
 import VButton from "@/shared/ui/common/VButton.vue";
-import VLoader from "@/shared/ui/common/VLoader.vue";
 
 const route = useRoute();
-const tasksStore = useTasksStore();
+const { tasksStore } = useTasksFeature();
 
-const listId = computed(() => route.params.listId as string);
+const listId = computed(() => String(route.params.listId));
 
 const formModalRef = ref<InstanceType<typeof TaskFormModal> | null>(null);
+// const deleteModalRef = ref<InstanceType<typeof DeleteListModal> | null>(null);
+
+function handleAction(task: TaskData, key: ActionKey) {
+  if (key === "edit") formModalRef.value?.open(listId.value, task);
+  // if (key === 'delete') deletingTask.value = task; // для модалки удаления
+}
 
 const openCreateModal = () => {
   formModalRef.value?.open(listId.value);
@@ -32,6 +39,14 @@ watchEffect(() => {
 
 <template>
   <TaskFormModal ref="formModalRef" />
+  <Teleport to="#header-content">
+    <VButton
+      to="/lists"
+      icon="chevron-left"
+      variant="navItem"
+      :text="$t('lists.lists')"
+    />
+  </Teleport>
   <Teleport
     to="#header-actions"
     defer
@@ -43,23 +58,8 @@ watchEffect(() => {
       @click="openCreateModal()"
     />
   </Teleport>
-  <div class="relative">
-    <Transition
-      enter-active-class="transition-opacity duration-300"
-      leave-active-class="transition-opacity duration-300"
-      enter-from-class="opacity-0"
-      leave-to-class="opacity-0"
-    >
-      <div
-        v-if="tasksStore.fetchTaskLoading"
-        class="absolute inset-0 z-20 flex items-center justify-center backdrop-blur-sm"
-      >
-        <VLoader
-          color="primaryDark"
-          size="h-[100px]"
-        />
-      </div>
-    </Transition>
-    <TasksList :tasks="tasksStore.tasksData?.data || []" />
-  </div>
+  <TasksList
+    :tasks="tasksStore.tasksData?.data || []"
+    @action="handleAction"
+  />
 </template>

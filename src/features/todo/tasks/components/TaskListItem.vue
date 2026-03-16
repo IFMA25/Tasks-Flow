@@ -1,79 +1,73 @@
 <script setup lang="ts">
 import { computed } from "vue";
+import { useI18n } from "vue-i18n";
 
 import { TaskData } from "../../types";
+import { formatDueDate } from "../utils";
 
+import { Action } from "@/shared/types";
+import VActionsDropdown from "@/shared/ui/VActionsDropdown.vue";
 import VCheckbox from "@/shared/ui/common/VCheckbox.vue";
-import VDropdown from "@/shared/ui/common/dropdown/VDropdown.vue";
 
 
-const props = defineProps<{
+const { t } = useI18n();
+
+const colorsPriority = {
+  low: "text-success before:bg-success",
+  medium: "text-warning before:bg-warning",
+  high: "text-danger before:bg-danger",
+};
+
+const actions = computed<Action[]>(() => [
+  { key: "edit", label: t("tasks.editTask") },
+  { key: "delete", label: t("tasks.deleteTask.title") },
+]);
+
+const { task } = defineProps<{
   task: TaskData;
 }>();
 
-// Обчислення стилів для Пріоритету (кольори з макета)
-const priorityStyle = computed(() => {
-  const map: Record<string, string> = {
-    low: "text-green-500 before:bg-green-500",
-    medium: "text-yellow-500 before:bg-yellow-500",
-    high: "text-red-500 before:bg-red-500",
-  };
-  return map[props.task.priority] || "text-gray-500 before:bg-gray-500";
-});
+const emit = defineEmits(["action", "statusChange"]);
+
+const priorityStyle = computed(() => colorsPriority[task.priority]);
 </script>
 
 <template>
-  <!--
-    GRID-СІТКА:
-    1. 24px - чекбокс
-    2. minmax(200px, 2fr) - назва (найширша колонка)
-    3. 100px - пріоритет
-    4. 120px - дедлайн
-    5. minmax(150px, 1fr) - теги (займають залишок простору)
-    6. 32px - кнопка "..."
-  -->
   <div
     class="grid grid-cols-[24px_minmax(200px,2fr)_100px_120px_minmax(150px,1fr)_32px]
-           gap-4 items-center py-4 border-b border-gray-100 hover:bg-gray-50 transition-colors"
-    :class="{ 'opacity-60 grayscale': task.status === 'completed' }"
+           gap-4 items-center border-b border-default pt-6"
   >
-    <!-- 1. Чекбокс -->
     <div class="flex items-center justify-center">
       <VCheckbox
         width="w-5"
         height="h-5"
-        :variant="task.status === 'completed' ? 'checked' : 'notChecked'"
-        :model-value="task.status === 'completed'"
+        variant="default"
+        :model-value="task.status === 'done'"
+        @update:model-value="(value) => emit('statusChange', task, value)"
       />
     </div>
-
-    <!-- 2. Назва -->
-    <div
-      class="font-medium text-gray-900 truncate"
-      :class="{ 'line-through text-gray-500': task.status === 'completed' }"
+    <p
+      class="font-medium text-primary"
     >
       {{ task.title }}
-    </div>
-
-    <!-- 3. Пріоритет (з крапкою перед текстом) -->
+    </p>
     <div
-      class="text-sm font-medium flex items-center gap-1.5
+      class="text-sm flex items-center gap-1.5
       capitalize before:content-[''] before:block before:w-1.5 before:h-1.5 before:rounded-full"
       :class="priorityStyle"
     >
       {{ task.priority }}
     </div>
-
-    <!-- 4. Дедлайн -->
-    <div class="text-sm text-gray-600">
-      <!-- Якщо overdue (протерміновано) - можна додати клас text-red-500 -->
-      <span :class="{'text-red-500 font-medium': task.deadline === 'Overdue'}">
-        {{ task.deadline }}
-      </span>
+    <div
+      class="text-sm leading-[1.3]"
+      :class="{'text-danger font-medium': task.deadline === 'Overdue'}"
+    >
+      {{ formatDueDate(task.dueDate) }}
     </div>
-
-    <!-- 5. Теги -->
-    <div class="text-sm text-gray-500 truncate flex items-center gap-1.5">
+    <div
+      class="flex items-center flex-wrap gap-1.5
+      text-sm font-medium text-secondary leading-[1.3] "
+    >
       <span
         v-for="(tag, index) in task.tags"
         :key="tag"
@@ -81,12 +75,17 @@ const priorityStyle = computed(() => {
         {{ tag }}
         <span
           v-if="index !== task.tags.length - 1"
-          class="text-gray-300"
         >•</span>
       </span>
     </div>
-    <div class="flex justify-end">
-      <VDropdown />
+    <div
+      v-if="task.status !== 'done'"
+      class="flex justify-end"
+    >
+      <VActionsDropdown
+        :actions="actions"
+        @action="(key) => emit('action', task, key)"
+      />
     </div>
   </div>
 </template>

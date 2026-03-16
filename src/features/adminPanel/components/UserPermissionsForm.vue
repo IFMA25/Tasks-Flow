@@ -157,7 +157,7 @@ watch(() => userData, (newUser) => {
       <VButton
         type="submit"
         variant="primary"
-        :text="$t('userInfo.saveBtnText')"
+        :text="$t('saveBtnText')"
         :loading="isUpdating"
         :disabled="!isDataChanged || isUpdating || loading"
       />

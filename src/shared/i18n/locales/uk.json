@@ -27,7 +27,8 @@
         "minLength": "Мінімум {min} символів",
         "hasUpperCase": "Повинно містити мінімум 1 велику літеру",
         "hasNumber": "Повинно містити мінімум 1 цифру",
-        "requiredTrimmed": "Поле не може бути порожнім"
+        "requiredTrimmed": "Поле не може бути порожнім",
+        "maxTags": "Максимум {max} тега"
     },
     "usersList": {
         "title": "Керування користувачами",
@@ -70,7 +71,6 @@
         "categoryTasks": "Дозволи завдань",
         "categoryUser": "Керування користувачами",
         "categoryAnalytics": "Аналітика та дашборд",
-        "saveBtnText": "Зберігти зміни",
         "since": "Зареєстрований",
         "saveSuccess": "Данні користувача успішно оновлені!",
         "userName": "Повне ім'я"
@@ -90,14 +90,7 @@
         "listFormModal": {
             "title": "Редагувати список",
             "labelName": "Назва списку",
-            "labelColor": "Колір списку",
-            "saveBtn": "Зберігти зміни"
-        },
-         "editListModal": {
-            "title": "Змінити список",
-            "labelName": "Назва списку",
-            "labelColor": "Колір списку",
-            "saveBtn": "Зберігти"
+            "labelColor": "Колір списку"
         },
         "cancel": "Скасувати",
         "tasks": "завдань",
@@ -132,8 +125,16 @@
                 "tomorrow": "Завтра",
                 "thisWeek": "Цей тиждень",
                 "nextWeek": "Наступний тиждень"
-            }
-        }
+            } 
+        },
+        "editTask": "Редагувати завдання",
+        "deleteTask": {
+            "title": "Видалити завдання",
+            "contentTitle": "Ви впевнені, що хочете видалити це завдання?",
+            "contentSubtitle": "Цю дію неможливо скасувати"
+        },
+        "pending": "В процесі",
+        "completed": "Виконано"
     },
     "filters": {
         "role": "Роль",
@@ -147,7 +148,6 @@
         "nameDesc": "Ім'я Z-A",
         "recentlyCreated": "Нещодавно створені",
         "recentlyUpdated": "Нещодавно оновлені"
-        }
-    
-
+        },
+        "saveBtnText": "Зберігти зміни"
 }

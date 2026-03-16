@@ -23,6 +23,14 @@ export const createValidationRules = (t: (key: string, params?: unknown) => stri
         return !!value;
       },
     ),
+    maxTags: (max: number) =>
+      helpers.withMessage(
+        () => t("validation.maxTags", { max }),
+        (value: string) => {
+          const tags = parseTags(value);
+          return tags.length <= max;
+        },
+      ),
   };
 };
 
@@ -35,4 +43,9 @@ export const capitalizeFirstLetter = (string: string) => {
     .filter((word) => word.length > 0)
     .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
     .join(" ");
+};
+
+export const parseTags = (value: string) => {
+  if (!value) return [];
+  return value.split(",").map((t) => t.trim()).filter(Boolean);
 };

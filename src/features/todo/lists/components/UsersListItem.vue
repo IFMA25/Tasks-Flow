@@ -1,8 +1,10 @@
 <script setup lang="ts">
 import { useI18n } from "vue-i18n";
+import { useRouter } from "vue-router";
 
-import { ListData } from "../../types";
+import { UserListGroup } from "../../types";
 
+import { RouteNames } from "@/shared/types/routeNames";
 import VButton from "@/shared/ui/common/VButton.vue";
 import VContainer from "@/shared/ui/common/VContainer.vue";
 import VIcon from "@/shared/ui/common/VIcon.vue";
@@ -11,12 +13,11 @@ import { capitalizeFirstLetter } from "@/shared/utils";
 
 
 const { data } = defineProps<{
-  data: ListData;
+  data: UserListGroup;
 }>();
 
-// const emit = defineEmits(["action"]);
-
 const { t } = useI18n();
+const router = useRouter();
 </script>
 
 <template>
@@ -34,36 +35,34 @@ const { t } = useI18n();
       </p>
     </div>
     <template #container-actions>
-      <div class="mt-2">
-        <VDropdown>
-          <template #trigger="{toggle}">
-            <VButton
-              :text="`${t('lists.lists')} (${data.totalTasks})`"
-              class="w-full text-primary leading-[1.3]"
-              @click="toggle"
-            >
-              <template #icon-end>
-                <VIcon
-                  type="chevron-down"
-                  class="text-secondary"
-                />
-              </template>
-            </VButton>
-          </template>
-          <!-- <ul class="cursor-pointer flex flex-col gap-2">
-              <li
-                v-for="action in actions"
-                :key="action.key"
-                :class="action.key === 'delete'
-                  ? 'text-danger hover:text-dangerHover'
-                  : 'hover:text-primaryBg'"
-                @click="emit('action', data, action.key)"
-              >
-                {{ capitalizeFirstLetter(action.label) }}
-              </li>
-            </ul> -->
-        </VDropdown>
-      </div>
+      <VDropdown placement="bottomRight">
+        <template #trigger="{toggle, isOpen}">
+          <VButton
+            :text="`${t('lists.lists')} (${data.lists.length})`"
+            class="w-full text-primary leading-[1.3] py-3"
+            @click="toggle"
+          >
+            <template #icon-end>
+              <VIcon
+                type="chevron-down"
+                class="text-secondary transition-transform duration-300"
+                :class="{ 'rotate-180': isOpen }"
+              />
+            </template>
+          </VButton>
+        </template>
+        <ul class="cursor-pointer flex flex-col">
+          <li
+            v-for="list in data.lists"
+            :key="list.id"
+            class="border-b border-default hover:bg-hover
+              py-3 px-5 last:border-none transition-all duration-300"
+            @click="router.push({ name: RouteNames.tasks, params: { listId: list.id } })"
+          >
+            {{ capitalizeFirstLetter(list.title) }}
+          </li>
+        </ul>
+      </VDropdown>
     </template>
   </VContainer>
 </template>

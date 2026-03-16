@@ -1,10 +1,9 @@
 <script setup lang="ts" generic="T extends { id: string }">
 import LoadMoreButton from "./LoadMoreButton.vue";
+import VTransitionLoader from "../VTransitionLoader.vue";
 
 import { Pagination } from "@/shared/types";
 import VEmptyState from "@/shared/ui/EmptyState.vue";
-import VLoader from "@/shared/ui/common/VLoader.vue";
-
 
 export interface TableColumn<T> {
   key: keyof T | string;
@@ -42,22 +41,7 @@ defineEmits<{
       class="flex-1 overflow-auto relative w-full min-h-0 transition-opacity duration-300"
       :class="{ 'pointer-events-none select-none': loading }"
     >
-      <Transition
-        enter-active-class="transition-opacity duration-200"
-        leave-active-class="transition-opacity duration-200"
-        enter-from-class="opacity-0"
-        leave-to-class="opacity-0"
-      >
-        <div
-          v-if="loading"
-          class="absolute inset-0 z-20 flex items-center justify-center backdrop-blur-sm"
-        >
-          <VLoader
-            color="primaryDark"
-            size="h-[100px]"
-          />
-        </div>
-      </Transition>
+      <VTransitionLoader :is-loading="loading" />
       <div
         v-if="!loading && rows.length === 0"
         class="py-16 px-4"

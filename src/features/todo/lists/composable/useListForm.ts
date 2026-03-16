@@ -25,7 +25,7 @@ export const useListForm = (
     onSuccess: () => {
       formData.name.value = "";
       formData.color.value = colorsList[0];
-      listsStore.fetchFilteredLists();
+      listsStore.fetchLists();
     },
   });
 
@@ -35,7 +35,7 @@ export const useListForm = (
       onSuccess: () => {
         formData.name.value = "";
         formData.color.value = colorsList[0];
-        listsStore.fetchFilteredLists();
+        listsStore.fetchLists();
       },
     });
 

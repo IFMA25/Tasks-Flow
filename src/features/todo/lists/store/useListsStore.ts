@@ -1,6 +1,6 @@
-import { defineStore } from 'pinia';
+import { defineStore } from "pinia";
 
-import { useListsRequests } from '../api/useListsRequest';
+import { useListsRequests } from "../api/useListsRequest";
 
 export const useListsStore = defineStore("lists", () => {
 

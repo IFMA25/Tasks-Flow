@@ -1,13 +1,14 @@
 <script setup lang="ts">
-import { ref } from 'vue';
+import { ref } from "vue";
 
-import { useModal } from '@/shared/composables/useModal';
-import VButton from '@/shared/ui/common/VButton.vue';
-import VModal from '@/shared/ui/common/VModal.vue';
+import { ListData } from "../../types";
+import { useListsRequests } from "../api/useListsRequest";
+import { useListsStore } from "../store/useListsStore";
 
-import { ListData } from '../../types';
-import { useListsRequests } from '../api/useListsRequest';
-import { useListsStore } from '../store/useListsStore';
+import { useModal } from "@/shared/composables/useModal";
+import VButton from "@/shared/ui/common/VButton.vue";
+import VModal from "@/shared/ui/common/VModal.vue";
+
 
 const { open: openModal, close } = useModal("listDeleteModal");
 const listsStore = useListsStore();

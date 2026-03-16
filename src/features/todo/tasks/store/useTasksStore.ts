@@ -20,6 +20,6 @@ export const useTasksStore = defineStore("tasks", () => {
     await execute();
   };
 
-  return { tasksData, fetchTaskLoading, fetchTasksForList };
+  return { currentListId, tasksData, fetchTaskLoading, fetchTasksForList };
 
 });

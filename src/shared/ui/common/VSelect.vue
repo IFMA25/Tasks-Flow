@@ -51,7 +51,7 @@ const closeOnSelectComputed = computed(() =>
     <label
       v-if="labelText"
       :for="id"
-      class="whitespace-nowrap"
+      class="whitespace-nowrap font-medium"
     >{{ labelText }}</label>
     <Multiselect
       :id="id"
@@ -97,8 +97,8 @@ const closeOnSelectComputed = computed(() =>
 }
 
 :deep(.multiselect__tags) {
-  @apply min-h-8 border-2 border-default rounded-lg py-2 pl-[0.625rem]
-  pr-[2.4rem] focus:outline-none transition-colors duration-300
+  @apply min-h-8 border-2 border-default rounded-lg py-3 pl-[0.625rem]
+  pr-[2.4rem] leading-6 focus:outline-none transition-colors duration-300
   ease-in-out text-primary bg-secondaryBg;
 }
 

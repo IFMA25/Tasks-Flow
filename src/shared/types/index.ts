@@ -47,3 +47,11 @@ export interface SortOption {
   };
   [key: string]: unknown;
 }
+
+
+export type ActionKey = "edit" | "delete";
+
+export interface Action {
+  key: ActionKey;
+  label: string;
+}

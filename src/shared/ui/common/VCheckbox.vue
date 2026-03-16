@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { computed } from "vue";
-import VueFeather from "vue-feather";
+
+import VIcon from "./VIcon.vue";
 
 const modelValue = defineModel<boolean>({
   default: false,
@@ -24,7 +25,7 @@ const colorCheck = "text-base";
 
 const variantClass = {
   checked: {
-    default: "border-2 border-primaryBg bg-primaryBg",
+    default: "border-2 border-primaryBg bg-primaryBg text-white",
   },
   notChecked: {
     default: "border-2 border-default",
@@ -55,10 +56,9 @@ const checkboxClass = computed(() => {
       class="relative flex items-center justify-center border-2 rounded transition-all duration-200"
       :class="checkboxClass"
     >
-      <VueFeather
+      <VIcon
         v-if="modelValue"
-        :type="props.icon || 'check'"
-        :class="props.iconSize || 'w-4 h-4'"
+        type="check"
       />
     </div>
     <input

@@ -13,6 +13,7 @@ import VButton from "@/shared/ui/common/VButton.vue";
 import VInput from "@/shared/ui/common/VInput.vue";
 import VModal from "@/shared/ui/common/VModal.vue";
 import VSelect from "@/shared/ui/common/VSelect.vue";
+import { parseTags } from "@/shared/utils";
 
 const { t } = useI18n();
 
@@ -38,39 +39,43 @@ const tags = ref("");
 const priority = ref(priorityOptions.value[0]);
 const deadline = ref(deadlineOptions.value[0]);
 
+const parsedTags = computed(() => parseTags(tags.value).slice(0, 3));
+
 const formData = {
   taskName,
-  tags: computed(() =>
-    tags.value.split(",").map(tag => tag.trim()).filter(Boolean),
-  ),
+  tags,
   priority: computed(() => priority.value.key),
   dueDate: computed(() => deadline.value.key),
 };
 
+const taskForm = useTaskForm(currentListId, selectedTask, formData);
+
 const resetForm = () => {
+  selectedTask.value = null;
   taskName.value = "";
   tags.value = "";
   priority.value = priorityOptions.value[0];
   deadline.value = deadlineOptions.value[0];
+  taskForm.resetValidation();
 };
 
 const open = (listId: string, task?: TaskData) => {
   currentListId.value = listId;
   selectedTask.value = task || null;
-  console.log(listId);
 
-  // // Предзаполняем форму, если это редактирование
-  // taskName.value = task?.title || "";
-  // tags.value = task?.tags;
-  // priority.value = task?.priority || priorityOptions.value[0].key;
-  // dueDate.value = task?.deadline || deadlineOptions.value[0].key;
+  taskName.value = task?.title || "";
+  tags.value = task?.tags?.join(", ") || "";
+  priority.value = priorityOptions.value
+    .find(p => p.key === task?.priority) || priorityOptions.value[0];
+  deadline.value = deadlineOptions.value
+    .find(d => d.key === task?.deadline) || deadlineOptions.value[0];
+
+  taskForm.resetValidation();
 
   openModal();
 };
 
 defineExpose({ open });
-
-const taskForm = useTaskForm(currentListId, selectedTask, formData);
 
 const onSubmit = async () => {
   const success = await taskForm.handleSubmit();
@@ -79,48 +84,63 @@ const onSubmit = async () => {
     close();
   }
 };
-
 </script>
 
 <template>
   <VModal
     id="taskFormModal"
-    :title="t('tasks.createTaskModal.title')"
+    :title="selectedTask ? t('tasks.editTask') : t('tasks.createTaskModal.title')"
     max-width="md"
     @close="close()"
   >
-    <VInput
-      v-model="taskName"
-      :label="$t('tasks.createTaskModal.labelName')"
-      :placeholder="$t('tasks.createTaskModal.placeholderTaskName')"
-      class="text-sm text-secondary font-medium leading-[1.2] mb-4"
-    />
-    <VSelect
-      id="priority"
-      v-model="priority"
-      :label-text="$t('tasks.createTaskModal.labelPriority')"
-      :options="priorityOptions"
-      label="label"
-      track-by="key"
-      :close-on-select="true"
-      class="min-w-[13rem]"
-    />
-    <VSelect
-      id="due"
-      v-model="deadline"
-      :label-text="$t('tasks.createTaskModal.labelDeadline')"
-      :options="deadlineOptions"
-      label="label"
-      track-by="key"
-      :close-on-select="true"
-      class="min-w-[13rem]"
-    />
-    <VInput
-      v-model="tags"
-      :label="$t('tasks.createTaskModal.labelTags')"
-      :placeholder="$t('tasks.createTaskModal.placeholderTags')"
-      class="text-sm text-secondary font-medium leading-[1.2] mb-4"
-    />
+    <div class="flex flex-col gap-4 text-primary">
+      <VInput
+        v-model="taskName"
+        :label="$t('tasks.createTaskModal.labelName')"
+        :placeholder="$t('tasks.createTaskModal.placeholderTaskName')"
+        class="leading-[1.2]"
+      />
+      <VSelect
+        id="priority"
+        v-model="priority"
+        :label-text="$t('tasks.createTaskModal.labelPriority')"
+        :options="priorityOptions"
+        label="label"
+        track-by="key"
+        :close-on-select="true"
+        class="min-w-[13rem]"
+      />
+      <VSelect
+        id="due"
+        v-model="deadline"
+        :label-text="$t('tasks.createTaskModal.labelDeadline')"
+        :options="deadlineOptions"
+        label="label"
+        track-by="key"
+        :close-on-select="true"
+        class="min-w-[13rem]"
+      />
+      <VInput
+        v-model="tags"
+        :label="$t('tasks.createTaskModal.labelTags')"
+        :placeholder="$t('tasks.createTaskModal.placeholderTags')"
+        :validation="taskForm.v$.value.tags"
+        class="leading-[1.2]"
+        @update:model-value="taskForm.v$.value.tags.$touch()"
+      />
+      <div
+        v-if="parsedTags.length"
+        class="flex flex-wrap gap-1.5"
+      >
+        <span
+          v-for="tag in parsedTags"
+          :key="tag"
+          class="px-2 py-0.5 text-xs rounded-full bg-default text-primary"
+        >
+          #{{ tag }}
+        </span>
+      </div>
+    </div>
     <template #footer>
       <VButton
         type="text"
@@ -129,9 +149,10 @@ const onSubmit = async () => {
         @click="close()"
       />
       <VButton
-        :text="$t('tasks.createTaskModal.createBtn')"
+        :text="selectedTask ? t('saveBtnText') : t('tasks.createTaskModal.createBtn')"
         variant="outline"
         load-color="text-disabled"
+        :disabled="taskForm.isSubmitDisabled.value"
         @click="onSubmit"
       />
     </template>
