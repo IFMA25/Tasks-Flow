@@ -1,24 +1,24 @@
-import { useDebounceFn } from "@vueuse/core";
 import {
   computed,
   ref,
   watch,
-} from "vue";
-import { useI18n } from "vue-i18n";
+} from 'vue';
+
+import { useI18n } from 'vue-i18n';
 import {
   useRoute,
   useRouter,
-} from "vue-router";
+} from 'vue-router';
 
-import { ListData } from "../../types";
-import { useListsStore } from "../store/useListsStore";
+import { useSelectedOption } from '@/shared/composables/useSelectedOption';
+import { SortOption } from '@/shared/types';
+import { useDebounceFn } from '@vueuse/core';
 
-import { useSelectedOption } from "@/shared/composables/useSelectedOption";
-import { SortOption } from "@/shared/types";
-
+import { ListData } from '../../types';
+import { useListsStore } from '../store/useListsStore';
 
 const currentLimit = ref<number>(20);
-const currentLimitUsers = ref<number>(99);
+const currentLimitUsers = ref<number>(100);
 
 export const useListsFeature = () => {
   const { t } = useI18n();
@@ -106,6 +106,7 @@ export const useListsFeature = () => {
     selectedSort,
     activeTab,
     userLists,
+    updateLists,
     onSearchInput,
   };
 };

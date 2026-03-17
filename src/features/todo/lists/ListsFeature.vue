@@ -1,21 +1,19 @@
 <script setup lang="ts">
-import { ref } from "vue";
+import { ref } from 'vue';
 
+import VButton from '@/shared/ui/common/VButton.vue';
+import VTab from '@/shared/ui/common/VTab.vue';
+import VEmptyState from '@/shared/ui/EmptyState.vue';
+import VTransitionLoader from '@/shared/ui/VTransitionLoader.vue';
 
-import {
-  ListData,
-} from "../types";
-import DeleteListModal from "./components/DeleteListModal.vue";
-import ListFormModal from "./components/ListFormModal.vue";
-import ListItem from "./components/ListItem.vue";
-import ListsToolbar from "./components/ListsToolbar.vue";
-import UsersListItem from "./components/UsersListItem.vue";
-import { useListsFeature } from "./composable/useListsFeature";
-
-import VEmptyState from "@/shared/ui/EmptyState.vue";
-import VTransitionLoader from "@/shared/ui/VTransitionLoader.vue";
-import VButton from "@/shared/ui/common/VButton.vue";
-import VTab from "@/shared/ui/common/VTab.vue";
+import { ListData } from '../types';
+import DeleteListModal from './components/DeleteListModal.vue';
+import ListFormModal from './components/ListFormModal.vue';
+import ListItem from './components/ListItem.vue';
+import ListsToolbar from './components/ListsToolbar.vue';
+import UsersListItem from './components/UsersListItem.vue';
+import { useListForm } from './composable/useListForm';
+import { useListsFeature } from './composable/useListsFeature';
 
 const {
   listsStore,
@@ -29,12 +27,14 @@ const {
   onSearchInput,
 } = useListsFeature();
 
-const formModalRef = ref<InstanceType<typeof ListFormModal> | null>(null);
+const {open} = useListForm();
+
 const deleteModalRef = ref<InstanceType<typeof DeleteListModal> | null>(null);
 
 const handleAction = (list: ListData, action: string) => {
   if (action === "edit") {
-    formModalRef.value?.open(list);
+    console.log("handelAction", list);
+    open(list);
   } else if (action === "delete") {
     deleteModalRef.value?.open(list);
   }
@@ -51,7 +51,7 @@ const handleAction = (list: ListData, action: string) => {
       icon="icon-plus"
       variant="primary"
       :text="$t('lists.createListBtn')"
-      @click="formModalRef?.open"
+      @click="open()"
     />
   </Teleport>
   <ListFormModal ref="formModalRef" />

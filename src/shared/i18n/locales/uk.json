@@ -147,7 +147,8 @@
         "nameAsc": "Ім'я A-Z",
         "nameDesc": "Ім'я Z-A",
         "recentlyCreated": "Нещодавно створені",
-        "recentlyUpdated": "Нещодавно оновлені"
+        "recentlyUpdated": "Нещодавно оновлені",
+        "recentlyAdded": "Нещодавно додані"
         },
         "saveBtnText": "Зберігти зміни"
 }

@@ -1,50 +1,29 @@
 <script setup lang="ts">
-import { ref } from "vue";
+import { computed } from 'vue';
 
-import { ListData } from "../../types";
-import { useListForm } from "../composable/useListForm";
+import VButton from '@/shared/ui/common/VButton.vue';
+import VColorRadio from '@/shared/ui/common/VColorRadio.vue';
+import VInput from '@/shared/ui/common/VInput.vue';
+import VModal from '@/shared/ui/common/VModal.vue';
+import { colorsList } from '@/shared/variables/colorMap';
 
-import { useModal } from "@/shared/composables/useModal";
-import VButton from "@/shared/ui/common/VButton.vue";
-import VColorRadio from "@/shared/ui/common/VColorRadio.vue";
-import VInput from "@/shared/ui/common/VInput.vue";
-import VModal from "@/shared/ui/common/VModal.vue";
-import { colorsList } from "@/shared/variables/colorMap";
+import { useListForm } from '../composable/useListForm';
 
-const { open: openModal, close } = useModal("listFormModal");
-
-const selectedList = ref<ListData | null>(null);
-const name = ref("");
-const selectedColor = ref(colorsList[0]);
-
-const open = (list?: ListData) => {
-  selectedList.value = list || null;
-  name.value = list?.title || "";
-  selectedColor.value = list?.hexColor || colorsList[0];
-
-  openModal();
-};
-
-const listsForm = useListForm(selectedList, { name, color: selectedColor });
-
-const onSubmit = async () => {
-  const success = await listsForm.handleSubmit();
-  if (success) {
-    close();
-  }
-};
-
-defineExpose({ open });
+const {handleClose, selectedList, name, color, isLoading, isSubmitDisabled, handleSubmit} = useListForm();
+// const test = computed(() => {
+//   console.log("Computed", selectedList)
+//   return selectedList
+// })
 </script>
 
 <template>
   <VModal
     id="listFormModal"
-    :title="selectedList?.title
+    :title="selectedList
       ? $t('lists.listFormModal.title')
       : $t('lists.createListModal.title')"
     max-width="md"
-    @close="close()"
+    @close="handleClose"
   >
     <VInput
       v-model="name"
@@ -57,10 +36,10 @@ defineExpose({ open });
     </p>
     <div class="flex gap-4">
       <VColorRadio
-        v-for="color in colorsList"
-        :key="color"
-        v-model="selectedColor"
-        :color="color"
+        v-for="colorItem in colorsList"
+        :key="colorItem"
+        v-model="color"
+        :color="colorItem"
       />
     </div>
     <template #footer>
@@ -68,15 +47,16 @@ defineExpose({ open });
         type="text"
         :text="$t('lists.cancel')"
         variant="outline"
-        @click="close()"
+        @click="handleClose"
       />
+      {{ selectedList }}
       <VButton
-        :text="$t('saveBtnText')"
+        :text="selectedList ? $t('saveBtnText') : $t('lists.createListModal.createBtn')"
         variant="outline"
-        :disabled="listsForm.isSubmitDisabled.value"
-        :loading="listsForm.isLoading.value"
+        :disabled="isSubmitDisabled"
+        :loading="isLoading"
         load-color="text-disabled"
-        @click="onSubmit"
+        @click="handleSubmit"
       />
     </template>
   </VModal>

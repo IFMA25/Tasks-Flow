@@ -148,7 +148,8 @@
             "nameAsc": "Name A-Z",
             "nameDesc": "Name Z-A",
             "recentlyCreated": "Recently created",
-            "recentlyUpdated": "Recently updated"
+            "recentlyUpdated": "Recently updated",
+            "recentlyAdded": "Recently added"
         },
     "saveBtnText": "Save changes"
 }
