@@ -115,7 +115,7 @@ const inputClass = computed(() => {
         :placeholder="props.placeholder"
         name="input"
         :readonly="props.readonly"
-        @blur="emit('blur', $event)"
+        @blur="emit('blur')"
       >
       <button
         v-if="props.type === 'password'"

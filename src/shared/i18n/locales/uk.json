@@ -17,7 +17,6 @@
             "modalTitle": "Вийти з акаунта",
             "modalContentTitle": "Ви впевнені, що хочете вийти?",
             "modalContentSubtitle": "Щоб отримати доступ до акаунта, вам потрібно буде увійти знову",
-            "modalCancel": "Скасувати",
             "modalLogout": "Вийти"
         } 
     },
@@ -31,17 +30,10 @@
         "maxTags": "Максимум {max} тега"
     },
     "usersList": {
+        "user": "Користувача",
         "title": "Керування користувачами",
         "userProfile": "Профіль користувача",
-        "removeUser": "Видалити користувача",
-        "removeUserModal": {
-            "title": "Видалити користувача",
-            "titleContent": "Ви впевнені, що хочете видалити",
-            "subtitleContent": "Цю дію неможливо скасувати",
-            "confirmRemove": "Видалити",
-            "cancel": "Скасувати",
-            "msgDeleteSuccess": "Користувач успішно видалений"
-        },
+        "msgDeleteSuccess": "Користувач успішно видалений",
         "searchPlaceholder": "Пошук по імені або email…"
     }, 
     "roles": {
@@ -76,6 +68,7 @@
         "userName": "Повне ім'я"
     },
     "lists": {
+        "list": "Список",
         "lists": "Списки",
         "title": "Керуйте всіма своїми групами завдань в одному місці",
         "titleOverview": "Огляд списків",
@@ -92,7 +85,6 @@
             "labelName": "Назва списку",
             "labelColor": "Колір списку"
         },
-        "cancel": "Скасувати",
         "tasks": "завдань",
         "completed": "виконано",
         "editList": "Редагувати список",
@@ -103,7 +95,10 @@
         },
         "usersLists": "Списки користувачів",
         "myLists": "Мої списки",
-        "searchPlaceholder": "Пошук списків..."
+        "searchPlaceholder": "Пошук списків...",
+        "msgCreateSuccess": "Список успішно створено",
+        "msgUpdateSuccess": "Список успішно оновлено",
+        "msgDeleteSuccess": "Список успішно видалено"
     },
     "tasks": {
         "createTasksBtn": "Додати завдання",
@@ -150,5 +145,11 @@
         "recentlyUpdated": "Нещодавно оновлені",
         "recentlyAdded": "Нещодавно додані"
         },
-        "saveBtnText": "Зберігти зміни"
+    "saveBtnText": "Зберігти зміни",
+    "deleteModal": {
+        "title": "Видалити {entityName}",
+        "contentTitle": "Ви впевнені, що хочете видалити цей {entityName}?",
+        "contentSubtitle": "Цю дію неможливо скасувати"
+    },
+    "cancel": "Скасувати" 
 }

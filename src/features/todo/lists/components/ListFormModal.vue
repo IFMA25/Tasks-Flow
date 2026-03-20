@@ -1,19 +1,38 @@
 <script setup lang="ts">
-import { computed } from 'vue';
+import { reactive, ref } from "vue";
 
-import VButton from '@/shared/ui/common/VButton.vue';
-import VColorRadio from '@/shared/ui/common/VColorRadio.vue';
-import VInput from '@/shared/ui/common/VInput.vue';
-import VModal from '@/shared/ui/common/VModal.vue';
-import { colorsList } from '@/shared/variables/colorMap';
+import { FormDataList, ListData } from "../../types";
+import { useListForm } from "../composable/useListForm";
 
-import { useListForm } from '../composable/useListForm';
+import { useModal } from "@/shared/composables/useModal";
+import VButton from "@/shared/ui/common/VButton.vue";
+import VColorRadio from "@/shared/ui/common/VColorRadio.vue";
+import VInput from "@/shared/ui/common/VInput.vue";
+import VModal from "@/shared/ui/common/VModal.vue";
+import { colorsList } from "@/shared/variables/colorMap";
 
-const {handleClose, selectedList, name, color, isLoading, isSubmitDisabled, handleSubmit} = useListForm();
-// const test = computed(() => {
-//   console.log("Computed", selectedList)
-//   return selectedList
-// })
+//разделение ответсвенности компонента и компосибла, логику вынесла в компосибл, тут только управления юайном, локальные переменные оставляю в компоненте, потому что в компосибле описываю только логику и запросы без стейтов и юай, стейт внутри компосибла каждый раз пересоздаеться, если вынести глобально = то он останеться после размонтирования модалки
+
+const selectedList = ref<ListData | null>(null);
+const formData = reactive<FormDataList>({
+  title: "",
+  hexColor: colorsList[0],
+});
+
+const { open, close } = useModal("listFormModal");
+const { handleSubmit, isLoading, isSubmitDisabled, initForm } = useListForm(formData, selectedList);
+
+const openModal = (list?: ListData) => {
+  initForm(list ?? null);
+  open();
+};
+
+const onSubmit = async () => {
+  const success = await handleSubmit();
+  if (success) close();
+};
+
+defineExpose({ openModal });
 </script>
 
 <template>
@@ -23,40 +42,45 @@ const {handleClose, selectedList, name, color, isLoading, isSubmitDisabled, hand
       ? $t('lists.listFormModal.title')
       : $t('lists.createListModal.title')"
     max-width="md"
-    @close="handleClose"
+    @close="close"
   >
-    <VInput
-      v-model="name"
-      :label="$t('lists.listFormModal.labelName')"
-      :placeholder="$t('lists.createListModal.placeholder')"
-      class="text-sm text-secondary font-medium leading-[1.2] mb-4"
-    />
-    <p class="text-sm text-secondary font-medium leading-[1.2] mb-2">
-      {{ $t('lists.listFormModal.labelColor') }}
-    </p>
-    <div class="flex gap-4">
-      <VColorRadio
-        v-for="colorItem in colorsList"
-        :key="colorItem"
-        v-model="color"
-        :color="colorItem"
+    <form
+      id="listForm"
+      @submit.prevent="onSubmit"
+    >
+      <VInput
+        v-model="formData.title"
+        :label="$t('lists.listFormModal.labelName')"
+        :placeholder="$t('lists.createListModal.placeholder')"
+        class="text-sm text-secondary font-medium leading-[1.2] mb-4"
       />
-    </div>
+      <p class="text-sm text-secondary font-medium leading-[1.2] mb-2">
+        {{ $t('lists.listFormModal.labelColor') }}
+      </p>
+      <div class="flex gap-4">
+        <VColorRadio
+          v-for="colorItem in colorsList"
+          :key="colorItem"
+          v-model="formData.hexColor"
+          :color="colorItem"
+        />
+      </div>
+    </form>
     <template #footer>
       <VButton
         type="text"
-        :text="$t('lists.cancel')"
+        :text="$t('cancel')"
         variant="outline"
-        @click="handleClose"
+        @click="close"
       />
-      {{ selectedList }}
       <VButton
         :text="selectedList ? $t('saveBtnText') : $t('lists.createListModal.createBtn')"
+        type="submit"
+        form="listForm"
         variant="outline"
         :disabled="isSubmitDisabled"
         :loading="isLoading"
         load-color="text-disabled"
-        @click="handleSubmit"
       />
     </template>
   </VModal>

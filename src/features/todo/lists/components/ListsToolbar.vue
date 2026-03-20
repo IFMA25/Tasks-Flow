@@ -4,6 +4,7 @@ import { useI18n } from "vue-i18n";
 import { SortOption } from "@/shared/types";
 import VInput from "@/shared/ui/common/VInput.vue";
 import VSelect from "@/shared/ui/common/VSelect.vue";
+import { listsTabs } from "@/shared/variables/tabListsPage";
 
 const { t } = useI18n();
 defineProps<{
@@ -18,7 +19,7 @@ const sort = defineModel<SortOption>("sort");
 <template>
   <div class="flex items-center gap-4 mb-6">
     <VInput
-      v-if="activeTab === 'myLists'"
+      v-if="activeTab === listsTabs.myLists"
       v-model="search"
       :placeholder="t('lists.searchPlaceholder')"
       type="search"

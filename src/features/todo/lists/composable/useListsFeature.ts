@@ -1,36 +1,46 @@
+import { useDebounceFn } from "@vueuse/core";
 import {
   computed,
   ref,
   watch,
-} from 'vue';
-
-import { useI18n } from 'vue-i18n';
+} from "vue";
+import { useI18n } from "vue-i18n";
 import {
   useRoute,
   useRouter,
-} from 'vue-router';
+} from "vue-router";
 
-import { useSelectedOption } from '@/shared/composables/useSelectedOption';
-import { SortOption } from '@/shared/types';
-import { useDebounceFn } from '@vueuse/core';
+import { UserListGroup } from "../../types";
+import { useListsStore } from "../store/useListsStore";
 
-import { ListData } from '../../types';
-import { useListsStore } from '../store/useListsStore';
+import { useSelectedOption } from "@/shared/composables/useSelectedOption";
+import { Actions, SortOption } from "@/shared/types";
+import { listsTabs } from "@/shared/variables/tabListsPage";
 
-const currentLimit = ref<number>(20);
-const currentLimitUsers = ref<number>(100);
+const currentLimit = 20;
+const currentLimitUsers = 100;
 
 export const useListsFeature = () => {
+
   const { t } = useI18n();
   const route = useRoute();
   const router = useRouter();
   const listsStore = useListsStore();
 
-  const actions = computed(() => [{ key: "edit", label: t("lists.editList") }, { key: "delete", label: t("lists.deleteList.title") }]);
+  const actions = computed<Actions[]>(() => [
+    { key: "edit", label: t("lists.editList") }, 
+    { key: "delete", label: t("deleteModal.title", { entityName: t("lists.list") }) }
+  ]);
 
-  const sortOptions = computed<SortOption[]>(() => [{ key: "recentlyCreated", label: t("filters.recentlyCreated"), params: { sort: "createdAt", order: "asc" } }, { key: "recentlyUpdated", label: t("filters.recentlyUpdated"), params: { sort: "updatedAt", order: "desc" } }]);
+  const sortOptions = computed<SortOption[]>(() => [
+    { key: "recentlyCreated", label: t("filters.recentlyCreated"), params: { sort: "createdAt", order: "asc" } }, 
+    { key: "recentlyUpdated", label: t("filters.recentlyUpdated"), params: { sort: "updatedAt", order: "desc" } }
+  ]);
 
-  const tabs = computed(() => [{ value: "myLists", label: t("lists.myLists") }, { value: "usersLists", label: t("lists.usersLists") }]);
+  const tabs = computed(() => [
+    { value: "myLists", label: t("lists.myLists") }, 
+    { value: "usersLists", label: t("lists.usersLists") }
+  ]);
 
   const modelSearch = ref<string>("");
   const activeSortKey = ref<string>(sortOptions.value[0].key);
@@ -47,7 +57,7 @@ export const useListsFeature = () => {
   const activeTab = computed({
     get: () => {
       const tab = route.query.tab;
-      return typeof tab === "string" ? tab : "myLists";
+      return typeof tab === "string" ? tab : listsTabs.myLists;
     },
     set: (value) => {
       modelSearch.value = "";
@@ -56,11 +66,11 @@ export const useListsFeature = () => {
   });
 
   const getFetchParams = computed(() => ({
-    limit: activeTab.value === "myLists" ? currentLimit.value : currentLimitUsers.value,
+    limit: activeTab.value === listsTabs.myLists ? currentLimit : currentLimitUsers,
     q: modelSearch.value || undefined,
     sort: selectedSort.value.params.sort,
     order: selectedSort.value.params.order,
-    isOwn: activeTab.value === "myLists" ? true : undefined,
+    isOwn: activeTab.value === listsTabs.myLists ? true : undefined,
   }));
 
   const updateLists = () => {
@@ -71,16 +81,16 @@ export const useListsFeature = () => {
     const data = listsStore.dataLists?.data;
     if (!data) return [];
 
-    const grouped = new Map<string, { owner: ListData["owner"]; lists: ListData[] }>();
+    const grouped = new Map<string, UserListGroup>();
 
     for (const list of data) {
       const ownerId = list.owner.id;
-      let group = grouped.get(ownerId);
+      const group = grouped.get(ownerId);
       if (!group) {
-        group = { owner: list.owner, lists: [] };
-        grouped.set(ownerId, group);
+        grouped.set(ownerId, { owner: list.owner, lists: [list] });
+      } else {
+        group.lists.push(list);
       }
-      group.lists.push(list);
     }
     return Array.from(grouped.values());
   });
@@ -89,13 +99,7 @@ export const useListsFeature = () => {
     updateLists();
   }, 800);
 
-  watch(
-    [() => route.query.tab, activeSortKey],
-    () => {
-      updateLists();
-    },
-    { immediate: true },
-  );
+  watch([() => route.query.tab, activeSortKey], updateLists, { immediate: true });
 
   return {
     listsStore,

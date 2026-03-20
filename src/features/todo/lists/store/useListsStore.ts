@@ -1,6 +1,6 @@
-import { defineStore } from 'pinia';
+import { defineStore } from "pinia";
 
-import { useListsRequests } from '../api/useListsRequest';
+import { useListsRequests } from "../api/useListsRequest";
 
 export const useListsStore = defineStore("lists", () => {
 
@@ -10,11 +10,7 @@ export const useListsStore = defineStore("lists", () => {
     execute: fetchLists,
     loading: isLoading,
     data: dataLists,
-  } = getAllLists({
-    onSuccess: () => {
-      console.log(dataLists.value)
-    }
-  });
+  } = getAllLists();
 
   return { dataLists, fetchLists, isLoading };
 });

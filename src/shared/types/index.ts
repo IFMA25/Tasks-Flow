@@ -27,11 +27,6 @@ export interface Pagination {
   totalPages: number;
 }
 
-export interface Actions {
-  key: string;
-  label: string;
-}
-
 export interface RoleOption {
   label: string;
   value: string | undefined;
@@ -48,10 +43,9 @@ export interface SortOption {
   [key: string]: unknown;
 }
 
-
 export type ActionKey = "edit" | "delete";
 
-export interface Action {
+export interface Actions {
   key: ActionKey;
   label: string;
 }

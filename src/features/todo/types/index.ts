@@ -1,3 +1,5 @@
+export type ListAction = "edit" | "delete";
+
 export interface ListsResponse {
   data: ListData[];
   pagination: PaginationData;
@@ -102,4 +104,9 @@ export interface ListsParams {
 export interface UserListGroup {
   owner: ListData["owner"];
   lists: ListData[];
+}
+
+export interface FormDataList {
+  title: string;
+  hexColor: string;
 }

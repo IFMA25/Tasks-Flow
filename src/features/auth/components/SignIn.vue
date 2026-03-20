@@ -43,7 +43,7 @@ const { execute, loading, error } = login({
       accessToken: response.data.accessToken,
       refreshToken: response.data.refreshToken,
     });
-    toast.warning("usersList.msgDeleteSuccess");
+    toast.success("auth.msgLoginSuccess");
 
     if (profileStore.profileData?.role === "admin") {
       router.replace({ name: "users" });

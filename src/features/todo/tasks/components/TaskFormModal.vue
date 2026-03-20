@@ -144,7 +144,7 @@ const onSubmit = async () => {
     <template #footer>
       <VButton
         type="text"
-        :text="$t('lists.cancel')"
+        :text="$t('cancel')"
         variant="outline"
         @click="close()"
       />

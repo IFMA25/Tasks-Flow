@@ -18,6 +18,10 @@ const route = useRoute();
 const { tasksStore } = useTasksFeature();
 
 const listId = computed(() => String(route.params.listId));
+const backLink = computed(() => ({
+  path: "/lists",
+  query: { tab: route.query.tab || "myLists" },
+}));
 
 const formModalRef = ref<InstanceType<typeof TaskFormModal> | null>(null);
 // const deleteModalRef = ref<InstanceType<typeof DeleteListModal> | null>(null);
@@ -41,7 +45,7 @@ watchEffect(() => {
   <TaskFormModal ref="formModalRef" />
   <Teleport to="#header-content">
     <VButton
-      to="/lists"
+      :to="backLink"
       icon="chevron-left"
       variant="navItem"
       :text="$t('lists.lists')"

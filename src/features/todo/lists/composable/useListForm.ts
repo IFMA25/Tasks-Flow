@@ -1,95 +1,70 @@
 import {
   computed,
-  ref,
-} from 'vue';
+  Ref,
+} from "vue";
+import { useI18n } from "vue-i18n";
+import { toast } from "vue-sonner";
 
-import { useModal } from '@/shared/composables/useModal';
-import { colorsList } from '@/shared/variables/colorMap';
+import { useListsFeature } from "./useListsFeature";
+import { FormDataList, ListData } from "../../types";
+import { useListsRequests } from "../api/useListsRequest";
 
-import { ListData } from '../../types';
-import { useListsRequests } from '../api/useListsRequest';
-import { useListsFeature } from './useListsFeature';
+import { colorsList } from "@/shared/variables/colorMap";
 
-export const useListForm = () => {
-
-  const list = ref<ListData | null>(null)
-  const selectedList = computed(() => list.value);
-  const name = ref("");
-  const color = ref(colorsList[0]);
+export const useListForm = (formDataList: FormDataList, selectedList: Ref<ListData | null>) => {
 
   const { createNewList, updateList } = useListsRequests();
-  const {updateLists} = useListsFeature();
-  const { open: openModal, close } = useModal("listFormModal");
+  const { updateLists } = useListsFeature();
+  const { t } = useI18n();
 
   const initForm = (listEdit: ListData | null) => {
-    console.log("initForm", listEdit)
-    list.value = listEdit;
-     console.log("listValue", listEdit)
-    name.value = list.value.title || "";
-    console.log(name.value)
-    color.value = listEdit?.hexColor || colorsList[0];
+    selectedList.value = listEdit;
+    formDataList.title = listEdit?.title || "";
+    formDataList.hexColor = listEdit?.hexColor || colorsList[0];
   };
-
-  const resetForm = () => {
-    list.value = null;
-    name.value = "";
-    color.value = colorsList[0];
-  };
-
-  const open = (list?: ListData) => {
-  if (list) initForm(list);
-  console.log("open", list)
-  openModal();
-};
-
-const handleClose = () => {
-  close();
-  resetForm();
-}
 
   const submitData = () => ({
-    title: name.value,
-    hexColor: color.value,
+    title: formDataList.title,
+    hexColor: formDataList.hexColor,
   });
 
   const { execute: createNewListExecute, loading: createListLoading } = createNewList({
     data: submitData,
     onSuccess: () => {
       updateLists();
+      toast.success(t("lists.msgCreateSuccess"));
     },
   });
 
   const { execute: updateSelectedListExecute, loading: updateListLoading } = updateList(
-    () => list.value?.id, {
+    () => selectedList.value?.id, {
       data: submitData,
       onSuccess: () => {
-        updateLists()
-      }
+        updateLists();
+        toast.success(t("lists.msgUpdateSuccess"));
+      },
     });
-
-  const isValid = computed(() => !!name.value);
+  // стоит ли мне тут делать валидацию через вьювалидате и выводи ошибку при смене блура? кнопка у меня остаеться заблокированой пока не введут текст или не измениться содержимое
+  const isValid = computed(() => !!formDataList.title);
 
   const isDataChanged = computed(() => {
-    if (!list.value) return true;
+    if (!selectedList.value) return true;
 
-    return name.value !== list.value?.title || 
-           color.value !== (list.value.hexColor || colorsList[0]);
+    return formDataList.title !== selectedList.value.title ||
+           formDataList.hexColor !== (selectedList.value.hexColor || colorsList[0]);
   });
 
   const isSubmitDisabled = computed(() => !(isValid.value && isDataChanged.value));
 
   const isLoading = computed(() => createListLoading.value || updateListLoading.value);
 
-  const handleSubmit = async () => {
-    if (isSubmitDisabled.value) return;
-
+  const handleSubmit = async (): Promise<boolean> => {
     try {
-      if (list.value?.id) {
+      if (selectedList.value?.id) {
         await updateSelectedListExecute();
       } else {
         await createNewListExecute();
       }
-      handleClose()
       return true;
     } catch (error) {
       return false;
@@ -97,15 +72,9 @@ const handleClose = () => {
   };
 
   return {
-    selectedList,
-    name,
-    color,
-    open,
-    handleClose,
     isSubmitDisabled,
     isLoading,
     initForm,
-    resetForm,
     handleSubmit,
   };
 };

@@ -5,9 +5,9 @@ import { useI18n } from "vue-i18n";
 import { TaskData } from "../../types";
 import { formatDueDate } from "../utils";
 
-import { Action } from "@/shared/types";
 import VActionsDropdown from "@/shared/ui/VActionsDropdown.vue";
 import VCheckbox from "@/shared/ui/common/VCheckbox.vue";
+import { Actions } from "@/shared/types";
 
 
 const { t } = useI18n();
@@ -18,7 +18,7 @@ const colorsPriority = {
   high: "text-danger before:bg-danger",
 };
 
-const actions = computed<Action[]>(() => [
+const actions = computed<Actions[]>(() => [
   { key: "edit", label: t("tasks.editTask") },
   { key: "delete", label: t("tasks.deleteTask.title") },
 ]);

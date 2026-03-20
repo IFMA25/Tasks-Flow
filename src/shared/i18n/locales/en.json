@@ -17,7 +17,6 @@
             "modalTitle": "Log out",
             "modalContentTitle": "Are you sure you want to log out?",
             "modalContentSubtitle": "You’ll need to sign in again to access your account",
-            "modalCancel": "Cancel",
             "modalLogout": "Log out"
         } 
     },
@@ -32,18 +31,11 @@
     },
     
     "usersList": {
+        "user": "User",
         "title": "User management",
         "userProfile": "User profile",
-        "removeUser": "Remove user",
-        "removeUserModal": {
-            "title": "Remove user",
-            "titleContent": "Are you sure you want to remove",
-            "subtitleContent": "This action can’t be undone",
-            "confirmRemove": "Remove user",
-            "cancel": "Cancel",
-            "msgDeleteSuccess": "User successfully deleted"
-        },
-        "searchPlaceholder": "Search lists..."
+        "msgDeleteSuccess": "User successfully deleted",
+        "searchPlaceholder": "Search users..."
     },
     "roles": {
             "admin": "Admin",
@@ -77,6 +69,7 @@
         "userName": "Full name"
     },
     "lists": {
+        "list": "List",
         "lists": "Lists",
         "title": "Manage all your task groups in one place",
         "titleOverview": "Lists Overview",
@@ -93,18 +86,15 @@
             "labelName": "List name",
             "labelColor": "List color"
         },
-        "cancel": "Cancel",
         "tasks": "tasks",
         "completed": "completed",
         "editList": "Edit list",
-        "deleteList": {
-            "title": "Delete list",
-            "contentTitle": "Are you sure you want to delete this list?",
-            "contentSubtitle": "All tasks inside this list will be permanently removed"
-        },
         "usersLists": "Users lists",
         "myLists": "My lists",
-        "searchPlaceholder": "Search lists…"
+        "searchPlaceholder": "Search lists…",
+        "msgCreateSuccess": "List successfully created",
+        "msgUpdateSuccess": "List successfully updated",
+        "msgDeleteSuccess": "List successfully deleted"
     },
     "tasks": {
         "createTasksBtn": "Add task",
@@ -129,11 +119,6 @@
             }
         },
         "editTask": "Edit task",
-        "deleteTask": {
-            "title": "Delete task",
-            "contentTitle": "Are you sure you want to delete this task?",
-            "contentSubtitle": "This action can’t be undone"
-        },
         "pending": "Pending",
         "completed": "Completed"
     },
@@ -151,5 +136,11 @@
             "recentlyUpdated": "Recently updated",
             "recentlyAdded": "Recently added"
         },
-    "saveBtnText": "Save changes"
+    "saveBtnText": "Save changes",
+    "deleteModal": {
+            "title": "Delete {entityName}",
+            "contentTitle": "Are you sure you want to delete this {entityName}?",
+            "contentSubtitle": "This action can’t be undone"
+        },
+    "cancel": "Cancel"   
 }

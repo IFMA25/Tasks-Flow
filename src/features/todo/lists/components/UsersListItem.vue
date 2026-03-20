@@ -10,7 +10,7 @@ import VContainer from "@/shared/ui/common/VContainer.vue";
 import VIcon from "@/shared/ui/common/VIcon.vue";
 import VDropdown from "@/shared/ui/common/dropdown/VDropdown.vue";
 import { capitalizeFirstLetter } from "@/shared/utils";
-
+import { listsTabs } from "@/shared/variables/tabListsPage";
 
 const { data } = defineProps<{
   data: UserListGroup;
@@ -57,7 +57,11 @@ const router = useRouter();
             :key="list.id"
             class="border-b border-default hover:bg-hover
               py-3 px-5 last:border-none transition-all duration-300"
-            @click="router.push({ name: RouteNames.tasks, params: { listId: list.id } })"
+            @click="router.push({
+              name: RouteNames.tasks,
+              params: { listId: list.id },
+              query: { tab: listsTabs.usersLists }
+            })"
           >
             {{ capitalizeFirstLetter(list.title) }}
           </li>

@@ -6,30 +6,26 @@ import {
 } from "vue";
 import { useI18n } from "vue-i18n";
 import { useRouter } from "vue-router";
-import { toast } from "vue-sonner";
 
 import {
-  useUserDelete,
   useUsersDataRequest,
 } from "./api/useAdminPanelRequests";
 import UsersTableToolbar from "./components/UsersTableToolbar.vue";
 import { formatDate } from "./utils";
 
-import { useModal } from "@/shared/composables/useModal";
 import { useSelectedOption } from "@/shared/composables/useSelectedOption";
 import {
+  ActionKey,
+  Actions,
   RoleOption,
   SortOption,
   User,
 } from "@/shared/types";
 import { RouteNames } from "@/shared/types/routeNames";
-import VButton from "@/shared/ui/common/VButton.vue";
-import VModal from "@/shared/ui/common/VModal.vue";
 import VTitle from "@/shared/ui/common/VTitle.vue";
-import VDropdown from "@/shared/ui/common/dropdown/VDropdown.vue";
 import VTable from "@/shared/ui/table/VTable.vue";
-import { capitalizeFirstLetter } from "@/shared/utils";
-
+import VActionsDropdown from "@/shared/ui/VActionsDropdown.vue";
+import DeleteUserModal from "./components/DeleteUserModal.vue";
 
 const { t } = useI18n();
 
@@ -40,9 +36,9 @@ const tableHeads = computed(() => [
   { key: "action", label: t("table.tableHeads.action"), position: "text-center" },
 ]);
 
-const actions = computed(() => [
+const actions = computed<Actions[]>(() => [
   { key: "edit", label: t("usersList.userProfile") },
-  { key: "delete", label: t("usersList.removeUser") },
+  { key: "delete", label: t("deleteModal.title", { entityName: t("usersList.user") }) },
 ]);
 
 const roleOptions = computed<RoleOption[]>(() => [
@@ -83,9 +79,9 @@ const selectedSort = useSelectedOption<SortOption>(
 const modelSearch = ref<string>("");
 const debouncedSearch = refDebounced(modelSearch, 800);
 const currentLimit = ref<number>(20);
+const deleteModalRef = ref<InstanceType<typeof DeleteUserModal> | null>(null);
 
 const router = useRouter();
-const { open: openDeleteModal, close: closeDeleteModal } = useModal("userDeleteModal");
 
 const { execute, loading, data: usersData } = useUsersDataRequest({
   immediate: true,
@@ -99,58 +95,26 @@ const { execute, loading, data: usersData } = useUsersDataRequest({
   }),
 });
 
-const { execute: deleteUser, loading: deletingLoading  }
-= useUserDelete(() => selectedUser.value.id, {
-  onSuccess: () => {
-    execute();
-    closeDeleteModal();
-    toast.warning(t("usersList.removeUserModal.msgDeleteSuccess"));
-  },
-});
-
 const loadMore = (limit: number) => {
   currentLimit.value += limit;
   execute();
 };
 
-const handelAction = (user: User, action: string) => {
+const handleAction = (user: User, action: ActionKey) => {
   if (action === "edit") {
     router.push({ name: RouteNames.profile, query: { id: user.id } });
   }
   if (action === "delete") {
-    selectedUser.value = user;
-    openDeleteModal();
+    deleteModalRef.value?.openModal(user);
   }
 };
 </script>
 
 <template>
-  <VModal
-    id="userDeleteModal"
-    :title="$t('usersList.removeUserModal.title')"
-    max-width="md"
-  >
-    <p class="font-semibold mb-2">
-      {{ $t('usersList.removeUserModal.titleContent') }}
-      {{ selectedUser?.name }} ({{ selectedUser?.email }})?
-    </p>
-    <p class="text-xs">
-      {{ $t('usersList.removeUserModal.subtitleContent') }}
-    </p>
-    <template #footer>
-      <VButton
-        :text="$t('usersList.removeUserModal.cancel')"
-        variant="outline"
-        @click="closeDeleteModal"
-      />
-      <VButton
-        :text="$t('usersList.removeUserModal.confirmRemove')"
-        variant="danger"
-        :loading="deletingLoading"
-        @click="deleteUser()"
-      />
-    </template>
-  </VModal>
+  <DeleteUserModal 
+    ref="deleteModalRef"
+    @deleted="execute()"
+  />
   <div class="h-full flex flex-col gap-6">
     <VTitle :text="$t('usersList.title')" />
     <VTable
@@ -188,28 +152,9 @@ const handelAction = (user: User, action: string) => {
       <template
         #cell-action="{ row }"
       >
-        <VDropdown>
-          <template #trigger="{toggle}">
-            <VButton
-              icon="actions-btn"
-              icon-size="w-8 h-8"
-              class="w-full justify-center text-primaryBg font-bold text-lg"
-              @click="toggle"
-            />
-          </template>
-          <ul class="cursor-pointer flex flex-col gap-2 py-3 px-5">
-            <li
-              v-for="action in actions"
-              :key="action.key"
-              :class="action.key === 'delete'
-                ? 'text-danger hover:text-dangerHover'
-                : 'hover:text-primaryBg'"
-              @click="handelAction(row, action.key)"
-            >
-              {{ capitalizeFirstLetter(action.label) }}
-            </li>
-          </ul>
-        </VDropdown>
+        <VActionsDropdown
+          :actions="actions"
+          @action="(actionKey) => handleAction(row, actionKey)" />
       </template>
     </VTable>
   </div>

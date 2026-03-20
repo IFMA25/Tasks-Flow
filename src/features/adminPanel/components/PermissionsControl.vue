@@ -73,7 +73,7 @@ const labelCheckbox = computed(() =>
         :label="labelCheckbox"
         :disabled="disabled"
         :model-value="allSelected"
-        @update:model-value="emit('update:allSelected', $event)"
+        @update:model-value="(value) => emit('update:allSelected', value)"
       />
     </div>
   </div>

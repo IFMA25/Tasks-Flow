@@ -1,15 +1,17 @@
 <script setup lang="ts">
-import { Action } from "../types";
+import { ActionKey, Actions } from "../types";
 
 import VButton from "@/shared/ui/common/VButton.vue";
 import VDropdown from "@/shared/ui/common/dropdown/VDropdown.vue";
 import { capitalizeFirstLetter } from "@/shared/utils";
 
 defineProps<{
-  actions: Action[];
+  actions: Actions[];
 }>();
 
-const emit = defineEmits(["action"]);
+const emit = defineEmits<{
+  action: [key: ActionKey];
+}>();
 
 </script>
 
