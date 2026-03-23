@@ -15,11 +15,11 @@ export const useTasksStore = defineStore("tasks", () => {
     loading: fetchTaskLoading,
   } = getAllTasks(() => currentListId.value);
 
-  const fetchTasksForList = async (listId: string) => {
+  const fetchTasksForList = async (listId: string, params = {}) => {
     currentListId.value = listId;
-    await execute();
+    await execute({ params });
   };
 
-  return { currentListId, tasksData, fetchTaskLoading, fetchTasksForList };
+  return {  tasksData, fetchTaskLoading, fetchTasksForList };
 
 });

@@ -14,6 +14,7 @@ import VInput from "@/shared/ui/common/VInput.vue";
 import VModal from "@/shared/ui/common/VModal.vue";
 import VSelect from "@/shared/ui/common/VSelect.vue";
 import { parseTags } from "@/shared/utils";
+import { VueDatePicker } from "@vuepic/vue-datepicker";
 
 const { t } = useI18n();
 
@@ -23,13 +24,6 @@ const priorityOptions = computed(() => [
   { key: "high", label: t("tasks.createTaskModal.select.high") },
 ]);
 
-const deadlineOptions = computed(() => [
-  { key: "noDate", label: t("tasks.createTaskModal.select.noDeadline") },
-  { key: "today", label: t("tasks.createTaskModal.select.today") },
-  { key: "tomorrow", label: t("tasks.createTaskModal.select.tomorrow") },
-  { key: "thisWeek", label: t("tasks.createTaskModal.select.thisWeek") },
-  { key: "nextWeek", label: t("tasks.createTaskModal.select.nextWeek") },
-]);
 const { open: openModal, close } = useModal("taskFormModal");
 
 const currentListId = ref("");
@@ -37,7 +31,7 @@ const selectedTask = ref<TaskData | null>(null);
 const taskName = ref("");
 const tags = ref("");
 const priority = ref(priorityOptions.value[0]);
-const deadline = ref(deadlineOptions.value[0]);
+const deadline = ref(null);
 
 const parsedTags = computed(() => parseTags(tags.value).slice(0, 3));
 
@@ -55,7 +49,7 @@ const resetForm = () => {
   taskName.value = "";
   tags.value = "";
   priority.value = priorityOptions.value[0];
-  deadline.value = deadlineOptions.value[0];
+  deadline.value = null;
   taskForm.resetValidation();
 };
 
@@ -67,15 +61,12 @@ const open = (listId: string, task?: TaskData) => {
   tags.value = task?.tags?.join(", ") || "";
   priority.value = priorityOptions.value
     .find(p => p.key === task?.priority) || priorityOptions.value[0];
-  deadline.value = deadlineOptions.value
-    .find(d => d.key === task?.deadline) || deadlineOptions.value[0];
+  deadline.value = task?.dueDate || null;
 
   taskForm.resetValidation();
 
   openModal();
 };
-
-defineExpose({ open });
 
 const onSubmit = async () => {
   const success = await taskForm.handleSubmit();
@@ -84,6 +75,8 @@ const onSubmit = async () => {
     close();
   }
 };
+
+defineExpose({ open });
 </script>
 
 <template>
@@ -110,16 +103,16 @@ const onSubmit = async () => {
         :close-on-select="true"
         class="min-w-[13rem]"
       />
-      <VSelect
-        id="due"
-        v-model="deadline"
-        :label-text="$t('tasks.createTaskModal.labelDeadline')"
-        :options="deadlineOptions"
-        label="label"
-        track-by="key"
-        :close-on-select="true"
-        class="min-w-[13rem]"
-      />
+      <div class="flex gap-2 items-center">
+        <label class="text-primary font-medium">
+          {{ $t('tasks.createTaskModal.labelDeadline') }}
+        </label>
+        <VueDatePicker 
+          v-model="deadline"
+          :placeholder="$t('tasks.createTaskModal.placeholderDeadline')"
+          centered
+        />
+      </div>
       <VInput
         v-model="tags"
         :label="$t('tasks.createTaskModal.labelTags')"

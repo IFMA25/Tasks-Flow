@@ -1,55 +1,65 @@
 <script setup lang="ts">
 import {
   computed,
+  onMounted,
   ref,
-  watchEffect,
 } from "vue";
 import { useRoute } from "vue-router";
 
 import { TaskData } from "../types";
 import TaskFormModal from "./components/TaskFormModal.vue";
 import TasksList from "./components/TasksList.vue";
-import { useTasksFeature } from "./composable/useTasksFeature";
 
 import { ActionKey } from "@/shared/types";
 import VButton from "@/shared/ui/common/VButton.vue";
+import DeleteTaskModal from "./components/DeleteTaskModal.vue";
+import { useTasksStore } from "./store/useTasksStore";
+import { listsTabs } from "@/shared/variables/tabListsPage";
+import { useListsStore } from "../lists/store/useListsStore";
+import VSkeleton from "@/shared/ui/common/VSkeleton.vue";
 
 const route = useRoute();
-const { tasksStore } = useTasksFeature();
+const tasksStore = useTasksStore();
+const listStore = useListsStore();
 
 const listId = computed(() => String(route.params.listId));
 const backLink = computed(() => ({
   path: "/lists",
-  query: { tab: route.query.tab || "myLists" },
+  query: { tab: route.query.tab || listsTabs.myLists },
 }));
 
 const formModalRef = ref<InstanceType<typeof TaskFormModal> | null>(null);
-// const deleteModalRef = ref<InstanceType<typeof DeleteListModal> | null>(null);
+const deleteModalRef = ref<InstanceType<typeof DeleteTaskModal> | null>(null);
 
 function handleAction(task: TaskData, key: ActionKey) {
   if (key === "edit") formModalRef.value?.open(listId.value, task);
-  // if (key === 'delete') deletingTask.value = task; // для модалки удаления
+  if (key === 'delete') deleteModalRef.value?.openModal(listId.value, task);
 }
 
 const openCreateModal = () => {
   formModalRef.value?.open(listId.value);
 };
 
-watchEffect(() => {
+const onTaskDeleted = () => {
   tasksStore.fetchTasksForList(listId.value);
-});
+};
 
+onMounted(() => {
+  listStore.getSelectedListData(listId.value);
+});
 </script>
 
 <template>
-  <TaskFormModal ref="formModalRef" />
-  <Teleport to="#header-content">
-    <VButton
-      :to="backLink"
-      icon="chevron-left"
-      variant="navItem"
-      :text="$t('lists.lists')"
-    />
+  <Teleport to="#header-content" defer>
+    <div class="flex items-center gap-10">
+      <VButton
+        :to="backLink"
+        icon="chevron-left"
+        variant="navItem"
+      />
+      <VSkeleton v-if="listStore.isLoading" width="w-32" height="h-10" />
+      <h2 v-else class="text-3xl font-bold text-primary">{{ listStore.selectedList?.title }}</h2>
+    </div>
   </Teleport>
   <Teleport
     to="#header-actions"
@@ -62,8 +72,11 @@ watchEffect(() => {
       @click="openCreateModal()"
     />
   </Teleport>
+  <TaskFormModal ref="formModalRef" />
+  <DeleteTaskModal ref="deleteModalRef" @deleted="onTaskDeleted"/>
   <TasksList
-    :tasks="tasksStore.tasksData?.data || []"
+    ref="tasksListRef"
+    :list-id="listId"
     @action="handleAction"
   />
 </template>

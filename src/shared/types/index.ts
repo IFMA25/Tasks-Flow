@@ -1,4 +1,6 @@
-export type Option = Record<string, unknown>;
+export interface Option {
+  [key: string]: unknown;
+}
 
 export type UserRole = "admin" | "user";
 
@@ -27,20 +29,32 @@ export interface Pagination {
   totalPages: number;
 }
 
-export interface RoleOption {
+export interface RoleOption extends Option {
+  key: string;
   label: string;
   value: string | undefined;
-  [key: string]: unknown;
 }
 
-export interface SortOption {
+export interface SortOption extends Option {
   key: string;
   label: string;
   params: {
     sort: string;
     order: "asc" | "desc";
   };
-  [key: string]: unknown;
+}
+
+export interface PriorityOption extends Option {
+  key: string;
+  label: string;
+  params: {
+    priority: string;
+  };
+}
+
+export interface LanguageOption extends Option {
+  key: string;
+  label: string;
 }
 
 export type ActionKey = "edit" | "delete";

@@ -42,7 +42,7 @@ const handleToggle = () => {
 const slots = useSlots();
 
 const inputStyles = {
-  main: "bg-base rounded-lg border-2 border-default focus:border-2 focus:border-primaryText placeholder:text-muted text-primary leading-[1.3]",
+  main: "bg-base rounded-lg border-2 border-default focus:border-2 focus:border-borderFocus placeholder:text-muted text-primary leading-[1.3] hover:border-hover",
   error: "bg-base rounded-lg border-2 border-danger placeholder:text-muted text-primary leading-[1.3]",
   search: "max-w-[20rem] border-2 border-default rounded-lg placeholder-disabled focus:border-borderFocus focus:outline-none",
   readonly: "bg-base rounded-lg border-2 border-subtle placeholder:text-subtle text-primary leading-[1.3] cursor-default",

@@ -42,9 +42,9 @@ const actions = computed<Actions[]>(() => [
 ]);
 
 const roleOptions = computed<RoleOption[]>(() => [
-  { label: t("filters.allRoles"), value: undefined },
-  { label: t("filters.admins"), value: "admin" },
-  { label: t("filters.users"), value: "user" },
+  { key: "allRoles", label: t("filters.allRoles"), value: undefined },
+  { key: "admins", label: t("filters.admins"), value: "admin" },
+  { key: "users", label: t("filters.users"), value: "user" },
 ]);
 
 const sortOptions = computed<SortOption[]>(() => [
@@ -54,8 +54,7 @@ const sortOptions = computed<SortOption[]>(() => [
   { key: "nameDesc", label: t("filters.nameDesc"), params: { sort: "name", order: "desc" } },
 ]);
 
-const selectedUser = ref<User | null>(null);
-const activeRoleKey = ref<string>(roleOptions.value[0].value);
+const activeRoleKey = ref<string>(roleOptions.value[0].key);
 const activeSortKey = ref<string>(sortOptions.value[0].key);
 
 const selectedRole = useSelectedOption<RoleOption>(
@@ -63,8 +62,7 @@ const selectedRole = useSelectedOption<RoleOption>(
   activeRoleKey,
   (value) => {
     activeRoleKey.value = String(value);
-  },
-  "value",
+  }
 );
 
 const selectedSort = useSelectedOption<SortOption>(
@@ -72,8 +70,7 @@ const selectedSort = useSelectedOption<SortOption>(
   activeSortKey,
   (value) => {
     activeSortKey.value = String(value);
-  },
-  "key",
+  }
 );
 
 const modelSearch = ref<string>("");

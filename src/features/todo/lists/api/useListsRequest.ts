@@ -23,6 +23,13 @@ export const useListsRequests = () => {
     return useApiPatch<ListData, RequestBodyListData>(() => `/lists/${toValue(listId)}`, options);
   };
 
+  const getListById = (
+    listId: MaybeRefOrGetter<string>,
+    options?: UseApiOptions<ListData>,
+  ) => {
+    return useApiGet<ListData>(() => `/lists/${toValue(listId)}`, options);
+  };
+
   const createNewList = (
     options?: UseApiOptions<ListData, RequestBodyListData>,
   ) => {
@@ -36,5 +43,5 @@ export const useListsRequests = () => {
     return useApiDelete<ListData>(() => `/lists/${toValue(listId)}`, options);
   };
 
-  return { getAllLists, updateList, createNewList, deleteList };
+  return { getAllLists, updateList, createNewList, deleteList, getListById };
 };

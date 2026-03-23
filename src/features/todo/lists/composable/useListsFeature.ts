@@ -50,8 +50,7 @@ export const useListsFeature = () => {
     activeSortKey,
     (value) => {
       activeSortKey.value = String(value);
-    },
-    "key",
+    }
   );
 
   const activeTab = computed({
@@ -73,10 +72,6 @@ export const useListsFeature = () => {
     isOwn: activeTab.value === listsTabs.myLists ? true : undefined,
   }));
 
-  const updateLists = () => {
-    listsStore.fetchLists({ params: getFetchParams });
-  };
-
   const userLists = computed(() => {
     const data = listsStore.dataLists?.data;
     if (!data) return [];
@@ -95,6 +90,10 @@ export const useListsFeature = () => {
     return Array.from(grouped.values());
   });
 
+  const updateLists = () => {
+    listsStore.fetchLists({ params: getFetchParams });
+  };
+  
   const onSearchInput = useDebounceFn(() => {
     updateLists();
   }, 800);

@@ -1,16 +1,39 @@
+import { computed, ref } from "vue";
 import { defineStore } from "pinia";
 
 import { useListsRequests } from "../api/useListsRequest";
 
 export const useListsStore = defineStore("lists", () => {
-
-  const { getAllLists } = useListsRequests();
+  const { getAllLists, getListById } = useListsRequests();
 
   const {
     execute: fetchLists,
-    loading: isLoading,
+    loading: listsLoading,
     data: dataLists,
   } = getAllLists();
 
-  return { dataLists, fetchLists, isLoading };
+  const selectedListId = ref<string>("");
+
+  const {
+    execute: fetchSelectedList,
+    loading: selectedListLoading,
+    data: selectedList,
+  } = getListById(selectedListId);
+
+  const getSelectedListData = async (listId: string) => {
+    selectedListId.value = listId;
+    await fetchSelectedList();
+  };
+
+  const isLoading = computed(
+    () => listsLoading.value || selectedListLoading.value
+  );
+
+  return {
+    dataLists,
+    fetchLists,
+    selectedList,
+    getSelectedListData,
+    isLoading,
+  };
 });

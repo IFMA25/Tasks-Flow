@@ -17,6 +17,7 @@ interface Props {
   heads?: TableColumn<T>[];
   loading?: boolean;
   pagination?: Pagination;
+  showEmptyState?: boolean;
 }
 
 const {
@@ -43,7 +44,7 @@ defineEmits<{
     >
       <VTransitionLoader :is-loading="loading" />
       <div
-        v-if="!loading && rows.length === 0"
+        v-if="!loading && showEmptyState"
         class="py-16 px-4"
       >
         <slot name="emptyState">
@@ -58,7 +59,7 @@ defineEmits<{
         class="min-w-full text-primary leading-[1.3]"
       >
         <thead
-          v-if="heads"
+          v-if="heads.some(h => h.label)"
           class="bg-subtle sticky top-0 z-10"
         >
           <tr>

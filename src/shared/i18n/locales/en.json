@@ -97,11 +97,13 @@
         "msgDeleteSuccess": "List successfully deleted"
     },
     "tasks": {
+        "task": "task",
         "createTasksBtn": "Add task",
         "createTaskModal": {
             "title": "Add new task",
             "labelName": "Task name",
             "placeholderTaskName": "Enter task name",
+            "placeholderDeadline": "Select due date",
             "labelPriority": "Priority",
             "labelDeadline": "Due",
             "labelTags": "Tags",
@@ -120,21 +122,29 @@
         },
         "editTask": "Edit task",
         "pending": "Pending",
-        "completed": "Completed"
+        "completed": "Completed",
+        "msgCreateSuccess": "Task successfully created",
+        "msgUpdateSuccess": "Task successfully updated",
+        "msgDeleteSuccess": "Task successfully deleted"
     },
     "filters": {
         "role": "Roles",
         "sort": "Sort by",
-            "allRoles": "All roles",
-            "admins": "Admins",
-            "users": "Users",
-            "newestFirst": "Newest first",
-            "oldestFirst": "Oldest first",
-            "nameAsc": "Name A-Z",
-            "nameDesc": "Name Z-A",
-            "recentlyCreated": "Recently created",
-            "recentlyUpdated": "Recently updated",
-            "recentlyAdded": "Recently added"
+        "allRoles": "All roles",
+        "admins": "Admins",
+        "users": "Users",
+        "newestFirst": "Newest first",
+        "oldestFirst": "Oldest first",
+        "nameAsc": "Name A-Z",
+        "nameDesc": "Name Z-A",
+        "recentlyCreated": "Recently created",
+        "recentlyUpdated": "Recently updated",
+        "recentlyAdded": "Recently added",
+        "priority": "Priority",
+        "allPriorities": "All priorities",
+        "low": "Low priority",
+        "medium": "Medium priority",
+        "high": "High priority"
         },
     "saveBtnText": "Save changes",
     "deleteModal": {

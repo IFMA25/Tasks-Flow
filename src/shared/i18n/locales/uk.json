@@ -101,11 +101,13 @@
         "msgDeleteSuccess": "Список успішно видалено"
     },
     "tasks": {
+        "task": "завдання",
         "createTasksBtn": "Додати завдання",
         "createTaskModal": {
             "title": "Додати нове завдання",
             "labelName": "Назва завдання",
             "placeholderTaskName": "Введіть назву завдання",
+            "placeholderDeadline": "Виберіть дату",
             "labelPriority": "Пріоритет",
             "labelDeadline": "Термін",
             "labelTags": "Теги",
@@ -129,7 +131,10 @@
             "contentSubtitle": "Цю дію неможливо скасувати"
         },
         "pending": "В процесі",
-        "completed": "Виконано"
+        "completed": "Виконано",
+        "msgCreateSuccess": "Завдання успішно створено",
+        "msgUpdateSuccess": "Завдання успішно оновлено",
+        "msgDeleteSuccess": "Завдання успішно видалено"
     },
     "filters": {
         "role": "Роль",
@@ -143,7 +148,12 @@
         "nameDesc": "Ім'я Z-A",
         "recentlyCreated": "Нещодавно створені",
         "recentlyUpdated": "Нещодавно оновлені",
-        "recentlyAdded": "Нещодавно додані"
+        "recentlyAdded": "Нещодавно додані",
+        "priority": "Пріоритет",
+        "allPriorities": "Всі пріоритети",
+        "low": "Низький пріоритет",
+        "medium": "Середній пріоритет",
+        "high": "Високий пріоритет"
         },
     "saveBtnText": "Зберігти зміни",
     "deleteModal": {

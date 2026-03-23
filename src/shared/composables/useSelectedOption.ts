@@ -1,19 +1,18 @@
 import { computed, toValue, type MaybeRefOrGetter } from "vue";
 
-export function useSelectedOption<T>(
+export function useSelectedOption<T extends {key: string}>(
   options: MaybeRefOrGetter<T[]>,
-  activeValue: MaybeRefOrGetter<T[keyof T]>,
-  onSelect: (value: T[keyof T], option: T) => void,
-  key: keyof T,
+  activeValue: MaybeRefOrGetter<string>,
+  onSelect: (value: string, option: T) => void,
 ) {
   return computed({
     get: () => {
       const opts = toValue(options);
       const active = toValue(activeValue);
-      return opts.find((opt) => opt[key] === active) || opts[0];
+      return opts.find((option) => option.key === active) || opts[0];
     },
     set: (option: T) => {
-      onSelect(option[key], option);
+      onSelect(option.key, option);
     },
   });
 }

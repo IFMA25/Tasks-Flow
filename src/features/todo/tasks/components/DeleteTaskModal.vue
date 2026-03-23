@@ -3,33 +3,34 @@ import { ref } from "vue";
 import { useI18n } from "vue-i18n";
 import { toast } from "vue-sonner";
 
-import { ListData } from "../../types";
-import { useListsRequests } from "../api/useListsRequest";
-import { useListsFeature } from "../composable/useListsFeature";
+import { TaskData } from "../../types";
 
 import { useModal } from "@/shared/composables/useModal";
 import VConfirmDeleteModal from "@/shared/ui/VConfirmDeleteModal.vue";
+import { useTasksRequest } from "../api/useTasksRequest";
+
+const selectedTask = ref<TaskData | null>(null);
+const selectedListId = ref("");
 
 const { t } = useI18n();
 const { open, close } = useModal("listDeleteModal");
-const { deleteList } = useListsRequests();
+const { deleteTask } = useTasksRequest();
 
 const emit = defineEmits(["deleted"]);
 
-const selectedList = ref<ListData | null>(null);
-
-const openModal = (list: ListData) => {
-  selectedList.value = list;
+const openModal = (listId: string, task: TaskData) => {
+  selectedTask.value = task;
+  selectedListId.value = listId;
   open();
 };
 
-const { execute, loading } = deleteList(
-  () => selectedList.value?.id,
+const { execute, loading } = deleteTask(
+  () => selectedTask.value?.id,
   {
     onSuccess: () => {
       emit("deleted");
       close();
-      toast.warning(t("lists.msgDeleteSuccess"));
+      toast.warning(t("tasks.msgDeleteSuccess"));
     },
   },
 );
@@ -40,8 +41,8 @@ defineExpose({ openModal });
 <template>
   <VConfirmDeleteModal
     id="listDeleteModal"
-    entity-name="list"
-    :item-name="selectedList?.title || ''"
+    entity-name="task"
+    :item-name="selectedTask?.title || ''"
     :loading="loading"
     @confirm="execute()"
   />
