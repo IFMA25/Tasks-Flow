@@ -5,7 +5,7 @@ import { toast } from "vue-sonner";
 
 import { ListData } from "../../types";
 import { useListsRequests } from "../api/useListsRequest";
-import { useListsFeature } from "../composable/useListsFeature";
+import { useListsStore } from "../store/useListsStore";
 
 import { useModal } from "@/shared/composables/useModal";
 import VConfirmDeleteModal from "@/shared/ui/VConfirmDeleteModal.vue";
@@ -13,8 +13,7 @@ import VConfirmDeleteModal from "@/shared/ui/VConfirmDeleteModal.vue";
 const { t } = useI18n();
 const { open, close } = useModal("listDeleteModal");
 const { deleteList } = useListsRequests();
-
-const emit = defineEmits(["deleted"]);
+const listsStore = useListsStore();
 
 const selectedList = ref<ListData | null>(null);
 
@@ -27,8 +26,8 @@ const { execute, loading } = deleteList(
   () => selectedList.value?.id,
   {
     onSuccess: () => {
-      emit("deleted");
       close();
+      listsStore.fetchLists();
       toast.warning(t("lists.msgDeleteSuccess"));
     },
   },

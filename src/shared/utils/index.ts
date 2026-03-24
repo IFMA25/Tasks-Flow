@@ -27,7 +27,7 @@ export const createValidationRules = (t: (key: string, params?: unknown) => stri
       helpers.withMessage(
         () => t("validation.maxTags", { max }),
         (value: string) => {
-          const tags = parseTags(value);
+          const tags = parseStringToArray(value);
           return tags.length <= max;
         },
       ),
@@ -45,7 +45,7 @@ export const capitalizeFirstLetter = (string: string) => {
     .join(" ");
 };
 
-export const parseTags = (value: string) => {
+export const parseStringToArray = (value: string) => {
   if (!value) return [];
   return value.split(",").map((t) => t.trim()).filter(Boolean);
 };

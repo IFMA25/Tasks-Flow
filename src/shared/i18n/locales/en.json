@@ -113,6 +113,7 @@
                 "low": "Low",
                 "medium": "Medium",
                 "high": "High",
+                "overdue": "Overdue",
                 "noDeadline": "No due date",
                 "today": "Today",
                 "tomorrow": "Tomorrow",

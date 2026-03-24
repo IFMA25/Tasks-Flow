@@ -1,8 +1,9 @@
 <script setup lang="ts">
-import { VueDatePicker } from "@vuepic/vue-datepicker";
 import {
   computed,
   ref,
+  reactive,
+  toRef,
 } from "vue";
 import { useI18n } from "vue-i18n";
 
@@ -14,8 +15,11 @@ import VButton from "@/shared/ui/common/VButton.vue";
 import VInput from "@/shared/ui/common/VInput.vue";
 import VModal from "@/shared/ui/common/VModal.vue";
 import VSelect from "@/shared/ui/common/VSelect.vue";
-import { parseTags } from "@/shared/utils";
+import { parseStringToArray } from "@/shared/utils";
+import { VueDatePicker } from "@vuepic/vue-datepicker";
+import { formatISO } from "date-fns";
 
+const { open: openModal, close } = useModal("taskFormModal");
 const { t } = useI18n();
 
 const priorityOptions = computed(() => [
@@ -24,32 +28,34 @@ const priorityOptions = computed(() => [
   { key: "high", label: t("tasks.createTaskModal.select.high") },
 ]);
 
-const { open: openModal, close } = useModal("taskFormModal");
-
 const currentListId = ref("");
 const selectedTask = ref<TaskData | null>(null);
-const taskName = ref("");
-const tags = ref("");
-const priority = ref(priorityOptions.value[0]);
-const deadline = ref(null);
+const formFields = reactive({
+  taskName: "",
+  tags: "",
+  priority: priorityOptions.value[0],
+  deadline: null,
+});
 
-const parsedTags = computed(() => parseTags(tags.value).slice(0, 3));
+const parsedTags = computed(() => parseStringToArray(formFields.tags));
 
 const formData = {
-  taskName,
-  tags,
-  priority: computed(() => priority.value.key),
-  dueDate: computed(() => deadline.value.key),
+  taskName: toRef(formFields, "taskName"),
+  tags: toRef(formFields, "tags"),
+  priority: computed(() => formFields.priority.key),
+  dueDate: computed(() => formFields.deadline ? formatISO(formFields.deadline) : null),
 };
 
 const taskForm = useTaskForm(currentListId, selectedTask, formData);
 
 const resetForm = () => {
   selectedTask.value = null;
-  taskName.value = "";
-  tags.value = "";
-  priority.value = priorityOptions.value[0];
-  deadline.value = null;
+  Object.assign(formFields, {
+    taskName: "",
+    tags: "",
+    priority: priorityOptions.value[0],
+    deadline: null,
+  });
   taskForm.resetValidation();
 };
 
@@ -57,11 +63,13 @@ const open = (listId: string, task?: TaskData) => {
   currentListId.value = listId;
   selectedTask.value = task || null;
 
-  taskName.value = task?.title || "";
-  tags.value = task?.tags?.join(", ") || "";
-  priority.value = priorityOptions.value
-    .find(p => p.key === task?.priority) || priorityOptions.value[0];
-  deadline.value = task?.dueDate || null;
+  Object.assign(formFields, {
+    taskName: task?.title || "",
+    tags: task?.tags?.join(", ") || "",
+    priority: priorityOptions.value
+      .find(p => p.key === task?.priority) || priorityOptions.value[0],
+    deadline: task?.dueDate ? new Date(task.dueDate) : null,
+  });
 
   taskForm.resetValidation();
 
@@ -88,14 +96,14 @@ defineExpose({ open });
   >
     <div class="flex flex-col gap-4 text-primary">
       <VInput
-        v-model="taskName"
+        v-model="formFields.taskName"
         :label="$t('tasks.createTaskModal.labelName')"
         :placeholder="$t('tasks.createTaskModal.placeholderTaskName')"
         class="leading-[1.2]"
       />
       <VSelect
         id="priority"
-        v-model="priority"
+        v-model="formFields.priority"
         :label-text="$t('tasks.createTaskModal.labelPriority')"
         :options="priorityOptions"
         label="label"
@@ -107,14 +115,15 @@ defineExpose({ open });
         <label class="text-primary font-medium">
           {{ $t('tasks.createTaskModal.labelDeadline') }}
         </label>
-        <VueDatePicker
-          v-model="deadline"
+        <VueDatePicker 
+          v-model="formFields.deadline"
           :placeholder="$t('tasks.createTaskModal.placeholderDeadline')"
           centered
+          :enable-time-picker="false"
         />
       </div>
       <VInput
-        v-model="tags"
+        v-model="formFields.tags"
         :label="$t('tasks.createTaskModal.labelTags')"
         :placeholder="$t('tasks.createTaskModal.placeholderTags')"
         :validation="taskForm.v$.value.tags"

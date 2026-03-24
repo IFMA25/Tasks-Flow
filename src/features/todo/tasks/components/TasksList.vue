@@ -1,20 +1,25 @@
 <script setup lang="ts">
+import { format } from "date-fns";
 import { computed, ref } from "vue";
+import { useI18n } from "vue-i18n";
 
-import { formatDueDate } from "../utils";
 import TasksListToolbar from "./TasksListToolbar.vue";
 import { useTasksListFeature } from "../composable/useTasksListFeature";
+import { getDueDateStatusFromIso } from "../utils/dateFormater";
 
 import VActionsDropdown from "@/shared/ui/VActionsDropdown.vue";
 import VButton from "@/shared/ui/common/VButton.vue";
 import VCheckbox from "@/shared/ui/common/VCheckbox.vue";
 import VTable from "@/shared/ui/table/VTable.vue";
 
+
+
 const { listId } = defineProps<{
   listId: string;
 }>();
 
 const emit = defineEmits(["action"]);
+const { t } = useI18n();
 
 const {
   pendingTasks,
@@ -43,6 +48,17 @@ const colorsPriority: Record<string, string> = {
   low:    "text-success before:bg-success",
   medium: "text-warning before:bg-warning",
   high:   "text-danger before:bg-danger",
+};
+
+const displayDueDate = (dueDate: string) => {
+  const statusKey = getDueDateStatusFromIso(dueDate);
+
+  if (!statusKey) return t("tasks.createTaskModal.select.noDeadline");
+
+  if (statusKey === "later") {
+    return format(new Date(dueDate), "dd MMM yyyy");
+  }
+  return t(`tasks.createTaskModal.select.${statusKey}`);
 };
 
 </script>
@@ -97,9 +113,9 @@ const colorsPriority: Record<string, string> = {
         <template #cell-dueDate="{ row }">
           <div
             class="text-sm leading-[1.3]"
-            :class="{ 'text-danger font-medium': row.deadline === 'Overdue' }"
+            :class="{ 'text-danger font-medium': getDueDateStatusFromIso(row.dueDate) === 'overdue' }"
           >
-            {{ formatDueDate(row.dueDate) }}
+            {{ displayDueDate(row.dueDate) }}
           </div>
         </template>
         <template #cell-tags="{ row }">
@@ -173,14 +189,6 @@ const colorsPriority: Record<string, string> = {
               :class="colorsPriority[row.priority]"
             >
               {{ row.priority }}
-            </div>
-          </template>
-          <template #cell-dueDate="{ row }">
-            <div
-              class="text-sm leading-[1.3]"
-              :class="{ 'text-danger font-medium': row.deadline === 'Overdue' }"
-            >
-              {{ formatDueDate(row.dueDate) }}
             </div>
           </template>
           <template #cell-tags="{ row }">
