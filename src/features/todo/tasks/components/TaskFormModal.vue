@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { VueDatePicker } from "@vuepic/vue-datepicker";
 import {
   computed,
   ref,
@@ -14,7 +15,6 @@ import VInput from "@/shared/ui/common/VInput.vue";
 import VModal from "@/shared/ui/common/VModal.vue";
 import VSelect from "@/shared/ui/common/VSelect.vue";
 import { parseTags } from "@/shared/utils";
-import { VueDatePicker } from "@vuepic/vue-datepicker";
 
 const { t } = useI18n();
 
@@ -107,7 +107,7 @@ defineExpose({ open });
         <label class="text-primary font-medium">
           {{ $t('tasks.createTaskModal.labelDeadline') }}
         </label>
-        <VueDatePicker 
+        <VueDatePicker
           v-model="deadline"
           :placeholder="$t('tasks.createTaskModal.placeholderDeadline')"
           centered

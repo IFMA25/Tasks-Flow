@@ -1,12 +1,13 @@
 <script setup lang="ts">
+import { ref } from "vue";
 import { useI18n } from "vue-i18n";
 import { toast } from "vue-sonner";
 
-import { useModal } from "@/shared/composables/useModal";
-import VConfirmDeleteModal from "@/shared/ui/VConfirmDeleteModal.vue";
-import { User } from "@/shared/types";
 import { useUserDelete } from "../api/useAdminPanelRequests";
-import { ref } from "vue";
+
+import { useModal } from "@/shared/composables/useModal";
+import { User } from "@/shared/types";
+import VConfirmDeleteModal from "@/shared/ui/VConfirmDeleteModal.vue";
 
 const { t } = useI18n();
 const { open, close } = useModal("userDeleteModal");
@@ -25,7 +26,7 @@ const openModal = (user: User) => {
 const { execute, loading  }
 = useUserDelete(() => selectedUser.value.id, {
   onSuccess: () => {
-    emit('deleted');
+    emit("deleted");
     close();
     toast.warning(t("usersList.msgDeleteSuccess"));
   },

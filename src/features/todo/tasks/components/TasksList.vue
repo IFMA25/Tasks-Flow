@@ -2,15 +2,15 @@
 import { computed, ref } from "vue";
 
 import { formatDueDate } from "../utils";
-
-import VTable from "@/shared/ui/table/VTable.vue";
-import VCheckbox from "@/shared/ui/common/VCheckbox.vue";
-import VActionsDropdown from "@/shared/ui/VActionsDropdown.vue";
-import VButton from "@/shared/ui/common/VButton.vue";
 import TasksListToolbar from "./TasksListToolbar.vue";
 import { useTasksListFeature } from "../composable/useTasksListFeature";
 
-const {listId} = defineProps<{
+import VActionsDropdown from "@/shared/ui/VActionsDropdown.vue";
+import VButton from "@/shared/ui/common/VButton.vue";
+import VCheckbox from "@/shared/ui/common/VCheckbox.vue";
+import VTable from "@/shared/ui/table/VTable.vue";
+
+const { listId } = defineProps<{
   listId: string;
 }>();
 
@@ -25,7 +25,7 @@ const {
   priorityOptions,
   selectedSort,
   selectedPriority,
-  handleStatusChange
+  handleStatusChange,
 } = useTasksListFeature(listId);
 
 const isCompletedOpen = ref(true);
@@ -50,7 +50,10 @@ const colorsPriority: Record<string, string> = {
 <template>
   <div class="relative flex flex-col gap-8 w-full max-w-5xl mx-auto p-4">
     <div>
-      <h3 class="mb-2" v-if="pendingTasks.length">
+      <h3
+        v-if="pendingTasks.length"
+        class="mb-2"
+      >
         {{ $t("tasks.pending") }} ({{ pendingTasks.length }})
       </h3>
       <VTable
@@ -101,14 +104,20 @@ const colorsPriority: Record<string, string> = {
         </template>
         <template #cell-tags="{ row }">
           <div class="flex items-center flex-wrap gap-1.5 text-sm font-medium text-secondary leading-[1.3]">
-            <span v-for="(tag, index) in row.tags" :key="tag">
+            <span
+              v-for="(tag, index) in row.tags"
+              :key="tag"
+            >
               {{ tag }}
               <span v-if="index !== row.tags.length - 1">•</span>
             </span>
           </div>
         </template>
         <template #cell-actions="{ row }">
-          <div v-if="row.status !== 'done'" class="flex justify-end">
+          <div
+            v-if="row.status !== 'done'"
+            class="flex justify-end"
+          >
             <VActionsDropdown
               :actions="rowActions"
               @action="(key) => emit('action', row, key)"
@@ -119,7 +128,10 @@ const colorsPriority: Record<string, string> = {
     </div>
 
     <div>
-      <h3 class="flex items-center gap-2 cursor-pointer mb-2" v-if="completedTasks.length">
+      <h3
+        v-if="completedTasks.length"
+        class="flex items-center gap-2 cursor-pointer mb-2"
+      >
         {{ $t("tasks.completed") }} ({{ completedTasks.length }})
         <VButton
           variant="cardTitle"
@@ -173,7 +185,10 @@ const colorsPriority: Record<string, string> = {
           </template>
           <template #cell-tags="{ row }">
             <div class="flex items-center flex-wrap gap-1.5 text-sm font-medium text-secondary leading-[1.3]">
-              <span v-for="(tag, index) in row.tags" :key="tag">
+              <span
+                v-for="(tag, index) in row.tags"
+                :key="tag"
+              >
                 {{ tag }}
                 <span v-if="index !== row.tags.length - 1">•</span>
               </span>

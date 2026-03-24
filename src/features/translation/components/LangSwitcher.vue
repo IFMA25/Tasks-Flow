@@ -20,7 +20,7 @@ const localeOptions = computed(
   () => supportedLocales.map((locale: string) => ({
     key: locale,
     label: localeLabels[locale],
-  }))
+  })),
 );
 
 const currentLangDisplay = useSelectedOption<LanguageOption>(
@@ -28,7 +28,7 @@ const currentLangDisplay = useSelectedOption<LanguageOption>(
   () => language.currentLang,
   (val: string) => {
     language.setLanguage(val);
-  }
+  },
 );
 </script>
 

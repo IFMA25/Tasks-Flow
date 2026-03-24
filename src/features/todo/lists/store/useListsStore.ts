@@ -1,5 +1,5 @@
-import { computed, ref } from "vue";
 import { defineStore } from "pinia";
+import { computed, ref } from "vue";
 
 import { useListsRequests } from "../api/useListsRequest";
 
@@ -26,7 +26,7 @@ export const useListsStore = defineStore("lists", () => {
   };
 
   const isLoading = computed(
-    () => listsLoading.value || selectedListLoading.value
+    () => listsLoading.value || selectedListLoading.value,
   );
 
   return {

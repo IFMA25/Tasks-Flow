@@ -4,6 +4,7 @@ import { useI18n } from "vue-i18n";
 import { TaskData } from "../../types";
 import { useTasksRequest } from "../api/useTasksRequest";
 import { useTasksStore } from "../store/useTasksStore";
+
 import { useSelectedOption } from "@/shared/composables/useSelectedOption";
 import { Actions, PriorityOption, SortOption } from "@/shared/types";
 
@@ -12,10 +13,7 @@ export const useTasksListFeature = (listId: string) => {
   const tasksStore = useTasksStore();
   const { completeTask } = useTasksRequest();
 
-  const rowActions = computed<Actions[]>(() => [
-  { key: "edit",   label: t("tasks.editTask") },
-  { key: "delete", label: t("deleteModal.title", { entityName: t("tasks.task") }) },
-]);
+  const rowActions = computed<Actions[]>(() => [{ key: "edit",   label: t("tasks.editTask") }, { key: "delete", label: t("deleteModal.title", { entityName: t("tasks.task") }) }]);
 
   const sortOptions = computed<SortOption[]>(() => [
     { key: "recentlyAdded", label: t("filters.recentlyAdded"), params: { sort: "createdAt", order: "desc" } },
@@ -32,14 +30,14 @@ export const useTasksListFeature = (listId: string) => {
   ]);
 
   const pendingTasks = computed(() =>
-    tasksStore.tasksData?.data.filter((t) => t.status === "todo") ?? []
+    tasksStore.tasksData?.data.filter((t) => t.status === "todo") ?? [],
   );
   const completedTasks = computed(() =>
-    tasksStore.tasksData?.data.filter((t) => t.status === "done") ?? []
+    tasksStore.tasksData?.data.filter((t) => t.status === "done") ?? [],
   );
 
   const isLoading = computed(
-    () => completeTaskLoading.value || tasksStore.fetchTaskLoading
+    () => completeTaskLoading.value || tasksStore.fetchTaskLoading,
   );
 
   const selectedTask = ref<TaskData | null>(null);
@@ -86,6 +84,6 @@ export const useTasksListFeature = (listId: string) => {
     priorityOptions,
     selectedSort,
     selectedPriority,
-    handleStatusChange
+    handleStatusChange,
   };
 };

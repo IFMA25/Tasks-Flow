@@ -4,10 +4,10 @@ import { useI18n } from "vue-i18n";
 import { toast } from "vue-sonner";
 
 import { TaskData } from "../../types";
+import { useTasksRequest } from "../api/useTasksRequest";
 
 import { useModal } from "@/shared/composables/useModal";
 import VConfirmDeleteModal from "@/shared/ui/VConfirmDeleteModal.vue";
-import { useTasksRequest } from "../api/useTasksRequest";
 
 const selectedTask = ref<TaskData | null>(null);
 const selectedListId = ref("");

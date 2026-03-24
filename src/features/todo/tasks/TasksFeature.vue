@@ -7,16 +7,17 @@ import {
 import { useRoute } from "vue-router";
 
 import { TaskData } from "../types";
+import DeleteTaskModal from "./components/DeleteTaskModal.vue";
 import TaskFormModal from "./components/TaskFormModal.vue";
 import TasksList from "./components/TasksList.vue";
+import { useTasksStore } from "./store/useTasksStore";
+import { useListsStore } from "../lists/store/useListsStore";
 
 import { ActionKey } from "@/shared/types";
 import VButton from "@/shared/ui/common/VButton.vue";
-import DeleteTaskModal from "./components/DeleteTaskModal.vue";
-import { useTasksStore } from "./store/useTasksStore";
-import { listsTabs } from "@/shared/variables/tabListsPage";
-import { useListsStore } from "../lists/store/useListsStore";
 import VSkeleton from "@/shared/ui/common/VSkeleton.vue";
+import { listsTabs } from "@/shared/variables/tabListsPage";
+
 
 const route = useRoute();
 const tasksStore = useTasksStore();
@@ -33,7 +34,7 @@ const deleteModalRef = ref<InstanceType<typeof DeleteTaskModal> | null>(null);
 
 function handleAction(task: TaskData, key: ActionKey) {
   if (key === "edit") formModalRef.value?.open(listId.value, task);
-  if (key === 'delete') deleteModalRef.value?.openModal(listId.value, task);
+  if (key === "delete") deleteModalRef.value?.openModal(listId.value, task);
 }
 
 const openCreateModal = () => {
@@ -50,15 +51,27 @@ onMounted(() => {
 </script>
 
 <template>
-  <Teleport to="#header-content" defer>
+  <Teleport
+    to="#header-content"
+    defer
+  >
     <div class="flex items-center gap-10">
       <VButton
         :to="backLink"
         icon="chevron-left"
         variant="navItem"
       />
-      <VSkeleton v-if="listStore.isLoading" width="w-32" height="h-10" />
-      <h2 v-else class="text-3xl font-bold text-primary">{{ listStore.selectedList?.title }}</h2>
+      <VSkeleton
+        v-if="listStore.isLoading"
+        width="w-32"
+        height="h-10"
+      />
+      <h2
+        v-else
+        class="text-3xl font-bold text-primary"
+      >
+        {{ listStore.selectedList?.title }}
+      </h2>
     </div>
   </Teleport>
   <Teleport
@@ -73,7 +86,10 @@ onMounted(() => {
     />
   </Teleport>
   <TaskFormModal ref="formModalRef" />
-  <DeleteTaskModal ref="deleteModalRef" @deleted="onTaskDeleted"/>
+  <DeleteTaskModal
+    ref="deleteModalRef"
+    @deleted="onTaskDeleted"
+  />
   <TasksList
     ref="tasksListRef"
     :list-id="listId"

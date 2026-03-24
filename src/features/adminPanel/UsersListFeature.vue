@@ -10,6 +10,7 @@ import { useRouter } from "vue-router";
 import {
   useUsersDataRequest,
 } from "./api/useAdminPanelRequests";
+import DeleteUserModal from "./components/DeleteUserModal.vue";
 import UsersTableToolbar from "./components/UsersTableToolbar.vue";
 import { formatDate } from "./utils";
 
@@ -22,10 +23,9 @@ import {
   User,
 } from "@/shared/types";
 import { RouteNames } from "@/shared/types/routeNames";
+import VActionsDropdown from "@/shared/ui/VActionsDropdown.vue";
 import VTitle from "@/shared/ui/common/VTitle.vue";
 import VTable from "@/shared/ui/table/VTable.vue";
-import VActionsDropdown from "@/shared/ui/VActionsDropdown.vue";
-import DeleteUserModal from "./components/DeleteUserModal.vue";
 
 const { t } = useI18n();
 
@@ -62,7 +62,7 @@ const selectedRole = useSelectedOption<RoleOption>(
   activeRoleKey,
   (value) => {
     activeRoleKey.value = String(value);
-  }
+  },
 );
 
 const selectedSort = useSelectedOption<SortOption>(
@@ -70,7 +70,7 @@ const selectedSort = useSelectedOption<SortOption>(
   activeSortKey,
   (value) => {
     activeSortKey.value = String(value);
-  }
+  },
 );
 
 const modelSearch = ref<string>("");
@@ -108,7 +108,7 @@ const handleAction = (user: User, action: ActionKey) => {
 </script>
 
 <template>
-  <DeleteUserModal 
+  <DeleteUserModal
     ref="deleteModalRef"
     @deleted="execute()"
   />
@@ -151,7 +151,8 @@ const handleAction = (user: User, action: ActionKey) => {
       >
         <VActionsDropdown
           :actions="actions"
-          @action="(actionKey) => handleAction(row, actionKey)" />
+          @action="(actionKey) => handleAction(row, actionKey)"
+        />
       </template>
     </VTable>
   </div>

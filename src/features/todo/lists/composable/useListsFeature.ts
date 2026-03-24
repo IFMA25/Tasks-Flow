@@ -27,20 +27,11 @@ export const useListsFeature = () => {
   const router = useRouter();
   const listsStore = useListsStore();
 
-  const actions = computed<Actions[]>(() => [
-    { key: "edit", label: t("lists.editList") }, 
-    { key: "delete", label: t("deleteModal.title", { entityName: t("lists.list") }) }
-  ]);
+  const actions = computed<Actions[]>(() => [{ key: "edit", label: t("lists.editList") }, { key: "delete", label: t("deleteModal.title", { entityName: t("lists.list") }) }]);
 
-  const sortOptions = computed<SortOption[]>(() => [
-    { key: "recentlyCreated", label: t("filters.recentlyCreated"), params: { sort: "createdAt", order: "asc" } }, 
-    { key: "recentlyUpdated", label: t("filters.recentlyUpdated"), params: { sort: "updatedAt", order: "desc" } }
-  ]);
+  const sortOptions = computed<SortOption[]>(() => [{ key: "recentlyCreated", label: t("filters.recentlyCreated"), params: { sort: "createdAt", order: "asc" } }, { key: "recentlyUpdated", label: t("filters.recentlyUpdated"), params: { sort: "updatedAt", order: "desc" } }]);
 
-  const tabs = computed(() => [
-    { value: "myLists", label: t("lists.myLists") }, 
-    { value: "usersLists", label: t("lists.usersLists") }
-  ]);
+  const tabs = computed(() => [{ value: "myLists", label: t("lists.myLists") }, { value: "usersLists", label: t("lists.usersLists") }]);
 
   const modelSearch = ref<string>("");
   const activeSortKey = ref<string>(sortOptions.value[0].key);
@@ -50,7 +41,7 @@ export const useListsFeature = () => {
     activeSortKey,
     (value) => {
       activeSortKey.value = String(value);
-    }
+    },
   );
 
   const activeTab = computed({
@@ -93,7 +84,7 @@ export const useListsFeature = () => {
   const updateLists = () => {
     listsStore.fetchLists({ params: getFetchParams });
   };
-  
+
   const onSearchInput = useDebounceFn(() => {
     updateLists();
   }, 800);

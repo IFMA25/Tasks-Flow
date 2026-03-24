@@ -1,6 +1,6 @@
 import { computed, toValue, type MaybeRefOrGetter } from "vue";
 
-export function useSelectedOption<T extends {key: string}>(
+export function useSelectedOption<T extends { key: string }>(
   options: MaybeRefOrGetter<T[]>,
   activeValue: MaybeRefOrGetter<string>,
   onSelect: (value: string, option: T) => void,
