@@ -3,11 +3,11 @@ import { useI18n } from "vue-i18n";
 
 import { ListData } from "../../types";
 
+import { ActionKey, Actions } from "@/shared/types";
 import { RouteNames } from "@/shared/types/routeNames";
+import VActionsDropdown from "@/shared/ui/VActionsDropdown.vue";
 import VButton from "@/shared/ui/common/VButton.vue";
 import VContainer from "@/shared/ui/common/VContainer.vue";
-import VActionsDropdown from "@/shared/ui/VActionsDropdown.vue";
-import { ActionKey, Actions } from "@/shared/types";
 
 const { data } = defineProps<{
   data: ListData;
@@ -46,7 +46,8 @@ const emit = defineEmits<{
       <div class="absolute top-2 right-2">
         <VActionsDropdown
           :actions="actions"
-          @action="(actionKey) => emit('action', data, actionKey)" />
+          @action="(actionKey) => emit('action', data, actionKey)"
+        />
       </div>
     </template>
   </VContainer>

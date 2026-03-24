@@ -25,7 +25,6 @@ const {
   activeTab,
   userLists,
   onSearchInput,
-  updateLists,
 } = useListsFeature();
 
 const formModalRef = ref<InstanceType<typeof ListFormModal> | null>(null);
@@ -54,7 +53,7 @@ const handleAction = (list: ListData, action: ListAction) => {
     />
   </Teleport>
   <ListFormModal ref="formModalRef" />
-  <DeleteListModal ref="deleteModalRef" @deleted="updateLists"/>
+  <DeleteListModal ref="deleteModalRef" />
   <ListsToolbar
     v-model:search="modelSearch"
     v-model:sort="selectedSort"

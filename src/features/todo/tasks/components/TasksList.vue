@@ -1,20 +1,25 @@
 <script setup lang="ts">
+import { format } from "date-fns";
 import { computed, ref } from "vue";
+import { useI18n } from "vue-i18n";
 
-import { formatDueDate } from "../utils";
-
-import VTable from "@/shared/ui/table/VTable.vue";
-import VCheckbox from "@/shared/ui/common/VCheckbox.vue";
-import VActionsDropdown from "@/shared/ui/VActionsDropdown.vue";
-import VButton from "@/shared/ui/common/VButton.vue";
 import TasksListToolbar from "./TasksListToolbar.vue";
 import { useTasksListFeature } from "../composable/useTasksListFeature";
+import { getDueDateStatusFromIso } from "../utils/dateFormater";
 
-const {listId} = defineProps<{
+import VActionsDropdown from "@/shared/ui/VActionsDropdown.vue";
+import VButton from "@/shared/ui/common/VButton.vue";
+import VCheckbox from "@/shared/ui/common/VCheckbox.vue";
+import VTable from "@/shared/ui/table/VTable.vue";
+
+
+
+const { listId } = defineProps<{
   listId: string;
 }>();
 
 const emit = defineEmits(["action"]);
+const { t } = useI18n();
 
 const {
   pendingTasks,
@@ -25,7 +30,7 @@ const {
   priorityOptions,
   selectedSort,
   selectedPriority,
-  handleStatusChange
+  handleStatusChange,
 } = useTasksListFeature(listId);
 
 const isCompletedOpen = ref(true);
@@ -45,12 +50,26 @@ const colorsPriority: Record<string, string> = {
   high:   "text-danger before:bg-danger",
 };
 
+const displayDueDate = (dueDate: string) => {
+  const statusKey = getDueDateStatusFromIso(dueDate);
+
+  if (!statusKey) return t("tasks.createTaskModal.select.noDeadline");
+
+  if (statusKey === "later") {
+    return format(new Date(dueDate), "dd MMM yyyy");
+  }
+  return t(`tasks.createTaskModal.select.${statusKey}`);
+};
+
 </script>
 
 <template>
   <div class="relative flex flex-col gap-8 w-full max-w-5xl mx-auto p-4">
     <div>
-      <h3 class="mb-2" v-if="pendingTasks.length">
+      <h3
+        v-if="pendingTasks.length"
+        class="mb-2"
+      >
         {{ $t("tasks.pending") }} ({{ pendingTasks.length }})
       </h3>
       <VTable
@@ -94,21 +113,27 @@ const colorsPriority: Record<string, string> = {
         <template #cell-dueDate="{ row }">
           <div
             class="text-sm leading-[1.3]"
-            :class="{ 'text-danger font-medium': row.deadline === 'Overdue' }"
+            :class="{ 'text-danger font-medium': getDueDateStatusFromIso(row.dueDate) === 'overdue' }"
           >
-            {{ formatDueDate(row.dueDate) }}
+            {{ displayDueDate(row.dueDate) }}
           </div>
         </template>
         <template #cell-tags="{ row }">
           <div class="flex items-center flex-wrap gap-1.5 text-sm font-medium text-secondary leading-[1.3]">
-            <span v-for="(tag, index) in row.tags" :key="tag">
+            <span
+              v-for="(tag, index) in row.tags"
+              :key="tag"
+            >
               {{ tag }}
               <span v-if="index !== row.tags.length - 1">•</span>
             </span>
           </div>
         </template>
         <template #cell-actions="{ row }">
-          <div v-if="row.status !== 'done'" class="flex justify-end">
+          <div
+            v-if="row.status !== 'done'"
+            class="flex justify-end"
+          >
             <VActionsDropdown
               :actions="rowActions"
               @action="(key) => emit('action', row, key)"
@@ -119,7 +144,10 @@ const colorsPriority: Record<string, string> = {
     </div>
 
     <div>
-      <h3 class="flex items-center gap-2 cursor-pointer mb-2" v-if="completedTasks.length">
+      <h3
+        v-if="completedTasks.length"
+        class="flex items-center gap-2 cursor-pointer mb-2"
+      >
         {{ $t("tasks.completed") }} ({{ completedTasks.length }})
         <VButton
           variant="cardTitle"
@@ -163,17 +191,12 @@ const colorsPriority: Record<string, string> = {
               {{ row.priority }}
             </div>
           </template>
-          <template #cell-dueDate="{ row }">
-            <div
-              class="text-sm leading-[1.3]"
-              :class="{ 'text-danger font-medium': row.deadline === 'Overdue' }"
-            >
-              {{ formatDueDate(row.dueDate) }}
-            </div>
-          </template>
           <template #cell-tags="{ row }">
             <div class="flex items-center flex-wrap gap-1.5 text-sm font-medium text-secondary leading-[1.3]">
-              <span v-for="(tag, index) in row.tags" :key="tag">
+              <span
+                v-for="(tag, index) in row.tags"
+                :key="tag"
+              >
                 {{ tag }}
                 <span v-if="index !== row.tags.length - 1">•</span>
               </span>

@@ -12,9 +12,9 @@ import {
 } from "../../types";
 import { useTasksRequest } from "../api/useTasksRequest";
 import { useTasksStore } from "../store/useTasksStore";
-import { mapDueDateToISO } from "../utils";
 
-import { createValidationRules, parseTags } from "@/shared/utils";
+import { createValidationRules, parseStringToArray } from "@/shared/utils";
+
 
 interface FormData {
   taskName: Ref<string>;
@@ -35,7 +35,7 @@ export const useTaskForm = (
   const v$ = useVuelidate(
     {
       taskName: { required },
-      tags: { maxTags: rules.maxTags(3) },
+      tags: { maxTags: rules.maxTags(5) },
     },
     { taskName: formData.taskName, tags: formData.tags },
   );
@@ -45,9 +45,9 @@ export const useTaskForm = (
 
   const submitData = computed<RequestBodyTaskData>(() => ({
     title: formData.taskName.value,
-    tags: parseTags(formData.tags?.value),
-    priority: formData.priority.value || "medium",
-    dueDate: mapDueDateToISO(formData.dueDate.value),
+    tags: parseStringToArray(formData.tags?.value),
+    priority: formData.priority.value,
+    dueDate: formData.dueDate.value,
   }));
 
   const {

@@ -7,19 +7,20 @@ import {
 import { useRoute } from "vue-router";
 
 import { TaskData } from "../types";
+import DeleteTaskModal from "./components/DeleteTaskModal.vue";
 import TaskFormModal from "./components/TaskFormModal.vue";
 import TasksList from "./components/TasksList.vue";
+import { useListsStore } from "../lists/store/useListsStore";
 
 import { ActionKey } from "@/shared/types";
 import VButton from "@/shared/ui/common/VButton.vue";
-import DeleteTaskModal from "./components/DeleteTaskModal.vue";
-import { useTasksStore } from "./store/useTasksStore";
-import { listsTabs } from "@/shared/variables/tabListsPage";
-import { useListsStore } from "../lists/store/useListsStore";
 import VSkeleton from "@/shared/ui/common/VSkeleton.vue";
+import { listsTabs } from "@/shared/variables/tabListsPage";
+
+const formModalRef = ref<InstanceType<typeof TaskFormModal> | null>(null);
+const deleteModalRef = ref<InstanceType<typeof DeleteTaskModal> | null>(null);
 
 const route = useRoute();
-const tasksStore = useTasksStore();
 const listStore = useListsStore();
 
 const listId = computed(() => String(route.params.listId));
@@ -28,21 +29,14 @@ const backLink = computed(() => ({
   query: { tab: route.query.tab || listsTabs.myLists },
 }));
 
-const formModalRef = ref<InstanceType<typeof TaskFormModal> | null>(null);
-const deleteModalRef = ref<InstanceType<typeof DeleteTaskModal> | null>(null);
+const openFormModal = (task?: TaskData) => {
+  formModalRef.value?.open(listId.value, task);
+};
 
 function handleAction(task: TaskData, key: ActionKey) {
-  if (key === "edit") formModalRef.value?.open(listId.value, task);
-  if (key === 'delete') deleteModalRef.value?.openModal(listId.value, task);
+  if (key === "edit") openFormModal(task);
+  if (key === "delete") deleteModalRef.value?.openModal(listId.value, task);
 }
-
-const openCreateModal = () => {
-  formModalRef.value?.open(listId.value);
-};
-
-const onTaskDeleted = () => {
-  tasksStore.fetchTasksForList(listId.value);
-};
 
 onMounted(() => {
   listStore.getSelectedListData(listId.value);
@@ -50,15 +44,27 @@ onMounted(() => {
 </script>
 
 <template>
-  <Teleport to="#header-content" defer>
+  <Teleport
+    to="#header-content"
+    defer
+  >
     <div class="flex items-center gap-10">
       <VButton
         :to="backLink"
         icon="chevron-left"
         variant="navItem"
       />
-      <VSkeleton v-if="listStore.isLoading" width="w-32" height="h-10" />
-      <h2 v-else class="text-3xl font-bold text-primary">{{ listStore.selectedList?.title }}</h2>
+      <VSkeleton
+        v-if="listStore.isLoading"
+        width="w-32"
+        height="h-10"
+      />
+      <h2
+        v-else
+        class="text-3xl font-bold text-primary"
+      >
+        {{ listStore.selectedList?.title }}
+      </h2>
     </div>
   </Teleport>
   <Teleport
@@ -69,11 +75,11 @@ onMounted(() => {
       icon="icon-plus"
       variant="primary"
       :text="$t('tasks.createTasksBtn')"
-      @click="openCreateModal()"
+      @click="openFormModal()"
     />
   </Teleport>
   <TaskFormModal ref="formModalRef" />
-  <DeleteTaskModal ref="deleteModalRef" @deleted="onTaskDeleted"/>
+  <DeleteTaskModal ref="deleteModalRef" />
   <TasksList
     ref="tasksListRef"
     :list-id="listId"

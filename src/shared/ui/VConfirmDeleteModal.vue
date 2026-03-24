@@ -1,7 +1,7 @@
 <script setup lang="ts">
-import { useModal } from '@/shared/composables/useModal';
-import VButton from '@/shared/ui/common/VButton.vue';
-import VModal from '@/shared/ui/common/VModal.vue';
+import { useModal } from "@/shared/composables/useModal";
+import VButton from "@/shared/ui/common/VButton.vue";
+import VModal from "@/shared/ui/common/VModal.vue";
 
 const { id, entityName, itemName, loading } = defineProps<{
   id: string;
@@ -17,7 +17,7 @@ const emit = defineEmits<{
 const { open, close } = useModal(id);
 
 const handleConfirm = () => {
-  emit('confirm');
+  emit("confirm");
 };
 
 defineExpose({ open, close });
@@ -30,9 +30,18 @@ defineExpose({ open, close });
     max-width="md"
   >
     <div class="flex flex-col items-center gap-2 mb-2">
-      <p class="font-semibold">{{ $t('deleteModal.contentTitle', { entityName: entityName }) }}</p>
-      <p v-if="itemName" class="font-bold text-intro">"{{ itemName }}"</p>
-      <p class="text-xs text-secondary">{{ $t('deleteModal.contentSubtitle') }}</p>
+      <p class="font-semibold">
+        {{ $t('deleteModal.contentTitle', { entityName: entityName }) }}
+      </p>
+      <p
+        v-if="itemName"
+        class="font-bold text-intro"
+      >
+        "{{ itemName }}"
+      </p>
+      <p class="text-xs text-secondary">
+        {{ $t('deleteModal.contentSubtitle') }}
+      </p>
     </div>
 
     <template #footer>

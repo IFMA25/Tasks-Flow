@@ -4,13 +4,14 @@ import { useI18n } from "vue-i18n";
 import { PriorityOption, SortOption } from "@/shared/types";
 import VSelect from "@/shared/ui/common/VSelect.vue";
 
-const { t } = useI18n();
 const { options } = defineProps<{
   options: {
     priorityOptions: PriorityOption[];
     sortOptions: SortOption[];
   }
 }>();
+
+const { t } = useI18n();
 
 const priority = defineModel<PriorityOption>("priority");
 const sort = defineModel<SortOption>("sort");
