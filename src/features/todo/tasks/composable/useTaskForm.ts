@@ -14,19 +14,20 @@ import { useTasksRequest } from "../api/useTasksRequest";
 import { useTasksStore } from "../store/useTasksStore";
 
 import { createValidationRules, parseStringToArray } from "@/shared/utils";
+import { formatISO } from "date-fns";
 
 
-interface FormData {
-  taskName: Ref<string>;
-  tags: Ref<string>;
-  priority: Ref<string>;
-  dueDate: Ref<string>;
+interface TaskFormState {
+  taskName: string;
+  tags: string;
+  priority: string;
+  dueDate: Date | null;
 }
 
 export const useTaskForm = (
   listId: Ref<string>,
   selectedTask: Ref<TaskData | null>,
-  formData: FormData,
+  formData: TaskFormState,
 ) => {
 
   const { t } = useI18n();
@@ -37,17 +38,17 @@ export const useTaskForm = (
       taskName: { required },
       tags: { maxTags: rules.maxTags(5) },
     },
-    { taskName: formData.taskName, tags: formData.tags },
+    formData,
   );
 
   const { createNewTask, updateTask } = useTasksRequest();
   const tasksStore = useTasksStore();
 
   const submitData = computed<RequestBodyTaskData>(() => ({
-    title: formData.taskName.value,
-    tags: parseStringToArray(formData.tags?.value),
-    priority: formData.priority.value,
-    dueDate: formData.dueDate.value,
+    title: formData.taskName,
+    tags: parseStringToArray(formData.tags),
+    priority: String(formData.priority),
+    dueDate: formData.dueDate ? formatISO(formData.dueDate) : "",
   }));
 
   const {
@@ -63,19 +64,22 @@ export const useTaskForm = (
 
   const { execute: updateSelectedTaskExecute, loading: updateTaskLoading } = updateTask(
     () => selectedTask.value?.id, {
-      data: submitData,
-      onSuccess: () => {
-        tasksStore.fetchTasksForList(listId.value);
-      },
-    });
+    data: submitData,
+    onSuccess: () => {
+      tasksStore.fetchTasksForList(listId.value);
+    },
+  });
 
   const isDataChanged = computed(() => {
     if (!selectedTask.value) return true;
 
-    const isNameChanged = formData.taskName.value !== selectedTask.value.title;
-    const isTagsChanged = formData.tags.value !== (selectedTask.value.tags?.join(", ") || "");
-    const isPriorityChanged = formData.priority.value !== (selectedTask.value.priority ?? "low");
-    const isDeadlineChanged = formData.dueDate.value !== (selectedTask.value.deadline ?? "noDate");
+    const isNameChanged = formData.taskName !== selectedTask.value.title;
+    const isTagsChanged = formData.tags !== (selectedTask.value.tags?.join(", ") || "");
+    const isPriorityChanged = formData.priority !== (selectedTask.value.priority ?? "low");
+
+    const initialDateISO = selectedTask.value.dueDate || null;
+    const currentDateISO = formData.dueDate ? formatISO(formData.dueDate) : null;
+    const isDeadlineChanged = currentDateISO !== initialDateISO;
 
     return isNameChanged || isTagsChanged || isPriorityChanged || isDeadlineChanged;
   });

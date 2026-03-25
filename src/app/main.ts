@@ -25,10 +25,10 @@ const api = createApiClient({
   withAuth: true,
   authOptions: {
     refreshUrl: "/auth/refresh",
-    onTokenRefreshed: ({ data }) => tokenManager.setTokens({
-      accessToken: data.accessToken,
-      refreshToken: data.refreshToken,
-    }),
+    // onTokenRefreshed: ({ data }) => tokenManager.setTokens({
+    //   accessToken: data.accessToken,
+    //   refreshToken: data.refreshToken,
+    // }),
     refreshPayload: () => ({
       refreshToken: tokenManager.getRefreshToken(),
     }),

@@ -2,8 +2,7 @@
 import {
   computed,
   ref,
-  reactive,
-  toRef,
+  reactive
 } from "vue";
 import { useI18n } from "vue-i18n";
 
@@ -17,7 +16,8 @@ import VModal from "@/shared/ui/common/VModal.vue";
 import VSelect from "@/shared/ui/common/VSelect.vue";
 import { parseStringToArray } from "@/shared/utils";
 import { VueDatePicker } from "@vuepic/vue-datepicker";
-import { formatISO, parseISO } from "date-fns";
+import { parseISO } from "date-fns";
+import { useSelectedOption } from "@/shared/composables/useSelectedOption";
 
 const { open: openModal, close } = useModal("taskFormModal");
 const { t } = useI18n();
@@ -33,28 +33,29 @@ const selectedTask = ref<TaskData | null>(null);
 const formFields = reactive({
   taskName: "",
   tags: "",
-  priority: priorityOptions.value[0],
-  deadline: null,
+  priority: priorityOptions.value[0].key,
+  dueDate: null as Date | null,
 });
+
+const priorityModel = useSelectedOption(
+  priorityOptions,
+  formFields.priority,
+  (value) => {
+    formFields.priority = String(value);
+  },
+);
 
 const parsedTags = computed(() => parseStringToArray(formFields.tags));
 
-const formData = {
-  taskName: toRef(formFields, "taskName"),
-  tags: toRef(formFields, "tags"),
-  priority: computed(() => formFields.priority.key),
-  dueDate: computed(() => formFields.deadline ? formatISO(formFields.deadline) : null),
-};
-
-const taskForm = useTaskForm(currentListId, selectedTask, formData);
+const taskForm = useTaskForm(currentListId, selectedTask, formFields);
 
 const resetForm = () => {
   selectedTask.value = null;
   Object.assign(formFields, {
     taskName: "",
     tags: "",
-    priority: priorityOptions.value[0],
-    deadline: null,
+    priority: priorityOptions.value[0].key,
+    dueDate: null,
   });
   taskForm.resetValidation();
 };
@@ -66,9 +67,8 @@ const open = (listId: string, task?: TaskData) => {
   Object.assign(formFields, {
     taskName: task?.title || "",
     tags: task?.tags?.join(", ") || "",
-    priority: priorityOptions.value
-      .find(p => p.key === task?.priority) || priorityOptions.value[0],
-    deadline: task?.dueDate ? parseISO(task.dueDate) : null,
+    priority: task?.priority || priorityOptions.value[0].key,
+    dueDate: task?.dueDate ? parseISO(task.dueDate) : null,
   });
 
   taskForm.resetValidation();
@@ -103,7 +103,7 @@ defineExpose({ open });
       />
       <VSelect
         id="priority"
-        v-model="formFields.priority"
+        v-model="priorityModel"
         :label-text="$t('tasks.createTaskModal.labelPriority')"
         :options="priorityOptions"
         label="label"
@@ -116,7 +116,7 @@ defineExpose({ open });
           {{ $t('tasks.createTaskModal.labelDeadline') }}
         </label>
         <VueDatePicker 
-          v-model="formFields.deadline"
+          v-model="formFields.dueDate"
           :placeholder="$t('tasks.createTaskModal.placeholderDeadline')"
           centered
           auto-apply
