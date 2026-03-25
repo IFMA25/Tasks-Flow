@@ -17,7 +17,7 @@ import VModal from "@/shared/ui/common/VModal.vue";
 import VSelect from "@/shared/ui/common/VSelect.vue";
 import { parseStringToArray } from "@/shared/utils";
 import { VueDatePicker } from "@vuepic/vue-datepicker";
-import { formatISO } from "date-fns";
+import { formatISO, parseISO } from "date-fns";
 
 const { open: openModal, close } = useModal("taskFormModal");
 const { t } = useI18n();
@@ -68,7 +68,7 @@ const open = (listId: string, task?: TaskData) => {
     tags: task?.tags?.join(", ") || "",
     priority: priorityOptions.value
       .find(p => p.key === task?.priority) || priorityOptions.value[0],
-    deadline: task?.dueDate ? new Date(task.dueDate) : null,
+    deadline: task?.dueDate ? parseISO(task.dueDate) : null,
   });
 
   taskForm.resetValidation();
@@ -119,8 +119,12 @@ defineExpose({ open });
           v-model="formFields.deadline"
           :placeholder="$t('tasks.createTaskModal.placeholderDeadline')"
           centered
-          :enable-time-picker="false"
-        />
+          auto-apply
+          :time-config="{ enableTimePicker: false }"
+          :formats="{ input: 'dd.MM.yyyy' }"
+        >
+          <template #clock-icon />
+        </VueDatePicker>
       </div>
       <VInput
         v-model="formFields.tags"

@@ -12,8 +12,6 @@ import VButton from "@/shared/ui/common/VButton.vue";
 import VCheckbox from "@/shared/ui/common/VCheckbox.vue";
 import VTable from "@/shared/ui/table/VTable.vue";
 
-
-
 const { listId } = defineProps<{
   listId: string;
 }>();
@@ -191,6 +189,14 @@ const displayDueDate = (dueDate: string) => {
               {{ row.priority }}
             </div>
           </template>
+          <template #cell-dueDate="{ row }">
+          <div
+            class="text-sm leading-[1.3]"
+            :class="{ 'text-danger font-medium': getDueDateStatusFromIso(row.dueDate) === 'overdue' }"
+          >
+            {{ displayDueDate(row.dueDate) }}
+          </div>
+        </template>
           <template #cell-tags="{ row }">
             <div class="flex items-center flex-wrap gap-1.5 text-sm font-medium text-secondary leading-[1.3]">
               <span
