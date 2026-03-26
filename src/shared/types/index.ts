@@ -52,11 +52,6 @@ export interface PriorityOption extends Option {
   };
 }
 
-export interface LanguageOption extends Option {
-  key: string;
-  label: string;
-}
-
 export type ActionKey = "edit" | "delete";
 
 export interface Actions {

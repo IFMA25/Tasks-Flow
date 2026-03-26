@@ -4,9 +4,7 @@ import { computed } from "vue";
 import {
   useLanguageStore,
 } from "@/features/translation/store/useLanguageStore";
-import { useSelectedOption } from "@/shared/composables/useSelectedOption";
 import { supportedLocales } from "@/shared/config/locale";
-import type { LanguageOption } from "@/shared/types";
 import VSelect from "@/shared/ui/common/VSelect.vue";
 
 const localeLabels: Record<string, string> = {
@@ -23,22 +21,16 @@ const localeOptions = computed(
   })),
 );
 
-const currentLangDisplay = useSelectedOption<LanguageOption>(
-  localeOptions,
-  () => language.currentLang,
-  (val: string) => {
-    language.setLanguage(val);
-  },
-);
 </script>
 
 <template>
   <VSelect
     id="language-switcher"
-    v-model="currentLangDisplay"
+    v-model="language.currentLang"
     :options="localeOptions"
     label="label"
     track-by="key"
     :close-on-select="true"
+    @update:model-value="(value: string) => language.setLanguage(value)"
   />
 </template>

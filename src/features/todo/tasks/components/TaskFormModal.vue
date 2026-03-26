@@ -1,10 +1,10 @@
 <script setup lang="ts">
+import { VueDatePicker } from "@vuepic/vue-datepicker";
 import {
   computed,
   ref,
-  reactive
+  reactive,
 } from "vue";
-import { useI18n } from "vue-i18n";
 
 import { TaskData } from "../../types";
 import { useTaskForm } from "../composable/useTaskForm";
@@ -15,71 +15,37 @@ import VInput from "@/shared/ui/common/VInput.vue";
 import VModal from "@/shared/ui/common/VModal.vue";
 import VSelect from "@/shared/ui/common/VSelect.vue";
 import { parseStringToArray } from "@/shared/utils";
-import { VueDatePicker } from "@vuepic/vue-datepicker";
-import { parseISO } from "date-fns";
-import { useSelectedOption } from "@/shared/composables/useSelectedOption";
 
-const { open: openModal, close } = useModal("taskFormModal");
-const { t } = useI18n();
-
-const priorityOptions = computed(() => [
-  { key: "low", label: t("tasks.createTaskModal.select.low") },
-  { key: "medium", label: t("tasks.createTaskModal.select.medium") },
-  { key: "high", label: t("tasks.createTaskModal.select.high") },
-]);
+const { open: openModal, close: closeModal } = useModal("taskFormModal");
 
 const currentListId = ref("");
 const selectedTask = ref<TaskData | null>(null);
+
 const formFields = reactive({
   taskName: "",
   tags: "",
-  priority: priorityOptions.value[0].key,
-  dueDate: null as Date | null,
+  priority: "",
+  dueDate: null,
 });
 
-const priorityModel = useSelectedOption(
-  priorityOptions,
-  formFields.priority,
-  (value) => {
-    formFields.priority = String(value);
-  },
-);
-
 const parsedTags = computed(() => parseStringToArray(formFields.tags));
-
 const taskForm = useTaskForm(currentListId, selectedTask, formFields);
-
-const resetForm = () => {
-  selectedTask.value = null;
-  Object.assign(formFields, {
-    taskName: "",
-    tags: "",
-    priority: priorityOptions.value[0].key,
-    dueDate: null,
-  });
-  taskForm.resetValidation();
-};
 
 const open = (listId: string, task?: TaskData) => {
   currentListId.value = listId;
-  selectedTask.value = task || null;
-
-  Object.assign(formFields, {
-    taskName: task?.title || "",
-    tags: task?.tags?.join(", ") || "",
-    priority: task?.priority || priorityOptions.value[0].key,
-    dueDate: task?.dueDate ? parseISO(task.dueDate) : null,
-  });
-
-  taskForm.resetValidation();
-
+  taskForm.initForm(task ?? null);
   openModal();
+};
+
+const close = () => {
+  selectedTask.value = null;
+  taskForm.initForm(null);
+  closeModal();
 };
 
 const onSubmit = async () => {
   const success = await taskForm.handleSubmit();
   if (success) {
-    resetForm();
     close();
   }
 };
@@ -90,7 +56,7 @@ defineExpose({ open });
 <template>
   <VModal
     id="taskFormModal"
-    :title="selectedTask ? t('tasks.editTask') : t('tasks.createTaskModal.title')"
+    :title="selectedTask ? $t('tasks.editTask') : $t('tasks.createTaskModal.title')"
     max-width="md"
     @close="close()"
   >
@@ -103,9 +69,9 @@ defineExpose({ open });
       />
       <VSelect
         id="priority"
-        v-model="priorityModel"
+        v-model="formFields.priority"
         :label-text="$t('tasks.createTaskModal.labelPriority')"
-        :options="priorityOptions"
+        :options="taskForm.priorityOptions.value"
         label="label"
         track-by="key"
         :close-on-select="true"
@@ -115,7 +81,7 @@ defineExpose({ open });
         <label class="text-primary font-medium">
           {{ $t('tasks.createTaskModal.labelDeadline') }}
         </label>
-        <VueDatePicker 
+        <VueDatePicker
           v-model="formFields.dueDate"
           :placeholder="$t('tasks.createTaskModal.placeholderDeadline')"
           centered
@@ -155,10 +121,10 @@ defineExpose({ open });
         @click="close()"
       />
       <VButton
-        :text="selectedTask ? t('saveBtnText') : t('tasks.createTaskModal.createBtn')"
+        :text="selectedTask ? $t('saveBtnText') : $t('tasks.createTaskModal.createBtn')"
         variant="outline"
         load-color="text-disabled"
-        :disabled="taskForm.isSubmitDisabled.value"
+        :disabled="taskForm.isSubmitDisabled.value || taskForm.isLoading.value"
         @click="onSubmit"
       />
     </template>

@@ -37,6 +37,7 @@ interface TasksData {
   status: string;
   isWeeklyGoal: boolean;
 }
+
 interface ListInfo {
   createdAt: string;
   deadline: string | null;
@@ -45,6 +46,13 @@ interface ListInfo {
   ownerId: string;
   title: string;
   updatedAt: string;
+}
+
+export interface TaskFormState {
+  taskName: string;
+  tags: string;
+  priority: string;
+  dueDate: Date | null;
 }
 
 export interface RequestBodyListData {

@@ -1,6 +1,6 @@
 <script setup lang="ts" generic="T extends { id: string }">
-import LoadMoreButton from "./LoadMoreButton.vue";
 import VTransitionLoader from "../VTransitionLoader.vue";
+import VButton from "../common/VButton.vue";
 
 import { Pagination } from "@/shared/types";
 import VEmptyState from "@/shared/ui/EmptyState.vue";
@@ -25,6 +25,7 @@ const {
   heads = [],
   loading = false,
   pagination = undefined,
+  showEmptyState = true,
 } = defineProps<Props>();
 
 defineEmits<{
@@ -99,7 +100,13 @@ defineEmits<{
           v-if="pagination"
           name="pagination"
         />
-        <LoadMoreButton @load-more="$emit('load-more', pagination.limit)" />
+        <VButton
+          class="mx-auto px-8 mt-2"
+          :text="$t('table.loadMore')"
+          variant="outline"
+          load-color="primaryDark"
+          @click="$emit('load-more', pagination.limit)"
+        />
       </div>
     </div>
   </div>

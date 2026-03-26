@@ -11,8 +11,6 @@ import VInput from "@/shared/ui/common/VInput.vue";
 import VModal from "@/shared/ui/common/VModal.vue";
 import { colorsList } from "@/shared/variables/colorMap";
 
-//разделение ответсвенности компонента и компосибла, логику вынесла в компосибл, тут только управления юайном, локальные переменные оставляю в компоненте, потому что в компосибле описываю только логику и запросы без стейтов и юай, стейт внутри компосибла каждый раз пересоздаеться, если вынести глобально = то он останеться после размонтирования модалки
-
 const selectedList = ref<ListData | null>(null);
 const formData = reactive<FormDataList>({
   title: "",

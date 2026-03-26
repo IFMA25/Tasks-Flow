@@ -13,7 +13,7 @@ defineProps<{
 }>();
 
 const search = defineModel<string>("search");
-const sort = defineModel<SortOption>("sort");
+const sort = defineModel<string>("sort");
 </script>
 
 <template>

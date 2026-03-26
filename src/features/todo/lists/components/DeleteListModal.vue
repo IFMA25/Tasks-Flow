@@ -27,7 +27,7 @@ const { execute, loading } = deleteList(
   {
     onSuccess: () => {
       close();
-      listsStore.fetchLists();
+      listsStore.updateLists();
       toast.warning(t("lists.msgDeleteSuccess"));
     },
   },

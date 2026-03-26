@@ -4,17 +4,15 @@ import { useI18n } from "vue-i18n";
 import { PriorityOption, SortOption } from "@/shared/types";
 import VSelect from "@/shared/ui/common/VSelect.vue";
 
-const { options } = defineProps<{
-  options: {
-    priorityOptions: PriorityOption[];
-    sortOptions: SortOption[];
-  }
+const { priorityOptions, sortOptions } = defineProps<{
+  priorityOptions: PriorityOption[];
+  sortOptions: SortOption[];
 }>();
 
 const { t } = useI18n();
 
-const priority = defineModel<PriorityOption>("priority");
-const sort = defineModel<SortOption>("sort");
+const priority = defineModel<string>("priority");
+const sort = defineModel<string>("sort");
 </script>
 
 <template>
@@ -23,7 +21,7 @@ const sort = defineModel<SortOption>("sort");
       id="priority-select"
       v-model="priority"
       :label-text="t('filters.priority')"
-      :options="options.priorityOptions"
+      :options="priorityOptions"
       label="label"
       track-by="key"
       :close-on-select="true"
@@ -33,7 +31,7 @@ const sort = defineModel<SortOption>("sort");
       id="sort-select"
       v-model="sort"
       :label-text="t('filters.sort')"
-      :options="options.sortOptions"
+      :options="sortOptions"
       label="label"
       track-by="key"
       :close-on-select="true"

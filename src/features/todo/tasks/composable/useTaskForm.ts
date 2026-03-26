@@ -1,5 +1,6 @@
 import useVuelidate from "@vuelidate/core";
 import { required } from "@vuelidate/validators";
+import { formatISO, parseISO } from "date-fns";
 import {
   computed,
   Ref,
@@ -9,26 +10,24 @@ import { useI18n } from "vue-i18n";
 import {
   RequestBodyTaskData,
   TaskData,
+  TaskFormState,
 } from "../../types";
 import { useTasksRequest } from "../api/useTasksRequest";
 import { useTasksStore } from "../store/useTasksStore";
 
 import { createValidationRules, parseStringToArray } from "@/shared/utils";
-import { formatISO } from "date-fns";
-
-
-interface TaskFormState {
-  taskName: string;
-  tags: string;
-  priority: string;
-  dueDate: Date | null;
-}
 
 export const useTaskForm = (
   listId: Ref<string>,
   selectedTask: Ref<TaskData | null>,
   formData: TaskFormState,
 ) => {
+
+  const priorityOptions = computed(() => [
+    { key: "low", label: t("tasks.createTaskModal.select.low") },
+    { key: "medium", label: t("tasks.createTaskModal.select.medium") },
+    { key: "high", label: t("tasks.createTaskModal.select.high") },
+  ]);
 
   const { t } = useI18n();
   const rules = createValidationRules(t);
@@ -44,11 +43,24 @@ export const useTaskForm = (
   const { createNewTask, updateTask } = useTasksRequest();
   const tasksStore = useTasksStore();
 
+  const initForm = (taskEdit: TaskData | null) => {
+    selectedTask.value = taskEdit;
+
+    Object.assign(formData, {
+      taskName: taskEdit?.title ?? "",
+      tags: taskEdit?.tags?.join(", ") ?? "",
+      priority: taskEdit?.priority ?? priorityOptions.value[0].key,
+      dueDate: taskEdit?.dueDate ? parseISO(taskEdit.dueDate) : null,
+    });
+
+    v$.value.$reset();
+  };
+
   const submitData = computed<RequestBodyTaskData>(() => ({
     title: formData.taskName,
     tags: parseStringToArray(formData.tags),
-    priority: String(formData.priority),
-    dueDate: formData.dueDate ? formatISO(formData.dueDate) : "",
+    priority: formData.priority,
+    dueDate: formData.dueDate ? formatISO(formData.dueDate) : null,
   }));
 
   const {
@@ -64,11 +76,11 @@ export const useTaskForm = (
 
   const { execute: updateSelectedTaskExecute, loading: updateTaskLoading } = updateTask(
     () => selectedTask.value?.id, {
-    data: submitData,
-    onSuccess: () => {
-      tasksStore.fetchTasksForList(listId.value);
-    },
-  });
+      data: submitData,
+      onSuccess: () => {
+        tasksStore.fetchTasksForList(listId.value);
+      },
+    });
 
   const isDataChanged = computed(() => {
     if (!selectedTask.value) return true;
@@ -108,11 +120,13 @@ export const useTaskForm = (
 
   return {
     v$,
-    handleSubmit,
     isDataChanged,
     isSubmitDisabled,
-    resetValidation,
     isLoading,
+    priorityOptions,
+    initForm,
+    handleSubmit,
+    resetValidation,
   };
 };
 

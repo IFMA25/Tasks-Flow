@@ -5,16 +5,18 @@ import {
 import { useI18n } from "vue-i18n";
 import { toast } from "vue-sonner";
 
-import { useListsFeature } from "./useListsFeature";
+import { useListsFilters } from "./useListsFilters";
 import { FormDataList, ListData } from "../../types";
 import { useListsRequests } from "../api/useListsRequest";
+import { useListsStore } from "../store/useListsStore";
 
 import { colorsList } from "@/shared/variables/colorMap";
 
 export const useListForm = (formDataList: FormDataList, selectedList: Ref<ListData | null>) => {
 
   const { createNewList, updateList } = useListsRequests();
-  const { updateLists } = useListsFeature();
+  const { resetFilters } = useListsFilters();
+  const listsStore = useListsStore();
   const { t } = useI18n();
 
   const initForm = (listEdit: ListData | null) => {
@@ -31,7 +33,8 @@ export const useListForm = (formDataList: FormDataList, selectedList: Ref<ListDa
   const { execute: createNewListExecute, loading: createListLoading } = createNewList({
     data: submitData,
     onSuccess: () => {
-      updateLists();
+      resetFilters();
+      listsStore.updateLists();
       toast.success(t("lists.msgCreateSuccess"));
     },
   });
@@ -40,11 +43,11 @@ export const useListForm = (formDataList: FormDataList, selectedList: Ref<ListDa
     () => selectedList.value?.id, {
       data: submitData,
       onSuccess: () => {
-        updateLists();
+        listsStore.updateLists();
         toast.success(t("lists.msgUpdateSuccess"));
       },
     });
-  // стоит ли мне тут делать валидацию через вьювалидате и выводи ошибку при смене блура? кнопка у меня остаеться заблокированой пока не введут текст или не измениться содержимое
+
   const isValid = computed(() => !!formDataList.title);
 
   const isDataChanged = computed(() => {

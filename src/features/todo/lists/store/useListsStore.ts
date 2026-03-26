@@ -6,6 +6,7 @@ import { useListsRequests } from "../api/useListsRequest";
 export const useListsStore = defineStore("lists", () => {
 
   const selectedListId = ref<string>("");
+  const fetchParams = ref<Record<string, unknown>>({});
 
   const { getAllLists, getListById } = useListsRequests();
 
@@ -21,6 +22,11 @@ export const useListsStore = defineStore("lists", () => {
     data: selectedList,
   } = getListById(selectedListId);
 
+  const updateLists = (params?: Record<string, unknown>) => {
+    if (params) fetchParams.value = params;
+    return fetchLists({ params: fetchParams.value });
+  };
+
   const getSelectedListData = async (listId: string) => {
     selectedListId.value = listId;
     await fetchSelectedList();
@@ -33,6 +39,7 @@ export const useListsStore = defineStore("lists", () => {
   return {
     dataLists,
     fetchLists,
+    updateLists,
     selectedList,
     getSelectedListData,
     isLoading,

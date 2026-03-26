@@ -1,4 +1,4 @@
-<script setup lang="ts">
+<script setup lang="ts" generic="T extends Option">
 import { computed } from "vue";
 import Multiselect from "vue-multiselect";
 
@@ -7,7 +7,7 @@ import VIcon from "@/shared/ui/common/VIcon.vue";
 
 interface Props {
   id:string;
-  options: Option[];
+  options: T[];
   labelText?: string;
   multiple?: boolean;
   closeOnSelect?: boolean;
@@ -35,11 +35,38 @@ const {
   multiselectProps = {},
   searchable = false,
   label,
-  trackBy,
+  trackBy="key",
   disabled = false,
 } = defineProps<Props>();
 
-const model = defineModel<Option | null>();
+const model = defineModel<string | string[] | null>();
+
+const getKey = (option: T): string => String(option[trackBy ?? "key"]);
+
+const internalModel = computed({
+  get: () => {
+    if (model.value == null) return multiple ? [] : null;
+
+    if (multiple) {
+      const values = Array.isArray(model.value) ? model.value : [model.value];
+      return options.filter(option => values.includes(getKey(option)));
+    }
+
+    return options.find(option => getKey(option) === model.value) ?? null;
+  },
+  set: (value: T | T[] | null) => {
+    if (value == null) {
+      model.value = multiple ? [] : null;
+      return;
+    }
+
+    if (Array.isArray(value)) {
+      model.value = value.map(getKey);
+    } else {
+      model.value = getKey(value);
+    }
+  },
+});
 
 const closeOnSelectComputed = computed(() =>
   closeOnSelectProp ?? !multiple,
@@ -55,7 +82,7 @@ const closeOnSelectComputed = computed(() =>
     >{{ labelText }}</label>
     <Multiselect
       :id="id"
-      v-model="model"
+      v-model="internalModel"
       v-bind="multiselectProps"
       :options="options"
       :multiple="multiple"

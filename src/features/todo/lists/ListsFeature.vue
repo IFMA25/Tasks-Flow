@@ -1,5 +1,6 @@
 <script setup lang="ts">
-import { ref } from "vue";
+import { computed, ref } from "vue";
+import { useI18n } from "vue-i18n";
 
 import { ListAction, ListData } from "../types";
 import DeleteListModal from "./components/DeleteListModal.vue";
@@ -9,26 +10,36 @@ import ListsToolbar from "./components/ListsToolbar.vue";
 import UsersListItem from "./components/UsersListItem.vue";
 import { useListsFeature } from "./composable/useListsFeature";
 
+import type { Actions } from "@/shared/types";
 import VEmptyState from "@/shared/ui/EmptyState.vue";
 import VTransitionLoader from "@/shared/ui/VTransitionLoader.vue";
 import VButton from "@/shared/ui/common/VButton.vue";
 import VTab from "@/shared/ui/common/VTab.vue";
 import { listsTabs } from "@/shared/variables/tabListsPage";
 
-const {
-  listsStore,
-  sortOptions,
-  tabs,
-  actions,
-  modelSearch,
-  selectedSort,
-  activeTab,
-  userLists,
-  onSearchInput,
-} = useListsFeature();
+const { t } = useI18n();
 
 const formModalRef = ref<InstanceType<typeof ListFormModal> | null>(null);
 const deleteModalRef = ref<InstanceType<typeof DeleteListModal> | null>(null);
+
+const {
+  listsStore,
+  modelSearch,
+  activeTab,
+  userLists,
+  selectedSort,
+  sortOptions,
+} = useListsFeature();
+
+const actions = computed<Actions[]>(() => [
+  { key: "edit",   label: t("lists.editList") },
+  { key: "delete", label: t("deleteModal.title", { entityName: t("lists.list") }) },
+]);
+
+const tabs = computed(() => [
+  { value: "myLists",    label: t("lists.myLists")    },
+  { value: "usersLists", label: t("lists.usersLists") },
+]);
 
 const handleAction = (list: ListData, action: ListAction) => {
   if (action === "edit") {
@@ -52,21 +63,24 @@ const handleAction = (list: ListData, action: ListAction) => {
       @click="formModalRef?.openModal()"
     />
   </Teleport>
+
   <ListFormModal ref="formModalRef" />
   <DeleteListModal ref="deleteModalRef" />
+
   <ListsToolbar
     v-model:search="modelSearch"
     v-model:sort="selectedSort"
     :active-tab="activeTab"
     :sort-options="sortOptions"
-    @update:search="onSearchInput"
   />
+
   <div class="border border-subtle p-1 rounded-2xl w-fit mb-7">
     <VTab
       v-model="activeTab"
       :tab-items="tabs"
     />
   </div>
+
   <div class="relative min-h-[200px]">
     <VTransitionLoader :is-loading="listsStore.isLoading" />
     <div
