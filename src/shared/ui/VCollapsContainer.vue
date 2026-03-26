@@ -21,16 +21,18 @@ const isOpen = ref(true);
       <VButton
         variant="cardTitle"
         icon="chevron-down"
-        class="transition-transform duration-300"
+        class="transition-transform duration-300 ease"
         :class="{ 'rotate-180': isOpen }"
         @click="isOpen = !isOpen"
       />
     </h3>
     <Transition
-      enter-active-class="transition-all duration-300 ease-out"
-      enter-from-class="opacity-0 -translate-y-2"
-      leave-active-class="transition-all duration-300 ease-in"
-      leave-to-class="opacity-0 -translate-y-2"
+      enter-active-class="transition-all duration-300 ease overflow-hidden"
+      enter-from-class="opacity-0 max-h-0"
+      enter-to-class="opacity-100 max-h-[600px]"
+      leave-active-class="transition-all duration-300 ease overflow-hidden"
+      leave-from-class="opacity-100 max-h-[600px]"
+      leave-to-class="opacity-0 max-h-0"
     >
       <div v-if="isOpen">
         <slot />

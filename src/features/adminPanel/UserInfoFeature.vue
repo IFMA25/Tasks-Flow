@@ -57,7 +57,10 @@ const isLoadingPage = computed(() =>
   permissionsLoad.value,
 );
 
-const userData = computed(() => isAdminMode.value ? dataInfoUser.value : profileStore.profileData);
+const userData = computed(() => {
+  if (!isAdminMode.value) return profileStore.profileData;
+  return dataInfoUser.value ? { ...dataInfoUser.value } : null;
+});
 const isLoading = computed(() => isAdminMode.value ? isLoadingPage.value : profileStore.loading);
 </script>
 

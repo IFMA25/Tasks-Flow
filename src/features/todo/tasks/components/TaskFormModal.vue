@@ -14,32 +14,36 @@ import VButton from "@/shared/ui/common/VButton.vue";
 import VInput from "@/shared/ui/common/VInput.vue";
 import VModal from "@/shared/ui/common/VModal.vue";
 import VSelect from "@/shared/ui/common/VSelect.vue";
-import { parseStringToArray } from "@/shared/utils";
 
 const { open: openModal, close: closeModal } = useModal("taskFormModal");
 
 const currentListId = ref("");
 const selectedTask = ref<TaskData | null>(null);
+const tagInput = ref("");
 
 const formFields = reactive({
   taskName: "",
-  tags: "",
+  tags: [] as string[],
   priority: "",
   dueDate: null,
 });
 
-const parsedTags = computed(() => parseStringToArray(formFields.tags));
 const taskForm = useTaskForm(currentListId, selectedTask, formFields);
+const isTagLimitReached = computed(() => formFields.tags.length >= 5);
 
 const open = (listId: string, task?: TaskData) => {
   currentListId.value = listId;
   taskForm.initForm(task ?? null);
+  formFields.tags = task?.tags ?? [];
+  tagInput.value = "";
   openModal();
 };
 
 const close = () => {
   selectedTask.value = null;
   taskForm.initForm(null);
+  formFields.tags = [];
+  tagInput.value = "";
   closeModal();
 };
 
@@ -48,6 +52,21 @@ const onSubmit = async () => {
   if (success) {
     close();
   }
+};
+
+const handleTagKeydown = (e: KeyboardEvent) => {
+  if (![" ", ",", ";"].includes(e.key)) return;
+  e.preventDefault();
+  if (isTagLimitReached.value) return;
+  const val = tagInput.value.trim();
+  if (val && !formFields.tags.includes(val)) {
+    formFields.tags.push(val);
+  }
+  tagInput.value = "";
+};
+
+const removeTag = (tag: string) => {
+  formFields.tags = formFields.tags.filter(t => t !== tag);
 };
 
 defineExpose({ open });
@@ -63,7 +82,7 @@ defineExpose({ open });
     <div class="flex flex-col gap-4 text-primary">
       <VInput
         v-model="formFields.taskName"
-        :label="$t('tasks.createTaskModal.labelName')"
+        :label="`${$t('tasks.createTaskModal.labelName')} *`"
         :placeholder="$t('tasks.createTaskModal.placeholderTaskName')"
         class="leading-[1.2]"
       />
@@ -93,23 +112,33 @@ defineExpose({ open });
         </VueDatePicker>
       </div>
       <VInput
-        v-model="formFields.tags"
+        v-model="tagInput"
         :label="$t('tasks.createTaskModal.labelTags')"
         :placeholder="$t('tasks.createTaskModal.placeholderTags')"
-        :validation="taskForm.v$.value.tags"
-        class="leading-[1.2]"
-        @update:model-value="taskForm.v$.value.tags.$touch()"
+        :readonly="isTagLimitReached"
+        :support-text="isTagLimitReached 
+          ? $t('validation.maxTags', { max: 5 }) 
+          : `${formFields.tags.length}/5`"
+        :support-text-variant="isTagLimitReached ? 'error' : 'muted'"
+        @keydown="handleTagKeydown"
       />
       <div
-        v-if="parsedTags.length"
+        v-if="formFields.tags.length"
         class="flex flex-wrap gap-1.5"
       >
         <span
-          v-for="tag in parsedTags"
+          v-for="tag in formFields.tags"
           :key="tag"
-          class="px-2 py-0.5 text-xs rounded-full bg-default text-primary"
+          class="inline-flex items-center gap-1 px-2 py-0.5 text-xs rounded-full bg-default text-primary"
         >
           #{{ tag }}
+          <VButton
+            type="button"
+            icon="cross-filled"
+            class="ml-1 hover:text-danger transition-colors leading-none"
+            @click="removeTag(tag)"
+          >
+          </VButton>
         </span>
       </div>
     </div>

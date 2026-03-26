@@ -50,7 +50,7 @@ interface ListInfo {
 
 export interface TaskFormState {
   taskName: string;
-  tags: string;
+  tags: string[];
   priority: string;
   dueDate: Date | null;
 }

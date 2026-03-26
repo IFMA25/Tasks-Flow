@@ -31,7 +31,7 @@ const {
 </script>
 
 <template>
-  <div class="relative flex flex-col gap-8 w-full max-w-5xl mx-auto p-4">
+  <div class="relative flex flex-col gap-8 w-full h-full max-w-5xl mx-auto p-4">
     <TasksListToolbar
       v-if="pendingTasks.length || completedTasks.length"
       v-model:sort="activeSortKey"
@@ -42,6 +42,7 @@ const {
     <VCollapsContainer
       :title="$t('tasks.pending')"
       :count="pendingTasks.length"
+      class="max-h-[400px] overflow-y-auto border-2 border-default p-4 rounded-xl bg-white"
     >
       <TasksTable
         :rows="pendingTasks"
@@ -59,6 +60,7 @@ const {
       v-if="completedTasks.length"
       :title="$t('tasks.completed')"
       :count="completedTasks.length"
+      class="max-h-[400px] overflow-y-auto border-2 border-default p-4 rounded-xl"
     >
       <TasksTable
         :rows="completedTasks"

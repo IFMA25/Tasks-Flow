@@ -3,6 +3,7 @@ import { refDebounced } from "@vueuse/core";
 import {
   computed,
   ref,
+  useTemplateRef,
 } from "vue";
 import { useI18n } from "vue-i18n";
 import { useRouter } from "vue-router";
@@ -14,7 +15,6 @@ import DeleteUserModal from "./components/DeleteUserModal.vue";
 import UsersTableToolbar from "./components/UsersTableToolbar.vue";
 import { formatDate } from "./utils";
 
-import { useSelectedOption } from "@/shared/composables/useSelectedOption";
 import {
   ActionKey,
   Actions,
@@ -54,42 +54,32 @@ const sortOptions = computed<SortOption[]>(() => [
   { key: "nameDesc", label: t("filters.nameDesc"), params: { sort: "name", order: "desc" } },
 ]);
 
-const activeRoleKey = ref<string>(roleOptions.value[0].key);
-const activeSortKey = ref<string>(sortOptions.value[0].key);
-
-const selectedRole = useSelectedOption<RoleOption>(
-  roleOptions,
-  activeRoleKey,
-  (value) => {
-    activeRoleKey.value = String(value);
-  },
-);
-
-const selectedSort = useSelectedOption<SortOption>(
-  sortOptions,
-  activeSortKey,
-  (value) => {
-    activeSortKey.value = String(value);
-  },
-);
+const roleModel = ref<string>(roleOptions.value[0].key);
+const sortModel = ref<string>(sortOptions.value[0].key);
 
 const modelSearch = ref<string>("");
 const debouncedSearch = refDebounced(modelSearch, 800);
-const currentLimit = ref<number>(20);
-const deleteModalRef = ref<InstanceType<typeof DeleteUserModal> | null>(null);
+const currentLimit = ref(20);
+const deleteModalRef = useTemplateRef<InstanceType<typeof DeleteUserModal>>("deleteModalRef");
 
 const router = useRouter();
 
+const fetchParams = computed(() => {
+  const selectedSort = sortOptions.value.find(o => o.key === sortModel.value)?.params;
+  const selectedRole = roleOptions.value.find(o => o.key === roleModel.value)?.value;
+  return {
+    limit: currentLimit.value,
+    q: debouncedSearch.value || undefined,
+    role: selectedRole,
+    sort: selectedSort?.sort,
+    order: selectedSort?.order,
+  };
+});
+
 const { execute, loading, data: usersData } = useUsersDataRequest({
   immediate: true,
-  watch: [selectedRole, selectedSort, debouncedSearch],
-  params: () => ({
-    limit: currentLimit.value,
-    q: modelSearch.value.trim() || undefined,
-    role: selectedRole.value?.value,
-    sort: selectedSort.value.params.sort,
-    order: selectedSort.value.params.order,
-  }),
+  watch: [roleModel, sortModel, debouncedSearch],
+  params: fetchParams,
 });
 
 const loadMore = (limit: number) => {
@@ -97,13 +87,9 @@ const loadMore = (limit: number) => {
   execute();
 };
 
-const handleAction = (user: User, action: ActionKey) => {
-  if (action === "edit") {
-    router.push({ name: RouteNames.profile, query: { id: user.id } });
-  }
-  if (action === "delete") {
-    deleteModalRef.value?.openModal(user);
-  }
+const actionHandlers: Record<ActionKey, (user: User) => void> = {
+  edit: (user) => router.push({ name: RouteNames.profile, query: { id: user.id } }),
+  delete: (user) => deleteModalRef.value?.openModal(user),
 };
 </script>
 
@@ -124,12 +110,10 @@ const handleAction = (user: User, action: ActionKey) => {
       <template #toolbar>
         <UsersTableToolbar
           v-model:search="modelSearch"
-          v-model:role="selectedRole"
-          v-model:sort="selectedSort"
-          :options="{
-            roleOptions: roleOptions,
-            sortOptions: sortOptions
-          }"
+          v-model:role="roleModel"
+          v-model:sort="sortModel"
+          :role-options="roleOptions"
+          :sort-options="sortOptions"
         />
       </template>
       <template #cell-member="{ row }">
@@ -151,7 +135,7 @@ const handleAction = (user: User, action: ActionKey) => {
       >
         <VActionsDropdown
           :actions="actions"
-          @action="(actionKey) => handleAction(row, actionKey)"
+          @action="(actionKey) => actionHandlers[actionKey]?.(row)"
         />
       </template>
     </VTable>

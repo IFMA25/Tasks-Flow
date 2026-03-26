@@ -12,6 +12,7 @@ const props = withDefaults(defineProps<{
   label?: string;
   placeholder?: string;
   supportText?: string;
+  supportTextVariant?: "error" | "muted";
   validation?: ValidationState;
   iconLeft?: string;
   iconRight?: string;
@@ -22,6 +23,7 @@ const props = withDefaults(defineProps<{
   variant: "main",
   label: "",
   supportText: "",
+  supportTextVariant: "muted",
   placeholder: "",
   validation: undefined,
   iconLeft: "",
@@ -146,7 +148,7 @@ const inputClass = computed(() => {
     <p
       v-if="hasError || props.supportText"
       class="text-sm mt-1"
-      :class="hasError ? 'text-negative' : 'text-mutedText'"
+      :class="hasError || props.supportTextVariant === 'error' ? 'text-danger' : 'text-mutedText'"
     >
       {{ hasError ? errorMessage : props.supportText }}
     </p>

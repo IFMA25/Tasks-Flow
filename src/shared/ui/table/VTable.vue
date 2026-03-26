@@ -45,7 +45,7 @@ defineEmits<{
     >
       <VTransitionLoader :is-loading="loading" />
       <div
-        v-if="!loading && showEmptyState"
+        v-if="!loading && showEmptyState && !rows.length"
         class="py-16 px-4"
       >
         <slot name="emptyState">

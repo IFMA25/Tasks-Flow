@@ -19,7 +19,7 @@ const {
 
 const { t } = useI18n();
 
-const role = defineModel<RoleOption | null>("role");
+const role = defineModel<string | null>("role");
 
 const emit = defineEmits<{
   "update:allSelected": [value: boolean];
@@ -44,7 +44,7 @@ const labelCheckbox = computed(() =>
       label-text="Role"
       :options="roleOptions"
       label="label"
-      track-by="value"
+      track-by="key"
       :close-on-select="true"
       class="min-w-[9.6rem]"
       :disabled="disabled"
