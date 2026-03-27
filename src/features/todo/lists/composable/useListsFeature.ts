@@ -32,7 +32,7 @@ export const useListsFeature = () => {
     const data = listsStore.dataLists?.data;
     if (!data) return [];
 
-    const grouped = Object.groupBy(data, (list) => list.owner.id);
+    const grouped = Object.groupBy(data, (list: UserList) => list.owner.id);
     return Object.values(grouped).map((lists) => ({
       owner: lists![0].owner,
       lists: lists!,

@@ -20,6 +20,7 @@ interface Props {
   label?: string;
   trackBy?: string;
   disabled?: boolean;
+  size?: 'sm' | 'md';
 }
 
 const {
@@ -37,6 +38,7 @@ const {
   label,
   trackBy="key",
   disabled = false,
+  size = 'md'
 } = defineProps<Props>();
 
 const model = defineModel<string | string[] | null>();
@@ -96,6 +98,7 @@ const closeOnSelectComputed = computed(() =>
       :label="label"
       :track-by="trackBy"
       :disabled="disabled"
+      :class="`multiselect--size-${size}`" 
     >
       <template #caret="{ toggle }">
         <button
@@ -124,14 +127,22 @@ const closeOnSelectComputed = computed(() =>
 }
 
 :deep(.multiselect__tags) {
-  @apply min-h-8 border-2 border-default rounded-lg py-3 pl-[0.625rem]
-  pr-[2.4rem] leading-6 focus:outline-none transition-colors duration-300
+  @apply min-h-8 border-2 border-default rounded-lg leading-6 focus:outline-none transition-colors duration-300
   ease-in-out text-primary bg-secondaryBg;
 }
 
 :deep(.multiselect__tags:focus-within) {
   @apply border-borderFocus rounded-lg;
 }
+
+:deep(.multiselect--size-sm .multiselect__tags) {
+  @apply py-1.5 pl-[0.5rem] pr-[2.2rem];
+}
+
+:deep(.multiselect--size-md .multiselect__tags) {
+  @apply py-3 pl-[0.625rem] pr-[2.4rem];
+}
+
 
 :deep(.multiselect__single),
 :deep(.multiselect__placeholder) {

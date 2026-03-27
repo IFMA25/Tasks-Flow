@@ -30,9 +30,7 @@ const routeLayout = computed(() => {
 </script>
 
 <template>
-  <div class="h-screen flex flex-col bg-bgBase text-primary">
-    <main class="flex-1 w-full overflow-auto">
-      <component :is="routeLayout" />
-    </main>
+  <div class="bg-bgBase text-primary">
+    <component :is="routeLayout" />
   </div>
 </template>

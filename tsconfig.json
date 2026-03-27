@@ -3,7 +3,7 @@
     "useDefineForClassFields": true,
     "target": "ES2022",
     "lib": [
-      "ES2024",
+      "ESNext",
       "DOM",
       "DOM.Iterable"
     ],

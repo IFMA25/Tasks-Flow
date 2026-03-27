@@ -63,7 +63,7 @@ const router = useRouter();
               query: { tab: listsTabs.usersLists }
             })"
           >
-            {{ capitalizeFirstLetter(list.title) }}
+            {{ capitalizeFirstLetter(list.title) }} ({{ list.tasks.length }})
           </li>
         </ul>
       </VDropdown>

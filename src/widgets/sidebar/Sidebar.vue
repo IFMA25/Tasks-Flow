@@ -19,7 +19,7 @@ const toggle = () => { isOpen.value = !isOpen.value; };
 
 <template>
   <aside
-    class="bg-sidebarOverlay border-2 border-transparent rounded-r-2xl transition-all duration-300 "
+    class="bg-sidebarOverlay border-2 border-transparent rounded-r-2xl transition-all duration-300 overflow-hidden"
     :class="isOpen ? 'w-64' : 'w-20'"
   >
     <div

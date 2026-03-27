@@ -3,19 +3,35 @@ import TasksListToolbar from "./TasksListToolbar.vue";
 import TasksTable from "./TasksTable.vue";
 import { useTasksListFeature } from "../composable/useTasksListFeature";
 
-import VCollapsContainer from "@/shared/ui/VCollapsContainer.vue";
+import VCollapseContainer from "@/shared/ui/VCollapseContainer.vue";
+import { useRoute } from "vue-router";
+import { computed } from "vue";
 
-const heads = [
+const baseHeads = [
   { key: "status",   label: "" },
-  { key: "title",    label: "" },
-  { key: "priority", label: "" },
-  { key: "dueDate",  label: "" },
+  { key: "title",    label: "", columnStyles: 'w-[30%]' },
+  { key: "priority", label: "" , columnStyles: 'w-[15%]'},
+  { key: "dueDate",  label: "", columnStyles: 'w-[15%]' },
   { key: "tags",     label: "" },
   { key: "actions",  label: "" },
 ];
 
+const hiddenUserListColumns = ['status', 'actions'];
+
 const { listId } = defineProps<{ listId: string }>();
 const emit = defineEmits(["action"]);
+
+const route = useRoute();
+const isUserList = route.query.tab === 'usersLists';
+
+const heads = computed(() => {
+  
+  if (isUserList) {
+    return baseHeads.filter(head => !hiddenUserListColumns.includes(head.key));
+  }
+  
+  return baseHeads;
+});
 
 const {
   pendingTasks,
@@ -39,10 +55,9 @@ const {
       :sort-options="sortOptions"
       :priority-options="priorityOptions"
     />
-    <VCollapsContainer
+    <VCollapseContainer
       :title="$t('tasks.pending')"
       :count="pendingTasks.length"
-      class="max-h-[400px] overflow-y-auto border-2 border-default p-4 rounded-xl bg-white"
     >
       <TasksTable
         :rows="pendingTasks"
@@ -54,13 +69,12 @@ const {
         @status-change="handleStatusChange"
         @action="(row, key) => emit('action', row, key)"
       />
-    </VCollapsContainer>
+    </VCollapseContainer>
 
-    <VCollapsContainer
+    <VCollapseContainer
       v-if="completedTasks.length"
       :title="$t('tasks.completed')"
       :count="completedTasks.length"
-      class="max-h-[400px] overflow-y-auto border-2 border-default p-4 rounded-xl"
     >
       <TasksTable
         :rows="completedTasks"
@@ -68,6 +82,6 @@ const {
         :show-empty-state="false"
         @status-change="handleStatusChange"
       />
-    </VCollapsContainer>
+    </VCollapseContainer>
   </div>
 </template>

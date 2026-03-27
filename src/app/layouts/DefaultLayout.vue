@@ -34,15 +34,17 @@ const showHeader = computed(() => route.meta.showHeader !== false);
 </script>
 
 <template>
-  <div class="flex w-full h-full">
+  <div class="flex w-full h-screen overflow-hidden">
     <Sidebar :nav-items="navItems" />
     <VToaster />
-    <div class="flex-1 px-12 py-6">
+    <div class="flex flex-col flex-1 min-w-0 px-12 py-6">
       <Header
         v-if="showHeader"
-        class="mb-6"
+        class="flex-shrink-0 mb-6"
       />
-      <router-view />
+      <main class="flex-1 overflow-y-auto">
+        <router-view />
+      </main>
     </div>
   </div>
 </template>

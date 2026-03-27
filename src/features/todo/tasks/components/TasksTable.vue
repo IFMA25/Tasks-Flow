@@ -8,11 +8,11 @@ import { getDueDateStatusFromIso } from "../utils/dateFormater";
 import type { Actions } from "@/shared/types";
 import VActionsDropdown from "@/shared/ui/VActionsDropdown.vue";
 import VCheckbox from "@/shared/ui/common/VCheckbox.vue";
-import VTable from "@/shared/ui/table/VTable.vue";
+import VTable, { TableColumn } from "@/shared/ui/table/VTable.vue";
 
 defineProps<{
   rows: TaskData[];
-  heads: { key: string; label: string }[];
+  heads: TableColumn<TaskData>[];
   loading?: boolean;
   showEmptyState?: boolean;
   showActions?: boolean;
@@ -45,7 +45,7 @@ const displayDueDate = (dueDate: string) => {
     :rows="rows"
     :heads="heads"
     :show-empty-state="showEmptyState"
-    class="px-4"
+    class="bg-bgSecondary"
   >
     <template #cell-status="{ row }">
       <VCheckbox
@@ -54,6 +54,7 @@ const displayDueDate = (dueDate: string) => {
         variant="default"
         :model-value="row.status === 'done'"
         @update:model-value="(val) => emit('statusChange', row, val)"
+        box-class="group-hover:border-primaryBg"
       />
     </template>
     <template #cell-title="{ row }">

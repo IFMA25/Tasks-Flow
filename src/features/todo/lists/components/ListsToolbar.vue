@@ -17,7 +17,7 @@ const sort = defineModel<string>("sort");
 </script>
 
 <template>
-  <div class="flex items-center gap-4 mb-6">
+  <div class="flex items-center gap-5 mb-6">
     <VInput
       v-if="activeTab === listsTabs.myLists"
       v-model="search"

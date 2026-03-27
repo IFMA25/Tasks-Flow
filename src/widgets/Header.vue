@@ -21,7 +21,7 @@ const title = computed(() => {
 
 <template>
   <div class="bg-border-gradient p-[2px] rounded-xl">
-    <div class="flex items-center w-full h-full bg-bgSecondary p-3 rounded-[10px] p-4">
+    <div class="flex items-center w-full h-full bg-bgSecondary rounded-[10px] p-4">
       <div
         v-if="!route.query.id"
         class="flex-1 min-w-0"
@@ -33,10 +33,12 @@ const title = computed(() => {
         />
         <div id="header-content" />
       </div>
-      <div class="flex items-center gap-2">
-        <ThemeToggle />
-        <LangSwitcher />
-        <div id="header-actions" />
+      <div class="flex items-center">
+        <div id="header-actions" class="pr-3 border-r border-muted"/>
+        <div class="flex items-center gap-2 pl-3">
+          <ThemeToggle />
+          <LangSwitcher size="sm" />
+        </div>
       </div>
     </div>
   </div>
