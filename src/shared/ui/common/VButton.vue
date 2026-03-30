@@ -34,10 +34,10 @@ const props = withDefaults(
 
 const btnStyles = {
   primary: "justify-center bg-primaryBg px-3 py-3 text-base font-medium border-2 border-primaryBg rounded-xl hover:shadow-btnHover disabled:bg-disabled disabled:text-muted disabled:border-disabled ",
-  outline: "bg-secondaryBg py-3 px-4 text-primaryBg font-medium border-2 border-primaryBg rounded-xl hover:shadow-btnHover hover:text-shadow-btnHover disabled:border-disabled disabled:text-disabled",
-  navItem: "py-3 text-secondaryText font-medium hover:text-shadow-btnHover hover:text-primaryBg hover:drop-shadow-btnHover disabled:text-disabled ",
+  outline: "bg-secondaryBg py-3 px-4 text-primaryBg font-medium border-2 border-primaryBg rounded-xl hover:shadow-btnHover hover:text-primaryTextDark disabled:border-disabled disabled:text-disabled",
+  navItem: "py-3 text-secondaryText font-medium hover:text-primaryBg disabled:text-disabled ",
   "navItem-active": "py-3 text-primaryTextDark font-medium",
-  authMode: "text-primaryTextDark font-medium hover:text-shadow-tabHover hover:text-primaryBg",
+  authMode: "text-primaryTextDark font-medium hover:text-primaryBg",
   cardTitle: "text-lg font-semibold text-primary hover:text-primaryBg",
   danger: "bg-danger py-3 px-4 text-base font-medium border-2 border-danger rounded-xl hover:bg-dangerHover disabled:bg-disabled disabled:text-muted disabled:border-disabled",
 };
@@ -57,7 +57,7 @@ const isDisabled = computed(() => props.disabled || props.loading);
 
 const disabledClass = computed(() =>
   isDisabled.value
-    ? "cursor-default shadow-none [text-shadow:none] pointer-events-none"
+    ? "cursor-default shadow-none pointer-events-none"
     : "cursor-pointer",
 );
 

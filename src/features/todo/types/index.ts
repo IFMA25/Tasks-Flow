@@ -103,10 +103,10 @@ export interface RequestCompletedTask {
 
 export interface ListsParams {
   limit: number;
-  q: string;
   sort: string;
   order: string;
-  isOwn: boolean;
+  q?: string;
+  isOwn?: boolean;
 }
 
 export interface UserListGroup {

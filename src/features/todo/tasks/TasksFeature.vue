@@ -2,7 +2,7 @@
 import {
   computed,
   onMounted,
-  ref,
+  useTemplateRef,
 } from "vue";
 import { useRoute } from "vue-router";
 
@@ -17,8 +17,8 @@ import VButton from "@/shared/ui/common/VButton.vue";
 import VSkeleton from "@/shared/ui/common/VSkeleton.vue";
 import { listsTabs } from "@/shared/variables/tabListsPage";
 
-const formModalRef = ref<InstanceType<typeof TaskFormModal> | null>(null);
-const deleteModalRef = ref<InstanceType<typeof DeleteTaskModal> | null>(null);
+const formModalRef = useTemplateRef<InstanceType<typeof TaskFormModal>>("formModalRef");
+const deleteModalRef = useTemplateRef<InstanceType<typeof DeleteTaskModal>>("deleteModalRef");
 
 const route = useRoute();
 const listStore = useListsStore();

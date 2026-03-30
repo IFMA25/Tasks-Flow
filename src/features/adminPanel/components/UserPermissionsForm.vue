@@ -86,7 +86,7 @@ const {
   loading: updateUserRoleLoad,
   data: updateUserRoleData,
 } = useUpdateUserRole(() => userId, {
-  data: () => ({ role: userRole.value ?? '' }),
+  data: () => ({ role: userRole.value ?? "" }),
   onSuccess: () => {
     userRole.value = updateUserRoleData.value.role;
   },

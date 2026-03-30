@@ -26,7 +26,7 @@ const { open: openLogoutModal, close: closeLogoutModal } = useModal("logout");
     </p>
     <template #footer>
       <VButton
-        :text="$t('auth.logout.modalCancel')"
+        :text="$t('cancel')"
         variant="outline"
         @click="closeLogoutModal"
       />

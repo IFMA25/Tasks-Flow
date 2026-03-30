@@ -19,12 +19,12 @@ const toggle = () => { isOpen.value = !isOpen.value; };
 
 <template>
   <aside
-    class="bg-sidebarOverlay border-2 border-transparent rounded-r-2xl transition-all duration-300 overflow-hidden"
+    class="bg-sidebarOverlay border-2 border-transparent
+      rounded-r-2xl transition-all duration-300 overflow-hidden"
     :class="isOpen ? 'w-64' : 'w-20'"
   >
     <div
-      class="sidebar relative flex flex-col h-full border-2
-    border-transparent rounded-r-2xl p-6"
+      class="sidebar relative flex flex-col h-full rounded-r-2xl p-6"
     >
       <div class="flex justify-end mb-6">
         <SidebarHeader

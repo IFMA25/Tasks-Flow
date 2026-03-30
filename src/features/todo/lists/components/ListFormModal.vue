@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { reactive, ref } from "vue";
 
-import { FormDataList, ListData } from "../../types";
+import { FormDataList, ListData, ListsParams } from "../../types";
 import { useListForm } from "../composable/useListForm";
 
 import { useModal } from "@/shared/composables/useModal";
@@ -11,6 +11,8 @@ import VInput from "@/shared/ui/common/VInput.vue";
 import VModal from "@/shared/ui/common/VModal.vue";
 import { colorsList } from "@/shared/variables/colorMap";
 
+const { getParams } = defineProps<{ getParams: () => ListsParams | null }>();
+
 const selectedList = ref<ListData | null>(null);
 const formData = reactive<FormDataList>({
   title: "",
@@ -18,16 +20,16 @@ const formData = reactive<FormDataList>({
 });
 
 const { open, close } = useModal("listFormModal");
-const { handleSubmit, isLoading, isSubmitDisabled, initForm } = useListForm(formData, selectedList);
+const {
+  handleSubmit,
+  isLoading,
+  isSubmitDisabled,
+  initForm,
+} = useListForm(formData, selectedList, getParams);
 
 const openModal = (list?: ListData) => {
   initForm(list ?? null);
   open();
-};
-
-const onSubmit = async () => {
-  const success = await handleSubmit();
-  if (success) close();
 };
 
 defineExpose({ openModal });
@@ -40,11 +42,10 @@ defineExpose({ openModal });
       ? $t('lists.listFormModal.title')
       : $t('lists.createListModal.title')"
     max-width="md"
-    @close="close"
   >
     <form
       id="listForm"
-      @submit.prevent="onSubmit"
+      @submit.prevent="handleSubmit(close)"
     >
       <VInput
         v-model="formData.title"

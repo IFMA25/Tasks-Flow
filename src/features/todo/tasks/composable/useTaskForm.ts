@@ -66,18 +66,14 @@ export const useTaskForm = (
     () => !formData.taskName.trim() || !isDataChanged.value,
   );
 
-  const handleSubmit = async () => {
-    if (!formData.taskName) return false;
-    try {
-      if (selectedTask.value?.id) {
-        await updateSelectedTaskExecute();
-      } else {
-        await createNewTaskExecute();
-      }
-      return true;
-    } catch {
-      return false;
+  const handleSubmit = async (close: () => void) => {
+    if (!formData.taskName) return;
+    if (selectedTask.value?.id) {
+      await updateSelectedTaskExecute();
+    } else {
+      await createNewTaskExecute();
     }
+    close();
   };
 
   const isLoading = computed(() => updateTaskLoading.value || createNewTaskLoading.value);

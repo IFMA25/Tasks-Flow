@@ -10,8 +10,8 @@ import VSelect from "@/shared/ui/common/VSelect.vue";
 
 const { t } = useI18n();
 const { roleOptions, sortOptions } = defineProps<{
-    roleOptions: RoleOption[];
-    sortOptions: SortOption[];
+  roleOptions: RoleOption[];
+  sortOptions: SortOption[];
 }>();
 
 const search = defineModel<string>("search");

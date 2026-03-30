@@ -20,7 +20,7 @@ interface Props {
   label?: string;
   trackBy?: string;
   disabled?: boolean;
-  size?: 'sm' | 'md';
+  size?: "sm" | "md";
 }
 
 const {
@@ -38,7 +38,7 @@ const {
   label,
   trackBy="key",
   disabled = false,
-  size = 'md'
+  size = "md",
 } = defineProps<Props>();
 
 const model = defineModel<string | string[] | null>();
@@ -98,7 +98,7 @@ const closeOnSelectComputed = computed(() =>
       :label="label"
       :track-by="trackBy"
       :disabled="disabled"
-      :class="`multiselect--size-${size}`" 
+      :class="`multiselect--size-${size}`"
     >
       <template #caret="{ toggle }">
         <button
@@ -127,7 +127,8 @@ const closeOnSelectComputed = computed(() =>
 }
 
 :deep(.multiselect__tags) {
-  @apply min-h-8 border-2 border-default rounded-lg leading-6 focus:outline-none transition-colors duration-300
+  @apply min-h-8 border-2 border-default rounded-lg leading-6
+    focus:outline-none transition-colors duration-300
   ease-in-out text-primary bg-secondaryBg;
 }
 

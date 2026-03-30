@@ -4,6 +4,7 @@ import { useI18n } from "vue-i18n";
 
 import type { TaskData } from "../../types";
 import { getDueDateStatusFromIso } from "../utils/dateFormater";
+import TasksTableSkeleton from "./skeleton/TasksTableSkeleton.vue";
 
 import type { Actions } from "@/shared/types";
 import VActionsDropdown from "@/shared/ui/VActionsDropdown.vue";
@@ -41,11 +42,13 @@ const displayDueDate = (dueDate: string) => {
 </script>
 
 <template>
+  <TasksTableSkeleton v-if="loading" />
   <VTable
+    v-else
     :rows="rows"
     :heads="heads"
     :show-empty-state="showEmptyState"
-    class="bg-bgSecondary"
+    class="h-[35dvh] bg-bgSecondary"
   >
     <template #cell-status="{ row }">
       <VCheckbox
@@ -53,8 +56,8 @@ const displayDueDate = (dueDate: string) => {
         height="h-5"
         variant="default"
         :model-value="row.status === 'done'"
-        @update:model-value="(val) => emit('statusChange', row, val)"
         box-class="group-hover:border-primaryBg"
+        @update:model-value="(val) => emit('statusChange', row, val)"
       />
     </template>
     <template #cell-title="{ row }">

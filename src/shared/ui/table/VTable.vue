@@ -43,7 +43,10 @@ defineEmits<{
       class="flex-1 overflow-auto relative w-full min-h-0 transition-opacity duration-300"
       :class="{ 'pointer-events-none select-none': loading }"
     >
-      <VTransitionLoader :is-loading="loading" />
+      <VTransitionLoader
+        :is-loading="loading"
+        variant="overlay"
+      />
       <div
         v-if="!loading && showEmptyState && !rows.length"
         class="py-16 px-4"
@@ -64,7 +67,7 @@ defineEmits<{
             v-for="head in heads"
             :key="String(head.key)"
             :class="head.columnStyles"
-          />
+          >
         </colgroup>
         <thead
           v-if="heads.some(h => h.label)"
@@ -74,7 +77,8 @@ defineEmits<{
             <th
               v-for="head in heads"
               :key="String(head.key)"
-              :class="[`py-3 px-2 font-semibold first:rounded-tl-lg last:rounded-tr-lg`, head.position]"
+              :class="[`py-3 px-2 font-semibold
+                first:rounded-tl-lg last:rounded-tr-lg`, head.position]"
             >
               {{ head.label }}
             </th>
@@ -84,7 +88,8 @@ defineEmits<{
           <tr
             v-for="row in rows"
             :key="row.id"
-            class="group border-b border-default last:border-b-0 hover:bg-default transition-colors delay-100"
+            class="group border-b border-default last:border-b-0
+              hover:bg-default transition-colors delay-100"
           >
             <td
               v-for="head in heads"

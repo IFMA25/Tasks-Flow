@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { computed } from "vue";
+
 import VIcon from "./VIcon.vue";
 
 const modelValue = defineModel<boolean>({
@@ -18,7 +19,7 @@ const props = defineProps<{
   icon?: string
   iconSize?: string
   disabled?: boolean
-  boxClass?: string | string[] 
+  boxClass?: string | string[]
 }>();
 
 const variantClass: Record<string, Record<string, string>> = {
@@ -32,7 +33,7 @@ const variantClass: Record<string, Record<string, string>> = {
 
 const checkboxClass = computed(() => {
   const sizeClass = `${props.width} ${props.height}`;
-  
+
   const stateClass = modelValue.value
     ? variantClass.checked[props.variant] || variantClass.checked.default
     : variantClass.notChecked[props.variant] || variantClass.notChecked.default;
@@ -50,7 +51,8 @@ const checkboxClass = computed(() => {
     :class="props.disabled ? 'cursor-not-allowed opacity-60' : 'cursor-pointer'"
   >
     <div
-      class="relative flex items-center justify-center border-2 rounded transition-colors duration-200 text-base"
+      class="relative flex items-center justify-center border-2
+        rounded transition-colors duration-200 text-base"
       :class="checkboxClass"
     >
       <VIcon

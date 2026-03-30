@@ -85,7 +85,7 @@ export default {
         'secondaryBg': '#FFFFFF',
         'primaryTextDark': '#E6E9F5',
         'scrollbarBg': '#192132',
-        'sidebarOverlay': 'linear-gradient(180deg, #6CA3FF4D 0%, #B58BFF4D 50%, #64FFE24D 100%)',
+        'sidebarOverlay': 'linear-gradient(180deg, #303e62, #413862, #2c5665)',
         'secondary': '#475569',
         'secondaryText': '#A6ADCF',
         'subtle': '#F0F1F3',

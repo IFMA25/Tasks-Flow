@@ -6,13 +6,17 @@ import { useI18n } from "vue-i18n";
 import { toast } from "vue-sonner";
 
 import { useListsFilters } from "./useListsFilters";
-import { FormDataList, ListData } from "../../types";
+import { FormDataList, ListData, ListsParams } from "../../types";
 import { useListsRequests } from "../api/useListsRequest";
 import { useListsStore } from "../store/useListsStore";
 
 import { colorsList } from "@/shared/variables/colorMap";
 
-export const useListForm = (formDataList: FormDataList, selectedList: Ref<ListData | null>) => {
+export const useListForm = (
+  formDataList: FormDataList,
+  selectedList: Ref<ListData | null>,
+  getParams: () => ListsParams | null,
+) => {
 
   const { createNewList, updateList } = useListsRequests();
   const { resetFilters } = useListsFilters();
@@ -34,7 +38,7 @@ export const useListForm = (formDataList: FormDataList, selectedList: Ref<ListDa
     data: submitData,
     onSuccess: () => {
       resetFilters();
-      listsStore.updateLists();
+      listsStore.fetchLists();
       toast.success(t("lists.msgCreateSuccess"));
     },
   });
@@ -43,12 +47,10 @@ export const useListForm = (formDataList: FormDataList, selectedList: Ref<ListDa
     () => selectedList.value?.id, {
       data: submitData,
       onSuccess: () => {
-        listsStore.updateLists();
+        listsStore.fetchLists({ params: getParams() });
         toast.success(t("lists.msgUpdateSuccess"));
       },
     });
-
-  const isValid = computed(() => !!formDataList.title);
 
   const isDataChanged = computed(() => {
     if (!selectedList.value) return true;
@@ -57,21 +59,17 @@ export const useListForm = (formDataList: FormDataList, selectedList: Ref<ListDa
            formDataList.hexColor !== (selectedList.value.hexColor || colorsList[0]);
   });
 
-  const isSubmitDisabled = computed(() => !(isValid.value && isDataChanged.value));
+  const isSubmitDisabled = computed(() => !formDataList.title || !isDataChanged.value);
 
   const isLoading = computed(() => createListLoading.value || updateListLoading.value);
 
-  const handleSubmit = async (): Promise<boolean> => {
-    try {
-      if (selectedList.value?.id) {
-        await updateSelectedListExecute();
-      } else {
-        await createNewListExecute();
-      }
-      return true;
-    } catch (error) {
-      return false;
+  const handleSubmit = async (close: () => void) => {
+    if (selectedList.value?.id) {
+      await updateSelectedListExecute();
+    } else {
+      await createNewListExecute();
     }
+    close(); //???? если ошибка закрывать тоже?
   };
 
   return {

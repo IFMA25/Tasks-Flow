@@ -47,15 +47,8 @@ const close = () => {
   closeModal();
 };
 
-const onSubmit = async () => {
-  const success = await taskForm.handleSubmit();
-  if (success) {
-    close();
-  }
-};
-
 const handleTagKeydown = (e: KeyboardEvent) => {
-  if (![" ", ",", ";"].includes(e.key)) return;
+  if (![" ", ",", ";", "Enter"].includes(e.key)) return;
   e.preventDefault();
   if (isTagLimitReached.value) return;
   const val = tagInput.value.trim();
@@ -116,8 +109,8 @@ defineExpose({ open });
         :label="$t('tasks.createTaskModal.labelTags')"
         :placeholder="$t('tasks.createTaskModal.placeholderTags')"
         :readonly="isTagLimitReached"
-        :support-text="isTagLimitReached 
-          ? $t('validation.maxTags', { max: 5 }) 
+        :support-text="isTagLimitReached
+          ? $t('validation.maxTags', { max: 5 })
           : `${formFields.tags.length}/5`"
         :support-text-variant="isTagLimitReached ? 'error' : 'muted'"
         @keydown="handleTagKeydown"
@@ -129,7 +122,8 @@ defineExpose({ open });
         <span
           v-for="tag in formFields.tags"
           :key="tag"
-          class="inline-flex items-center gap-1 px-2 py-0.5 text-xs rounded-full bg-default text-primary"
+          class="inline-flex items-center gap-1 px-2
+          py-0.5 text-xs rounded-full bg-default text-primary"
         >
           #{{ tag }}
           <VButton
@@ -137,8 +131,7 @@ defineExpose({ open });
             icon="cross-filled"
             class="ml-1 hover:text-danger transition-colors leading-none"
             @click="removeTag(tag)"
-          >
-          </VButton>
+          />
         </span>
       </div>
     </div>
@@ -154,7 +147,7 @@ defineExpose({ open });
         variant="outline"
         load-color="text-disabled"
         :disabled="taskForm.isSubmitDisabled.value || taskForm.isLoading.value"
-        @click="onSubmit"
+        @click="taskForm.handleSubmit(close)"
       />
     </template>
   </VModal>

@@ -3,12 +3,14 @@ import { ref } from "vue";
 import { useI18n } from "vue-i18n";
 import { toast } from "vue-sonner";
 
-import { ListData } from "../../types";
+import { ListData, ListsParams } from "../../types";
 import { useListsRequests } from "../api/useListsRequest";
 import { useListsStore } from "../store/useListsStore";
 
 import { useModal } from "@/shared/composables/useModal";
 import VConfirmDeleteModal from "@/shared/ui/VConfirmDeleteModal.vue";
+
+const { getParams } = defineProps<{ getParams: () => ListsParams }>();
 
 const { t } = useI18n();
 const { open, close } = useModal("listDeleteModal");
@@ -27,7 +29,7 @@ const { execute, loading } = deleteList(
   {
     onSuccess: () => {
       close();
-      listsStore.updateLists();
+      listsStore.fetchLists({ params: getParams() });
       toast.warning(t("lists.msgDeleteSuccess"));
     },
   },

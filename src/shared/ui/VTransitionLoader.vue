@@ -1,8 +1,9 @@
 <script setup lang="ts">
 import VLoader from "./common/VLoader.vue";
 
-const { isLoading } = defineProps<{
-  isLoading: boolean;
+defineProps<{
+  isLoading: boolean
+  variant?: "fullscreen" | "overlay"
 }>();
 </script>
 
@@ -15,14 +16,16 @@ const { isLoading } = defineProps<{
   >
     <div
       v-if="isLoading"
-      class="absolute inset-0 z-20 backdrop-blur-sm"
+      :class="[
+        'flex items-center justify-center backdrop-blur-md bg-base/75',
+        variant === 'fullscreen' && 'fixed inset-0 z-[9999]',
+        variant === 'overlay' && 'absolute inset-0 z-10 rounded-inherit',
+      ]"
     >
-      <div class="absolute top-[10rem] left-1/2 -translate-x-1/2">
-        <VLoader
-          color="primaryDark"
-          size="h-[100px]"
-        />
-      </div>
+      <VLoader
+        color="primaryDark"
+        size="h-[100px]"
+      />
     </div>
   </Transition>
 </template>

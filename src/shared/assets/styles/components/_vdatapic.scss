@@ -7,7 +7,6 @@
   --dp-border-color-focus: var(--color-borderFocus);
 
   // Background / Text
-  --dp-background-color: var(--color-bgSecondary);
   --dp-text-color: var(--color-primary);
   --dp-icon-color: var(--color-secondary);
 
@@ -57,7 +56,7 @@
 
 .dp__theme_light .dp__input,
 .dp__theme_dark .dp__input {
-  background-color: var(--color-base);
+  background-color: var(--color-secondaryBg);
   color: var(--color-primary);
   border: 2px solid var(--color-default);
   
@@ -68,7 +67,7 @@
 }
 
 .dp__input {
-  background-color: var(--color-base);
+  background-color: var(--color-secondaryBg);
   color: var(--color-primary);
   border: 2px solid var(--color-default);
   border-radius: 8px;
@@ -195,4 +194,16 @@
   &:hover {
     border: 1px solid var(--color-activeBtn);
   }
+}
+
+.dp__cell_inner{
+  color: var(--color-primary);
+}
+
+.dp__cell_inner.dp__cell_offset{
+  color: var(--color-disabled);
+}
+
+.dp__calendar_header_item{
+  color: var(--color-primary);
 }

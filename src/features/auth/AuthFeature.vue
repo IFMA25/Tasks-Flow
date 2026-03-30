@@ -15,7 +15,10 @@ const page = {
 </script>
 
 <template>
-  <section class="w-[28rem] bg-bgGradient px-8 py-10 border border-borderAuth rounded-2xl">
+  <section
+    class="w-[28rem] h-[35.2rem] bg-intro/95 backdrop-blur-xl
+    px-8 py-10 border border-borderAuth rounded-2xl"
+  >
     <ActionAuth
       :page-mode="pageMode || 'signin'"
       @switch-mode="switchMode"

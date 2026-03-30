@@ -1,5 +1,5 @@
 import { watchDebounced } from "@vueuse/core";
-import { computed } from "vue";
+import { computed, ref, watch } from "vue";
 import { useRoute, useRouter } from "vue-router";
 
 import { useListsFilters } from "./useListsFilters";
@@ -11,11 +11,13 @@ const currentLimit = 20;
 const currentLimitUsers = 100;
 
 export const useListsFeature = () => {
+  const isTabSwitching = ref(false);
+
   const route = useRoute();
   const router = useRouter();
   const listsStore = useListsStore();
 
-  const { modelSearch, selectedSort, sortOptions, resetFilters } = useListsFilters();
+  const { modelSearch, selectedSort, sortOptions } = useListsFilters();
 
   const activeTab = computed({
     get: () => {
@@ -24,6 +26,7 @@ export const useListsFeature = () => {
     },
     set: (value) => {
       modelSearch.value = "";
+      isTabSwitching.value = true;
       router.replace({ query: { ...route.query, tab: value } });
     },
   });
@@ -32,14 +35,14 @@ export const useListsFeature = () => {
     const data = listsStore.dataLists?.data;
     if (!data) return [];
 
-    const grouped = Object.groupBy(data, (list: UserList) => list.owner.id);
+    const grouped = Object.groupBy(data, (list) => list.owner.id);
     return Object.values(grouped).map((lists) => ({
       owner: lists![0].owner,
       lists: lists!,
     }));
   });
 
-  const fetchParams = computed(() => {
+  const getParams = () => {
     const sort = sortOptions.value.find((o) => o.key === selectedSort.value)!;
     return {
       limit: activeTab.value === listsTabs.myLists ? currentLimit : currentLimitUsers,
@@ -48,12 +51,28 @@ export const useListsFeature = () => {
       order: sort.params.order,
       isOwn: activeTab.value === listsTabs.myLists ? true : undefined,
     };
-  });
+  };
 
   watchDebounced(
-    fetchParams,
-    (params) => listsStore.updateLists(params),
-    { debounce: 300, immediate: true },
+    modelSearch,
+    () => {
+      if (isTabSwitching.value) {
+        isTabSwitching.value = false;
+        return;
+      }
+      listsStore.resetListsData();
+      listsStore.fetchLists({ params: getParams() });
+    },
+    { debounce: 400 },
+  );
+
+  watch(
+    () => [activeTab.value, selectedSort.value],
+    async () => {
+      listsStore.resetListsData();
+      await listsStore.fetchLists({ params: getParams() });
+    },
+    { immediate: true },
   );
 
   return {
@@ -63,6 +82,6 @@ export const useListsFeature = () => {
     userLists,
     selectedSort,
     sortOptions,
-    resetFilters,
+    getParams,
   };
 };

@@ -39,12 +39,7 @@ const {
         />
       </slot>
     </div>
-    <div
-      v-if="$slots.default"
-      class="flex flex-col gap-8"
-    >
-      <slot />
-    </div>
+    <slot />
     <div
       v-if="$slots['container-actions']"
     >
