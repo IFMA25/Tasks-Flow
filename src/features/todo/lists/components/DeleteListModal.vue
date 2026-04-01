@@ -3,19 +3,17 @@ import { ref } from "vue";
 import { useI18n } from "vue-i18n";
 import { toast } from "vue-sonner";
 
-import { ListData, ListsParams } from "../../types";
+import { ListData } from "../../types";
 import { useListsRequests } from "../api/useListsRequest";
-import { useListsStore } from "../store/useListsStore";
 
 import { useModal } from "@/shared/composables/useModal";
 import VConfirmDeleteModal from "@/shared/ui/VConfirmDeleteModal.vue";
 
-const { getParams } = defineProps<{ getParams: () => ListsParams }>();
+const { refetchLists } = defineProps<{ refetchLists: () => void }>();
 
 const { t } = useI18n();
 const { open, close } = useModal("listDeleteModal");
 const { deleteList } = useListsRequests();
-const listsStore = useListsStore();
 
 const selectedList = ref<ListData | null>(null);
 
@@ -29,7 +27,7 @@ const { execute, loading } = deleteList(
   {
     onSuccess: () => {
       close();
-      listsStore.fetchLists({ params: getParams() });
+      refetchLists();
       toast.warning(t("lists.msgDeleteSuccess"));
     },
   },

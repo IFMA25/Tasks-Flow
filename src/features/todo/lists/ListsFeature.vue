@@ -32,7 +32,7 @@ const {
   userLists,
   selectedSort,
   sortOptions,
-  getParams,
+  refetchLists,
 } = useListsFeature();
 
 const isLoading = computed(() => listsStore.isLoading);
@@ -72,18 +72,18 @@ const handleAction = (list: ListData, action: ListAction) => {
 
   <ListFormModal
     ref="formModalRef"
-    :get-params="getParams"
+    :refetch-lists="refetchLists"
   />
   <DeleteListModal
     ref="deleteModalRef"
-    :get-params="getParams"
+    :refetch-lists="refetchLists"
   />
 
   <ListsToolbar
     v-model:search="modelSearch"
     v-model:sort="selectedSort"
-    :active-tab="activeTab"
     :sort-options="sortOptions"
+    :show-search="activeTab === listsTabs.myLists"
   />
 
   <div class="border border-subtle p-1 rounded-2xl w-fit mb-7">

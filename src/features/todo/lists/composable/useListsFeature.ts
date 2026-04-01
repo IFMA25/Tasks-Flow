@@ -1,5 +1,5 @@
 import { watchDebounced } from "@vueuse/core";
-import { computed, ref, watch } from "vue";
+import { computed, watch } from "vue";
 import { useRoute, useRouter } from "vue-router";
 
 import { useListsFilters } from "./useListsFilters";
@@ -11,8 +11,6 @@ const currentLimit = 20;
 const currentLimitUsers = 100;
 
 export const useListsFeature = () => {
-  const isTabSwitching = ref(false);
-
   const route = useRoute();
   const router = useRouter();
   const listsStore = useListsStore();
@@ -25,15 +23,16 @@ export const useListsFeature = () => {
       return typeof tab === "string" ? tab : listsTabs.myLists;
     },
     set: (value) => {
-      modelSearch.value = "";
-      isTabSwitching.value = true;
+      if (value !== activeTab.value) {
+        modelSearch.value = "";
+      }
       router.replace({ query: { ...route.query, tab: value } });
     },
   });
 
   const userLists = computed(() => {
     const data = listsStore.dataLists?.data;
-    if (!data) return [];
+    if (!data?.length) return [];
 
     const grouped = Object.groupBy(data, (list) => list.owner.id);
     return Object.values(grouped).map((lists) => ({
@@ -42,38 +41,63 @@ export const useListsFeature = () => {
     }));
   });
 
-  const getParams = () => {
-    const sort = sortOptions.value.find((o) => o.key === selectedSort.value)!;
-    return {
-      limit: activeTab.value === listsTabs.myLists ? currentLimit : currentLimitUsers,
-      q: modelSearch.value || undefined,
-      sort: sort.params.sort,
-      order: sort.params.order,
-      isOwn: activeTab.value === listsTabs.myLists ? true : undefined,
-    };
+  const currentSort = computed(
+  () => sortOptions.value.find((o) => o.key === selectedSort.value) ?? sortOptions.value[0],
+);
+
+  const fetchMyLists = () => {
+    listsStore.fetchLists({
+      params: {
+        limit: currentLimit,
+        q: modelSearch.value || undefined,
+        sort: currentSort.value.params.sort,
+        order: currentSort.value.params.order,
+        isOwn: true,
+      },
+    });
+  };
+
+  const fetchUsersLists = () => {
+    listsStore.fetchLists({
+      params: {
+        limit: currentLimitUsers,
+        sort: currentSort.value.params.sort,
+        order: currentSort.value.params.order,
+      },
+    });
+  };
+
+  const refetchLists = () => {
+    listsStore.resetListsData();
+    if (activeTab.value === listsTabs.myLists) {
+      fetchMyLists();
+    } else {
+      fetchUsersLists();
+    }
   };
 
   watchDebounced(
-    modelSearch,
-    () => {
-      if (isTabSwitching.value) {
-        isTabSwitching.value = false;
-        return;
-      }
-      listsStore.resetListsData();
-      listsStore.fetchLists({ params: getParams() });
-    },
-    { debounce: 400 },
-  );
+  modelSearch,
+  () => {
+    if (activeTab.value !== listsTabs.myLists) return;
+    listsStore.resetListsData();
+    fetchMyLists();
+  },
+  { debounce: 400 },
+);
 
   watch(
-    () => [activeTab.value, selectedSort.value],
-    async () => {
-      listsStore.resetListsData();
-      await listsStore.fetchLists({ params: getParams() });
-    },
-    { immediate: true },
-  );
+  [activeTab, selectedSort],
+  () => {
+    listsStore.resetListsData();
+    if (activeTab.value === listsTabs.myLists) {
+      fetchMyLists();
+    } else {
+      fetchUsersLists();
+    }
+  },
+  { immediate: true },
+);
 
   return {
     listsStore,
@@ -82,6 +106,6 @@ export const useListsFeature = () => {
     userLists,
     selectedSort,
     sortOptions,
-    getParams,
+    refetchLists,
   };
 };

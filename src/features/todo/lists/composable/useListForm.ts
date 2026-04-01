@@ -6,21 +6,19 @@ import { useI18n } from "vue-i18n";
 import { toast } from "vue-sonner";
 
 import { useListsFilters } from "./useListsFilters";
-import { FormDataList, ListData, ListsParams } from "../../types";
+import { FormDataList, ListData } from "../../types";
 import { useListsRequests } from "../api/useListsRequest";
-import { useListsStore } from "../store/useListsStore";
 
 import { colorsList } from "@/shared/variables/colorMap";
 
 export const useListForm = (
   formDataList: FormDataList,
   selectedList: Ref<ListData | null>,
-  getParams: () => ListsParams | null,
+  refetchLists: () => void,
 ) => {
 
   const { createNewList, updateList } = useListsRequests();
   const { resetFilters } = useListsFilters();
-  const listsStore = useListsStore();
   const { t } = useI18n();
 
   const initForm = (listEdit: ListData | null) => {
@@ -38,7 +36,7 @@ export const useListForm = (
     data: submitData,
     onSuccess: () => {
       resetFilters();
-      listsStore.fetchLists();
+      refetchLists();
       toast.success(t("lists.msgCreateSuccess"));
     },
   });
@@ -47,7 +45,7 @@ export const useListForm = (
     () => selectedList.value?.id, {
       data: submitData,
       onSuccess: () => {
-        listsStore.fetchLists({ params: getParams() });
+        refetchLists();
         toast.success(t("lists.msgUpdateSuccess"));
       },
     });
