@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { useDebounceFn } from "@vueuse/core";
 import { useI18n } from "vue-i18n";
 
 import { SortOption } from "@/shared/types";
@@ -13,17 +14,22 @@ defineProps<{
 
 const search = defineModel<string>("search");
 const sort = defineModel<string>("sort");
+
+const onSearchInput = useDebounceFn((value: string) => {
+  search.value = value;
+}, 600);
 </script>
 
 <template>
   <div class="flex items-center gap-5 mb-6">
     <VInput
       v-if="showSearch"
-      v-model="search"
+      :model-value="search"
       :placeholder="t('lists.searchPlaceholder')"
       type="search"
       variant="search"
       icon-left="icon-search"
+      @update:model-value="onSearchInput"
     />
     <VSelect
       id="sort-select"

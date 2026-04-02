@@ -1,25 +1,24 @@
-import {
-  computed,
-  Ref,
-} from "vue";
+import { computed, type Ref } from "vue";
 import { useI18n } from "vue-i18n";
 import { toast } from "vue-sonner";
 
 import { useListsFilters } from "./useListsFilters";
-import { FormDataList, ListData } from "../../types";
+import { FormDataList, ListData, ListsParams } from "../../types";
 import { useListsRequests } from "../api/useListsRequest";
+import { useListsStore } from "../store/useListsStore";
 
 import { colorsList } from "@/shared/variables/colorMap";
 
 export const useListForm = (
   formDataList: FormDataList,
   selectedList: Ref<ListData | null>,
-  refetchLists: () => void,
+  params: ListsParams,
 ) => {
 
   const { createNewList, updateList } = useListsRequests();
   const { resetFilters } = useListsFilters();
   const { t } = useI18n();
+  const listsStore = useListsStore();
 
   const initForm = (listEdit: ListData | null) => {
     selectedList.value = listEdit;
@@ -36,7 +35,6 @@ export const useListForm = (
     data: submitData,
     onSuccess: () => {
       resetFilters();
-      refetchLists();
       toast.success(t("lists.msgCreateSuccess"));
     },
   });
@@ -45,7 +43,7 @@ export const useListForm = (
     () => selectedList.value?.id, {
       data: submitData,
       onSuccess: () => {
-        refetchLists();
+        listsStore.fetchLists({ params: params });
         toast.success(t("lists.msgUpdateSuccess"));
       },
     });
@@ -61,13 +59,12 @@ export const useListForm = (
 
   const isLoading = computed(() => createListLoading.value || updateListLoading.value);
 
-  const handleSubmit = async (close: () => void) => {
+  const handleSubmit = async () => {
     if (selectedList.value?.id) {
       await updateSelectedListExecute();
     } else {
       await createNewListExecute();
     }
-    close(); //???? если ошибка закрывать тоже?
   };
 
   return {

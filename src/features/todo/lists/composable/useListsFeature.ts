@@ -1,4 +1,3 @@
-import { watchDebounced } from "@vueuse/core";
 import { computed, watch } from "vue";
 import { useRoute, useRouter } from "vue-router";
 
@@ -11,11 +10,12 @@ const currentLimit = 20;
 const currentLimitUsers = 100;
 
 export const useListsFeature = () => {
+
   const route = useRoute();
   const router = useRouter();
   const listsStore = useListsStore();
 
-  const { modelSearch, selectedSort, sortOptions } = useListsFilters();
+  const { filters, sortOptions } = useListsFilters();
 
   const activeTab = computed({
     get: () => {
@@ -23,9 +23,6 @@ export const useListsFeature = () => {
       return typeof tab === "string" ? tab : listsTabs.myLists;
     },
     set: (value) => {
-      if (value !== activeTab.value) {
-        modelSearch.value = "";
-      }
       router.replace({ query: { ...route.query, tab: value } });
     },
   });
@@ -41,71 +38,29 @@ export const useListsFeature = () => {
     }));
   });
 
-  const currentSort = computed(
-  () => sortOptions.value.find((o) => o.key === selectedSort.value) ?? sortOptions.value[0],
-);
-
-  const fetchMyLists = () => {
-    listsStore.fetchLists({
-      params: {
-        limit: currentLimit,
-        q: modelSearch.value || undefined,
-        sort: currentSort.value.params.sort,
-        order: currentSort.value.params.order,
-        isOwn: true,
-      },
-    });
-  };
-
-  const fetchUsersLists = () => {
-    listsStore.fetchLists({
-      params: {
-        limit: currentLimitUsers,
-        sort: currentSort.value.params.sort,
-        order: currentSort.value.params.order,
-      },
-    });
-  };
-
-  const refetchLists = () => {
-    listsStore.resetListsData();
-    if (activeTab.value === listsTabs.myLists) {
-      fetchMyLists();
-    } else {
-      fetchUsersLists();
-    }
-  };
-
-  watchDebounced(
-  modelSearch,
-  () => {
-    if (activeTab.value !== listsTabs.myLists) return;
-    listsStore.resetListsData();
-    fetchMyLists();
-  },
-  { debounce: 400 },
-);
+  const params = computed(() => {
+    const sort = sortOptions.value.find((o) => o.key === filters.sort);
+    return {
+      limit: activeTab.value === listsTabs.myLists ? currentLimit : currentLimitUsers,
+      q: activeTab.value === listsTabs.myLists ? filters.search : undefined,
+      sort: sort?.params.sort,
+      order: sort?.params.order,
+      isOwn: activeTab.value === listsTabs.myLists ? true : undefined,
+    };
+  });
 
   watch(
-  [activeTab, selectedSort],
-  () => {
-    listsStore.resetListsData();
-    if (activeTab.value === listsTabs.myLists) {
-      fetchMyLists();
-    } else {
-      fetchUsersLists();
-    }
-  },
-  { immediate: true },
-);
+    [activeTab, filters],
+    () => listsStore.fetchLists({ params: params.value }),
+    { immediate: true },
+  );
 
   return {
-    listsStore,
-    modelSearch,
     activeTab,
     userLists,
-    selectedSort,
+    params,
+    filters,
     sortOptions,
-    refetchLists,
+    listsStore,
   };
 };

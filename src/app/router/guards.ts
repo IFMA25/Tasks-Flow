@@ -18,8 +18,8 @@ export const guards = async (to: RouteLocationNormalized) => {
 
     const profileStore = useProfileStore();
 
-    if (!profileStore.profileData) {
-      await profileStore.execute();
+    if (token && !profileStore.profileData) {
+      await profileStore.fetchProfile();
     }
 
     const routePermission = to.meta.permission;

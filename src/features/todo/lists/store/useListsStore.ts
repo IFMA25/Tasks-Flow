@@ -26,14 +26,9 @@ export const useListsStore = defineStore("lists", () => {
     await fetchSelectedList();
   };
 
-  const resetListsData = () => {
-    dataLists.value = null;
-  };
-
   const isLoading = computed(
     () => listsLoading.value || selectedListLoading.value,
   );
-
 
   return {
     dataLists,
@@ -41,6 +36,5 @@ export const useListsStore = defineStore("lists", () => {
     isLoading,
     fetchLists,
     getSelectedListData,
-    resetListsData,
   };
 });

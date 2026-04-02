@@ -25,17 +25,7 @@ const { t } = useI18n();
 const formModalRef = useTemplateRef<InstanceType<typeof ListFormModal>>("formModalRef");
 const deleteModalRef = useTemplateRef<InstanceType<typeof DeleteListModal>>("deleteModalRef");
 
-const {
-  listsStore,
-  modelSearch,
-  activeTab,
-  userLists,
-  selectedSort,
-  sortOptions,
-  refetchLists,
-} = useListsFeature();
-
-const isLoading = computed(() => listsStore.isLoading);
+const { activeTab, userLists, params, filters, sortOptions, listsStore } = useListsFeature();
 
 const actions = computed<Actions[]>(() => [
   { key: "edit",   label: t("lists.editList") },
@@ -72,16 +62,16 @@ const handleAction = (list: ListData, action: ListAction) => {
 
   <ListFormModal
     ref="formModalRef"
-    :refetch-lists="refetchLists"
+    :params="params"
   />
   <DeleteListModal
     ref="deleteModalRef"
-    :refetch-lists="refetchLists"
+    :params="params"
   />
 
   <ListsToolbar
-    v-model:search="modelSearch"
-    v-model:sort="selectedSort"
+    v-model:search="filters.search"
+    v-model:sort="filters.sort"
     :sort-options="sortOptions"
     :show-search="activeTab === listsTabs.myLists"
   />
@@ -94,7 +84,7 @@ const handleAction = (list: ListData, action: ListAction) => {
   </div>
 
   <div class="relative min-h-[12.5rem]">
-    <template v-if="isLoading">
+    <template v-if="listsStore.isLoading">
       <div class="grid grid-cols-[repeat(auto-fill,minmax(320px,1fr))] gap-6 h-full">
         <template v-if="activeTab === listsTabs.myLists">
           <ListItemSkeleton

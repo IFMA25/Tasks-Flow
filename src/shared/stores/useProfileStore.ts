@@ -14,7 +14,7 @@ export const useProfileStore = defineStore("profile", () => {
 
   const router = useRouter();
 
-  const { execute, loading, data } = useProfileRequest({
+  const { execute: fetchProfile, loading, data } = useProfileRequest({
     onSuccess: () => {
       profileData.value = data.value;
     },
@@ -35,7 +35,7 @@ export const useProfileStore = defineStore("profile", () => {
   return {
     profileData,
     loading,
-    execute,
+    fetchProfile,
     handleLogout,
     hasAccess,
   };
