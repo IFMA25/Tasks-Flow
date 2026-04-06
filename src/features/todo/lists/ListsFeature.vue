@@ -25,7 +25,7 @@ const { t } = useI18n();
 const formModalRef = useTemplateRef<InstanceType<typeof ListFormModal>>("formModalRef");
 const deleteModalRef = useTemplateRef<InstanceType<typeof DeleteListModal>>("deleteModalRef");
 
-const { activeTab, userLists, params, filters, sortOptions, listsStore } = useListsFeature();
+const { activeTab, userLists, filters, sortOptions, listsStore } = useListsFeature();
 
 const actions = computed<Actions[]>(() => [
   { key: "edit",   label: t("lists.editList") },
@@ -60,14 +60,8 @@ const handleAction = (list: ListData, action: ListAction) => {
     />
   </Teleport>
 
-  <ListFormModal
-    ref="formModalRef"
-    :params="params"
-  />
-  <DeleteListModal
-    ref="deleteModalRef"
-    :params="params"
-  />
+  <ListFormModal ref="formModalRef" />
+  <DeleteListModal ref="deleteModalRef" />
 
   <ListsToolbar
     v-model:search="filters.search"

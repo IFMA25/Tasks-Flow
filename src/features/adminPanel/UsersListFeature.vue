@@ -54,12 +54,12 @@ const sortOptions = computed<SortOption[]>(() => [
   { key: "nameDesc", label: t("filters.nameDesc"), params: { sort: "name", order: "desc" } },
 ]);
 
+const currentLimit = ref(20);
 const roleModel = ref<string>(roleOptions.value[0].key);
 const sortModel = ref<string>(sortOptions.value[0].key);
-
 const modelSearch = ref<string>("");
 const debouncedSearch = refDebounced(modelSearch, 800);
-const currentLimit = ref(20);
+
 const deleteModalRef = useTemplateRef<InstanceType<typeof DeleteUserModal>>("deleteModalRef");
 
 const router = useRouter();

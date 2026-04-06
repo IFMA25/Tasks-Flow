@@ -1,21 +1,33 @@
-import { computed, watch } from "vue";
+import { watchIgnorable } from "@vueuse/core";
+import { computed, reactive } from "vue";
+import { useI18n } from "vue-i18n";
 import { useRoute, useRouter } from "vue-router";
 
-import { useListsFilters } from "./useListsFilters";
 import { useListsStore } from "../store/useListsStore";
 
+import { SortOption } from "@/shared/types";
 import { listsTabs } from "@/shared/variables/tabListsPage";
+
 
 const currentLimit = 20;
 const currentLimitUsers = 100;
+const defaultSort = "recentlyCreated";
+const defaultFilters = { search: "", sort: defaultSort };
 
 export const useListsFeature = () => {
 
+  const filters = reactive({ ...defaultFilters });
+
+  const { t } = useI18n();
   const route = useRoute();
   const router = useRouter();
   const listsStore = useListsStore();
 
-  const { filters, sortOptions } = useListsFilters();
+  const sortOptions = computed<SortOption[]>(() => [{ key: "recentlyCreated", label: t("filters.recentlyCreated"), params: { sort: "createdAt", order: "asc" } }, { key: "recentlyUpdated", label: t("filters.recentlyUpdated"), params: { sort: "updatedAt", order: "desc" } }]);
+
+  const resetFilters = () => {
+    Object.assign(filters, defaultFilters);
+  };
 
   const activeTab = computed({
     get: () => {
@@ -49,10 +61,12 @@ export const useListsFeature = () => {
     };
   });
 
-  watch(
+  const { ignoreUpdates } = watchIgnorable(
     [activeTab, filters],
-    () => listsStore.fetchLists({ params: params.value }),
-    { immediate: true },
+    () => {
+      listsStore.fetchLists({ params: params.value });
+    },
+    { immediate: true, deep: true },
   );
 
   return {
@@ -62,5 +76,8 @@ export const useListsFeature = () => {
     filters,
     sortOptions,
     listsStore,
+    ignoreUpdates,
+    resetFilters,
   };
 };
+

@@ -20,7 +20,6 @@ import { useProfileStore } from "@/shared/stores/useProfileStore";
 import { RouteNames } from "@/shared/types/routeNames";
 import VTitle from "@/shared/ui/common/VTitle.vue";
 
-
 const UserPermissionsForm = defineAsyncComponent(() => import("./components/UserPermissionsForm.vue"));
 const UserProfileForm = defineAsyncComponent(() => import("./components/UserProfileForm.vue"));
 

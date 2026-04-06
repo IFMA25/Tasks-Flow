@@ -1,8 +1,11 @@
 <script setup lang="ts">
-import { reactive, ref } from "vue";
+import { computed, reactive, ref } from "vue";
+import { useI18n } from "vue-i18n";
+import { toast } from "vue-sonner";
 
-import { FormDataList, ListData, ListsParams } from "../../types";
-import { useListForm } from "../composable/useListForm";
+import { FormDataList, ListData } from "../../types";
+import { useListsRequests } from "../api/useListsRequest";
+import { useListsFeature } from "../composable/useListsFeature";
 
 import { useModal } from "@/shared/composables/useModal";
 import VButton from "@/shared/ui/common/VButton.vue";
@@ -11,36 +14,72 @@ import VInput from "@/shared/ui/common/VInput.vue";
 import VModal from "@/shared/ui/common/VModal.vue";
 import { colorsList } from "@/shared/variables/colorMap";
 
-const { params } = defineProps<{
-  params: ListsParams;
-}>();
-
-const selectedList = ref<ListData | null>(null);
 const formData = reactive<FormDataList>({
   title: "",
   hexColor: colorsList[0],
 });
 
+const selectedList = ref<ListData | null>(null);
+
+const submitData = () => ({
+  title: formData.title,
+  hexColor: formData.hexColor,
+});
+
+const { t } = useI18n();
 const { open, close } = useModal("listFormModal");
-const {
-  handleSubmit,
-  isLoading,
-  isSubmitDisabled,
-  initForm,
-} = useListForm(
-  formData,
-  selectedList,
-  params,
-);
+const { createNewList, updateList } = useListsRequests();
+const { params, listsStore, ignoreUpdates, resetFilters } = useListsFeature();
+
+const initForm = (listEdit: ListData | null) => {
+  selectedList.value = listEdit;
+  formData.title = listEdit?.title || "";
+  formData.hexColor = listEdit?.hexColor || colorsList[0];
+};
+
+const { execute: createNewListExecute, loading: createListLoading } = createNewList({
+  data: submitData,
+  onSuccess: () => {
+    ignoreUpdates(() => {
+      resetFilters();
+    });
+    listsStore.fetchLists({ params: params.value });
+    toast.success(t("lists.msgCreateSuccess"));
+  },
+});
+
+const { execute: updateSelectedListExecute, loading: updateListLoading } = updateList(
+  () => selectedList.value?.id, {
+    data: submitData,
+    onSuccess: () => {
+      listsStore.fetchLists({ params: params.value });
+      toast.success(t("lists.msgUpdateSuccess"));
+    },
+  });
+
+const isDataChanged = computed(() => {
+  if (!selectedList.value) return true;
+
+  return formData.title !== selectedList.value.title ||
+           formData.hexColor !== (selectedList.value.hexColor || colorsList[0]);
+});
+
+const isSubmitDisabled = computed(() => !formData.title || !isDataChanged.value);
+
+const isLoading = computed(() => createListLoading.value || updateListLoading.value);
+
+const handleSubmit = async () => {
+  if (selectedList.value?.id) {
+    await updateSelectedListExecute();
+  } else {
+    await createNewListExecute();
+  }
+  close();
+};
 
 const openModal = (list?: ListData) => {
   initForm(list ?? null);
   open();
-};
-
-const onSubmit = async () => {
-  await handleSubmit();
-  close();
 };
 
 defineExpose({ openModal });
@@ -56,15 +95,16 @@ defineExpose({ openModal });
   >
     <form
       id="listForm"
-      @submit.prevent="onSubmit"
+      class="text-sm text-secondary font-medium leading-[1.2]"
+      @submit.prevent="handleSubmit"
     >
       <VInput
         v-model="formData.title"
         :label="$t('lists.listFormModal.labelName')"
         :placeholder="$t('lists.createListModal.placeholder')"
-        class="text-sm text-secondary font-medium leading-[1.2] mb-4"
+        class="mb-4"
       />
-      <p class="text-sm text-secondary font-medium leading-[1.2] mb-2">
+      <p class="mb-2">
         {{ $t('lists.listFormModal.labelColor') }}
       </p>
       <div class="flex gap-4">
