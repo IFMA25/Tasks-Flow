@@ -3,17 +3,22 @@ import { onMounted } from "vue";
 
 import { useDashboardRequests } from "./api/useDashboardRequest";
 import ListDashboard from "./components/ListDashboard.vue";
+import { useListsStore } from "../todo/lists/store/useListsStore";
 
 const { upcomingDeadlines } = useDashboardRequests();
 
 const { execute, data } = upcomingDeadlines({
+
     onSuccess: () => {
-        console.log(data.value);
+        console.log(data?.value);
     },
 });
 
-onMounted(() => {
-    execute();
+const listStore = useListsStore();
+onMounted(async () => {
+  await execute();
+  await listStore.fetchLists();
+  console.log(listStore.dataLists);
 });
 </script>
 

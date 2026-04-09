@@ -8,9 +8,9 @@ import { DashboardData } from "../types";
 export const useDashboardRequests = () => {
 
   const upcomingDeadlines = (
-    options?: UseApiOptions<DashboardData>,
+    options?: UseApiOptions<any>,
   ) => {
-    return useApiGet<DashboardData>(() => `/tasks/deadlines`, options);
+    return useApiGet<any>(() => `/tasks/deadlines`, options);
   };
 
     return { upcomingDeadlines };

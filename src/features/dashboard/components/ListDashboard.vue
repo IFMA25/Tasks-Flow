@@ -9,7 +9,7 @@ import VButton from "@/shared/ui/common/VButton.vue";
 
 
 const { titleList, data } = defineProps<{
-    data: DashboardData;
+    data: DashboardData | null;
     titleList: string;
     subtitleList: string;
 }>();
