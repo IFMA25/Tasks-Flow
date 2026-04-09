@@ -14,22 +14,6 @@ export interface DeleteResponse {
   message: string;
 }
 
-export interface RoleOption {
-  label: string;
-  value: string | undefined;
-  [key: string]: unknown;
-}
-
-export interface SortOption {
-  key: string;
-  label: string;
-  params: {
-    sort: string;
-    order: "asc" | "desc";
-  };
-  [key: string]: unknown;
-}
-
 export interface Category {
   key: string;
   value: string[];

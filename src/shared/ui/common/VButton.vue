@@ -1,11 +1,9 @@
 <script setup lang="ts">
 import { computed } from "vue";
-import { RouterLink, useLink } from "vue-router";
-
+import { RouteLocationRaw, RouterLink, useLink } from "vue-router";
 
 import VIcon from "./VIcon.vue";
 import VLoader from "./VLoader.vue";
-
 
 const props = withDefaults(
   defineProps<{
@@ -15,7 +13,7 @@ const props = withDefaults(
     type?: string;
     variant?: string;
     disabled?: boolean;
-    to?: string | null;
+    to?: RouteLocationRaw | null;
     icon?: string;
     iconSize?: string;
     collapsed?: boolean;
@@ -35,12 +33,13 @@ const props = withDefaults(
 );
 
 const btnStyles = {
-  primary: "justify-center bg-primaryBg py-3 text-base font-medium border-2 border-primaryBg rounded-xl hover:shadow-btnHover disabled:bg-disabled disabled:text-muted disabled:border-disabled",
-  outline: "bg-secondaryBg py-3 text-primaryBg font-medium border-2 border-primaryBg rounded-xl hover:shadow-btnHover hover:text-shadow-btnHover disabled:border-disabled disabled:text-disabled",
-  navItem: "py-3 text-secondaryText font-medium leading=[1.3]  hover:text-shadow-btnHover hover:text-primaryBg hover:drop-shadow-btnHover disabled:text-disabled ",
+  primary: "justify-center bg-primaryBg px-3 py-3 text-base font-medium border-2 border-primaryBg rounded-xl hover:shadow-btnHover disabled:bg-disabled disabled:text-muted disabled:border-disabled ",
+  outline: "bg-secondaryBg py-3 px-4 text-primaryBg font-medium border-2 border-primaryBg rounded-xl hover:shadow-btnHover hover:text-primaryTextDark disabled:border-disabled disabled:text-disabled",
+  navItem: "py-3 text-secondaryText font-medium hover:text-primaryBg disabled:text-disabled ",
   "navItem-active": "py-3 text-primaryTextDark font-medium",
-  authMode: "text-primaryTextDark font-medium hover:text-shadow-tabHover hover:text-primaryBg leading=[1.1]",
-  danger: "bg-danger py-3 text-base font-medium border-2 border-danger rounded-xl hover:bg-dangerHover disabled:bg-disabled disabled:text-muted disabled:border-disabled",
+  authMode: "text-primaryTextDark font-medium hover:text-primaryBg",
+  cardTitle: "text-lg font-semibold text-primary hover:text-primaryBg",
+  danger: "bg-danger py-3 px-4 text-base font-medium border-2 border-danger rounded-xl hover:bg-dangerHover disabled:bg-disabled disabled:text-muted disabled:border-disabled",
 };
 
 const { isActive } = (props.to && props.to !== "")
@@ -58,7 +57,7 @@ const isDisabled = computed(() => props.disabled || props.loading);
 
 const disabledClass = computed(() =>
   isDisabled.value
-    ? "cursor-default shadow-none [text-shadow:none] pointer-events-none"
+    ? "cursor-default shadow-none pointer-events-none"
     : "cursor-pointer",
 );
 
@@ -76,9 +75,6 @@ const isRouterLink = computed(() => !!props.to);
       btnClass,
       disabledClass,
       (isActive && props.activeClass) ? props.activeClass : '',
-      props.collapsed
-        ? 'px'
-        : 'px-4'
     ]"
   >
     <span
@@ -100,17 +96,15 @@ const isRouterLink = computed(() => !!props.to);
       />
     </span>
 
-    <div
+    <span
       v-if="props.text"
-      class="transition-all duration-300 ease-in-out"
+      class="transition-all duration-300 ease-in-out overflow-hidden whitespace-nowrap"
       :class="props.collapsed
         ? 'opacity-0'
         : 'opacity-100'"
     >
-      <span class="overflow-hidden whitespace-nowrap">
-        {{ props.text }}
-      </span>
-    </div>
+      {{ props.text }}
+    </span>
 
     <span
       v-if="$slots['icon-end']"

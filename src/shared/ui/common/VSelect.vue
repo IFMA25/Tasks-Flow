@@ -1,4 +1,4 @@
-<script setup lang="ts">
+<script setup lang="ts" generic="T extends Option">
 import { computed } from "vue";
 import Multiselect from "vue-multiselect";
 
@@ -7,7 +7,7 @@ import VIcon from "@/shared/ui/common/VIcon.vue";
 
 interface Props {
   id:string;
-  options: Option[];
+  options: T[];
   labelText?: string;
   multiple?: boolean;
   closeOnSelect?: boolean;
@@ -20,6 +20,7 @@ interface Props {
   label?: string;
   trackBy?: string;
   disabled?: boolean;
+  size?: "sm" | "md";
 }
 
 const {
@@ -35,28 +36,55 @@ const {
   multiselectProps = {},
   searchable = false,
   label,
-  trackBy,
+  trackBy="key",
   disabled = false,
+  size = "md",
 } = defineProps<Props>();
 
-const model = defineModel<Option | null>();
+const model = defineModel<string | string[] | null>();
+
+const getKey = (option: T): string => String(option[trackBy ?? "key"]);
+
+const internalModel = computed({
+  get: () => {
+    if (model.value == null) return multiple ? [] : null;
+
+    if (multiple) {
+      const values = Array.isArray(model.value) ? model.value : [model.value];
+      return options.filter(option => values.includes(getKey(option)));
+    }
+
+    return options.find(option => getKey(option) === model.value) ?? null;
+  },
+  set: (value: T | T[] | null) => {
+    if (value == null) {
+      model.value = multiple ? [] : null;
+      return;
+    }
+
+    if (Array.isArray(value)) {
+      model.value = value.map(getKey);
+    } else {
+      model.value = getKey(value);
+    }
+  },
+});
 
 const closeOnSelectComputed = computed(() =>
   closeOnSelectProp ?? !multiple,
 );
-
-
 </script>
 
 <template>
   <div class="flex gap-2 items-center text-[1rem] leading-6 text-primary">
     <label
+      v-if="labelText"
       :for="id"
-      class="whitespace-nowrap"
+      class="whitespace-nowrap font-medium"
     >{{ labelText }}</label>
     <Multiselect
       :id="id"
-      v-model="model"
+      v-model="internalModel"
       v-bind="multiselectProps"
       :options="options"
       :multiple="multiple"
@@ -70,6 +98,7 @@ const closeOnSelectComputed = computed(() =>
       :label="label"
       :track-by="trackBy"
       :disabled="disabled"
+      :class="`multiselect--size-${size}`"
     >
       <template #caret="{ toggle }">
         <button
@@ -89,7 +118,7 @@ const closeOnSelectComputed = computed(() =>
 
 <style scoped>
 :deep(.multiselect) {
-  @apply text-primary;
+  @apply text-primary ;
   width: fit-content;
 }
 
@@ -98,8 +127,8 @@ const closeOnSelectComputed = computed(() =>
 }
 
 :deep(.multiselect__tags) {
-  @apply min-h-8 border-2 border-default rounded-lg py-[0.5rem] pl-[0.625rem]
-  pr-[2.4rem] focus:outline-none transition-colors duration-300
+  @apply min-h-8 border-2 border-default rounded-lg leading-6
+    focus:outline-none transition-colors duration-300
   ease-in-out text-primary bg-secondaryBg;
 }
 
@@ -107,9 +136,18 @@ const closeOnSelectComputed = computed(() =>
   @apply border-borderFocus rounded-lg;
 }
 
+:deep(.multiselect--size-sm .multiselect__tags) {
+  @apply py-1.5 pl-[0.5rem] pr-[2.2rem];
+}
+
+:deep(.multiselect--size-md .multiselect__tags) {
+  @apply py-3 pl-[0.625rem] pr-[2.4rem];
+}
+
+
 :deep(.multiselect__single),
 :deep(.multiselect__placeholder) {
-  @apply m-0 p-0 bg-transparent placeholder-disabled;
+  @apply m-0 p-0 bg-transparent placeholder-disabled align-middle;
 }
 
 :deep(.multiselect__content-wrapper) {

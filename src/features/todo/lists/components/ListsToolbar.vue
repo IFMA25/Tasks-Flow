@@ -1,0 +1,45 @@
+<script setup lang="ts">
+import { useDebounceFn } from "@vueuse/core";
+import { useI18n } from "vue-i18n";
+
+import { SortOption } from "@/shared/types";
+import VInput from "@/shared/ui/common/VInput.vue";
+import VSelect from "@/shared/ui/common/VSelect.vue";
+
+const { t } = useI18n();
+defineProps<{
+  sortOptions: SortOption[];
+  showSearch?: boolean;
+}>();
+
+const search = defineModel<string>("search");
+const sort = defineModel<string>("sort");
+
+const onSearchInput = useDebounceFn((value: string) => {
+  search.value = value;
+}, 600);
+</script>
+
+<template>
+  <div class="flex items-center gap-5 mb-6">
+    <VInput
+      v-if="showSearch"
+      :model-value="search"
+      :placeholder="t('lists.searchPlaceholder')"
+      type="search"
+      variant="search"
+      icon-left="icon-search"
+      @update:model-value="onSearchInput"
+    />
+    <VSelect
+      id="sort-select"
+      v-model="sort"
+      :label-text="t('filters.sort')"
+      :options="sortOptions"
+      label="label"
+      track-by="key"
+      :close-on-select="true"
+      class="min-w-[13rem]"
+    />
+  </div>
+</template>

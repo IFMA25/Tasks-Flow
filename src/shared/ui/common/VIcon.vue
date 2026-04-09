@@ -1,23 +1,26 @@
 <script setup lang="ts">
-import { computed } from "vue";
 import type { Component } from "vue";
+import {
+  computed,
+  defineAsyncComponent,
+} from "vue";
 
-const {
-  type,
-  size = "w-5 h-5",
-} = defineProps<{
+const { type, size="w-5 h-5" } = defineProps<{
   type: string;
   size?: string;
 }>();
 
-const icons = import.meta.glob<Component>("@/shared/assets/icons/*.svg", {
-  eager: true,
-  import: "default",
-});
+const icons = import.meta.glob<{ default: Component }>("@/shared/assets/icons/*.svg");
 
-const icon = computed<Component | null>(() => {
-  const key = `/src/shared/assets/icons/${type}.svg`;
-  return icons[key] ?? null;
+const icon = computed(() => {
+  const path = `/src/shared/assets/icons/${type}.svg`;
+
+  if (!icons[path]) {
+    console.warn(`Icon ${type} not found`);
+    return null;
+  }
+
+  return defineAsyncComponent(icons[path]);
 });
 </script>
 
@@ -25,7 +28,7 @@ const icon = computed<Component | null>(() => {
   <component
     :is="icon"
     v-if="icon"
-    :class="size"
+    :class="['shrink-0', size]"
     aria-hidden="true"
   />
 </template>

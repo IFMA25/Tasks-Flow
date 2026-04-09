@@ -1,0 +1,14 @@
+{
+  "recommendations": [
+    "bradlc.vscode-tailwindcss",
+    "dozerg.tsimportsorter",
+    "github.copilot-chat",
+    "ms-ceintl.vscode-language-pack-ru",
+    "ms-vscode.vscode-typescript-next",
+    "pmneo.tsimporter",
+    "streetsidesoftware.code-spell-checker",
+    "vue.volar",
+    "yoavbls.pretty-ts-errors",
+    "pkief.material-icon-theme"
+  ]
+}

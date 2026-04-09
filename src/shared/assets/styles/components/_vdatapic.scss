@@ -1,0 +1,209 @@
+:root {
+  --dp-border-radius: 8px;
+  --dp-font-size: 1rem;
+  --dp-font-family: inherit;
+  --dp-border-color: var(--color-default);
+  --dp-border-color-hover: var(--color-hover);
+  --dp-border-color-focus: var(--color-borderFocus);
+
+  // Background / Text
+  --dp-text-color: var(--color-primary);
+  --dp-icon-color: var(--color-secondary);
+
+  // Hover states inside calendar
+  --dp-hover-color: var(--color-hover);
+  --dp-hover-text-color: var(--color-primary);
+  --dp-hover-icon-color: var(--color-primary);
+
+  // Selected day
+  --dp-primary-color: var(--color-activeBtn);
+  --dp-primary-disabled-color: var(--color-disabled);
+  --dp-primary-text-color: #ffffff;
+
+  // Range highlight
+  --dp-secondary-color: var(--color-default);
+
+  // Disabled cells
+  --dp-disabled-color: var(--color-disabled);
+  --dp-disabled-color-text: var(--color-muted);
+
+  // Weekend / highlight 
+  --dp-highlight-color: var(--color-hover);
+
+  // Calendar menu
+  --dp-menu-border-color: var(--color-default);
+  --dp-menu-border-radius: 12px;
+  --dp-time-font-size: 2rem;
+  --dp-preview-font-size: 0.875rem;
+
+  // Input height aligned with VInput
+  --dp-input-padding: 1rem 0.75rem 1rem 2rem;
+
+  // Scroll bar inside time picker
+  --dp-scroll-bar-background: var(--color-subtle);
+  --dp-scroll-bar-color: var(--color-default);
+
+  // Tooltip
+  --dp-tooltip-color: var(--color-elevated);
+  --dp-tooltip-text-color: var(--color-primary);
+}
+
+// ─── Direct selectors for guaranteed override ────────────────────────────────
+// Targets the input element used inside VueDatePicker
+.dp__main {
+    width: fit-content;
+}
+
+.dp__theme_light .dp__input,
+.dp__theme_dark .dp__input {
+  background-color: var(--color-secondaryBg);
+  color: var(--color-primary);
+  border: 2px solid var(--color-default);
+  
+  &::placeholder {
+    color: var(--color-muted);
+    opacity: 1;
+  }
+}
+
+.dp__input {
+  background-color: var(--color-secondaryBg);
+  color: var(--color-primary);
+  border: 2px solid var(--color-default);
+  border-radius: 8px;
+  font-size: 1rem;
+  font-family: inherit;
+  padding: var(--dp-input-padding);
+  transition: border-color 0.3s ease;
+
+  &:hover:not(.dp__input_focus) {
+    border-color: var(--color-hover);
+  }
+
+  &:focus {
+    border: 2px solid var(--color-borderFocus);
+    outline: none;
+  }
+}
+
+// Calendar menu panel
+.dp__menu {
+  background-color: var(--color-bgSecondary);
+  border-color: var(--color-default);
+  border-radius: 12px;
+  color: var(--color-primary);
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.12);
+}
+
+// Day cells
+.dp__calendar_item .dp__cell_inner {
+  border-radius: 6px;
+}
+
+.dp__today {
+  border-color: var(--color-activeBtn);
+}
+
+.dp__active_date {
+  background-color: var(--color-activeBtn);
+  color: #ffffff;
+}
+
+.dp__date_hover:hover {
+  background-color: var(--color-default);
+}
+
+.dp__button:hover {
+  background-color: var(--color-default);
+}
+
+.dp__range_start,
+.dp__range_end {
+  background-color: var(--color-activeBtn);
+  color: #ffffff;
+}
+
+.dp__range_between {
+  background-color: var(--color-default);
+  color: var(--color-primary);
+}
+
+// Month/year header buttons
+.dp__month_year_select {
+  color: var(--color-primary);
+  font-weight: 600;
+  border-radius: 6px;
+
+  &:hover {
+    background-color: var(--color-default);
+  }
+}
+
+// Nav arrows
+.dp__nav_icon path {
+  fill: var(--color-secondary);
+}
+
+.dp__inner_nav:hover {
+  background-color: var(--color-default);
+}
+
+// Clear icon 
+.dp__clear_icon svg path {
+  fill: var(--color-muted);
+}
+
+// Calendar icon
+.dp__input_icon {
+  color: var(--color-muted);
+}
+
+// Disabled day
+.dp__cell_disabled {
+  color: var(--color-disabled);
+}
+
+// Overlay (year/month picker)
+.dp__overlay {
+  background-color: var(--color-bgSecondary);
+  border-color: var(--color-default);
+}
+
+.dp__overlay_cell_active {
+  background-color: var(--color-activeBtn);
+  color: #ffffff;
+}
+
+.dp__overlay_cell:hover {
+  background-color: var(--color-default);
+}
+
+.dp__action_button.dp__action_select {
+  background-color: var(--color-primaryBg);
+  border: 1px solid var(--color-primaryBg);
+  transition: all 0.3s ease;
+  &:hover {
+    border: 1px solid var(--color-activeBtn);
+    background-color: var(--color-activeBtn);
+  }
+}
+
+.dp__action_button.dp__action_cancel {
+  border: 1px solid var(--color-default);
+  transition: all 0.3s ease;
+  &:hover {
+    border: 1px solid var(--color-activeBtn);
+  }
+}
+
+.dp__cell_inner{
+  color: var(--color-primary);
+}
+
+.dp__cell_inner.dp__cell_offset{
+  color: var(--color-disabled);
+}
+
+.dp__calendar_header_item{
+  color: var(--color-primary);
+}

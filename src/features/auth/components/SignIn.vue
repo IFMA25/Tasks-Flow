@@ -38,12 +38,13 @@ const errorLogin = ref<string | null>(null);
 const { login } = useAuth();
 
 const { execute, loading, error } = login({
-  onSuccess: (response) => {
+  onSuccess: async (response) => {
     tokenManager.setTokens({
       accessToken: response.data.accessToken,
       refreshToken: response.data.refreshToken,
     });
-    toast.warning("usersList.msgDeleteSuccess");
+    toast.success("auth.msgLoginSuccess");
+    await profileStore.fetchProfile();
 
     if (profileStore.profileData?.role === "admin") {
       router.replace({ name: "users" });

@@ -12,7 +12,8 @@ defineProps<{
 
 <template>
   <li
-    class="transition-all duration-300"
+    class="transition-all duration-300 "
+    :class="collapsed ? '' : 'px-4'"
   >
     <VButton
       :text="capitalizeFirstLetter(item.text)"

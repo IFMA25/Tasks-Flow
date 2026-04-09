@@ -7,7 +7,10 @@ import DefaultLayout from "@/app/layouts/DefaultLayout.vue";
 import { useThemeStore } from "@/features/theme/store/useThemeStore";
 import "vue-sonner/style.css";
 import { useLanguageStore } from "@/features/translation/store/useLanguageStore";
+import { useProfileStore } from "@/shared/stores/useProfileStore";
+import VTransitionLoader from "@/shared/ui/VTransitionLoader.vue";
 
+const profileStore = useProfileStore();
 const themeStore = useThemeStore();
 const languageStore = useLanguageStore();
 const route = useRoute();
@@ -30,9 +33,15 @@ const routeLayout = computed(() => {
 </script>
 
 <template>
-  <div class="h-screen flex flex-col bg-bgBase text-primary">
-    <main class="flex-1 w-full overflow-auto">
-      <component :is="routeLayout" />
-    </main>
+  <div class="bg-bgBase text-primary h-screen">
+    <VTransitionLoader
+      v-if="profileStore.loading"
+      :is-loading="profileStore.loading"
+      variant="fullscreen"
+    />
+    <component
+      :is="routeLayout"
+      v-else
+    />
   </div>
 </template>

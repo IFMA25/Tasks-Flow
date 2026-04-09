@@ -1,12 +1,14 @@
 import {
   createRouter,
   createWebHashHistory,
+  RouteLocationNormalized,
   RouteRecordRaw,
 } from "vue-router";
 
 import authRoutes from "./auth";
 import { guards } from "./guards";
-import { RouteNames } from "../../shared/config/routeNames";
+
+import { RouteNames } from "@/shared/types/routeNames";
 
 const routes: RouteRecordRaw[] = [
   {
@@ -16,7 +18,7 @@ const routes: RouteRecordRaw[] = [
     meta: {
       permission: "read:dashboard",
       showHeader: false,
-      titleMenu: "home",
+      titleMenu: "dashboard",
       iconMenu: "home",
     },
   },
@@ -25,9 +27,20 @@ const routes: RouteRecordRaw[] = [
     name: RouteNames.lists,
     component: () => import("@/pages/Lists/index.vue"),
     meta: {
+      titleHeader: (route: RouteLocationNormalized) =>
+        route.query.tab === "usersLists" ? "lists.titleOverview" : "lists.title",
       permission: "read:list",
       titleMenu: "lists",
       iconMenu: "lists",
+    },
+  },
+  {
+    path: "/lists/:listId",
+    name: RouteNames.tasks,
+    component: () => import("@/pages/Tasks/index.vue"),
+    meta: {
+      permission: "read:list",
+      showInMenu: false,
     },
   },
   {
@@ -47,10 +60,7 @@ const routes: RouteRecordRaw[] = [
     meta: {
       titleMenu: "profile",
       iconMenu: "profile",
-      parent: {
-        textKey: "userInfo.backAllUsers",
-        to: "/users",
-      },
+      showHeader: false,
     },
   },
   {

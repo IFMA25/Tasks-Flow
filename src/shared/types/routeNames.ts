@@ -1,6 +1,7 @@
 export const RouteNames = {
   home: "home",
   lists: "lists",
+  tasks: "tasks",
   analytics: "analytics",
   profile: "userProfile",
   users: "users",

@@ -17,7 +17,6 @@
             "modalTitle": "Вийти з акаунта",
             "modalContentTitle": "Ви впевнені, що хочете вийти?",
             "modalContentSubtitle": "Щоб отримати доступ до акаунта, вам потрібно буде увійти знову",
-            "modalCancel": "Скасувати",
             "modalLogout": "Вийти"
         } 
     },
@@ -27,23 +26,15 @@
         "minLength": "Мінімум {min} символів",
         "hasUpperCase": "Повинно містити мінімум 1 велику літеру",
         "hasNumber": "Повинно містити мінімум 1 цифру",
-        "requiredTrimmed": "Поле не може бути порожнім"
-    },
-    "search": {
-        "placeholder": "Пошук по імені або email…"
+        "requiredTrimmed": "Поле не може бути порожнім",
+        "maxTags": "Максимум {max} тега"
     },
     "usersList": {
+        "user": "Користувача",
         "title": "Керування користувачами",
         "userProfile": "Профіль користувача",
-        "removeUser": "Видалити користувача",
-        "removeUserModal": {
-            "title": "Видалити користувача",
-            "titleContent": "Ви впевнені, що хочете видалити",
-            "subtitleContent": "Цю дію неможливо скасувати",
-            "confirmRemove": "Видалити",
-            "cancel": "Скасувати",
-            "msgDeleteSuccess": "Користувач успішно видалений"
-        }
+        "msgDeleteSuccess": "Користувач успішно видалений",
+        "searchPlaceholder": "Пошук по імені або email…"
     }, 
     "roles": {
             "admin": "Адміністратор",
@@ -55,15 +46,6 @@
             "role": "Роль",
             "createdAt": "Створено",
             "action": "Дія"
-        },
-        "filters": {
-        "allRoles": "Всі",
-        "admins": "Адміністратори",
-        "users": "Користувачі",
-        "newestFirst": "Новіші спочатку",
-        "oldestFirst": "Старіші спочатку",
-        "nameAsc": "Ім'я A-Z",
-        "nameDesc": "Ім'я Z-A"
         },
         "loadMore": "Завантажити ще",
         "emptyState": {
@@ -81,19 +63,113 @@
         "categoryTasks": "Дозволи завдань",
         "categoryUser": "Керування користувачами",
         "categoryAnalytics": "Аналітика та дашборд",
-        "saveBtnText": "Зберігти зміни",
         "since": "Зареєстрований",
         "saveSuccess": "Данні користувача успішно оновлені!",
         "userName": "Повне ім'я"
     },
-    "title": "Керуйте всіма своїми групами завдань в одному місці",
-    "createListBtn": "Створити список",
-    "createListModal": {
+    "lists": {
+        "list": "Список",
+        "lists": "Списки",
+        "title": "Керуйте всіма своїми групами завдань в одному місці",
+        "titleOverview": "Огляд списків",
+        "createListBtn": "Створити список",
+        "createListModal": {
             "title": "Створити новий список",
             "labelName": "Назва списку",
             "placeholder": "наприклад: Робота, Особисте, Навчання",
             "labelColor": "Колір списку",
-            "cancel": "Cancel",
-            "createBtn": "Create list"
-        }
+            "createBtn": "Створити"
+        },
+        "listFormModal": {
+            "title": "Редагувати список",
+            "labelName": "Назва списку",
+            "labelColor": "Колір списку"
+        },
+        "tasks": "завдань",
+        "completed": "виконано",
+        "editList": "Редагувати список",
+        "deleteList": {
+            "title": "Видалити список",
+            "contentTitle": "Ви впевнені, що хочете видалити цей список?",
+            "contentSubtitle": "Всі завдання всередині цього списку будуть остаточно видалені"
+        },
+        "usersLists": "Списки користувачів",
+        "myLists": "Мої списки",
+        "searchPlaceholder": "Пошук списків...",
+        "msgCreateSuccess": "Список успішно створено",
+        "msgUpdateSuccess": "Список успішно оновлено",
+        "msgDeleteSuccess": "Список успішно видалено"
+    },
+    "tasks": {
+        "task": "завдання",
+        "createTasksBtn": "Додати завдання",
+        "createTaskModal": {
+            "title": "Додати нове завдання",
+            "labelName": "Назва завдання",
+            "placeholderTaskName": "Введіть назву завдання",
+            "placeholderDeadline": "Виберіть дату",
+            "labelPriority": "Пріоритет",
+            "labelDeadline": "Термін",
+            "labelTags": "Теги",
+            "placeholderTags": "Додайте до 3 тегів",
+            "createBtn": "Додати",
+            "select": {
+                "low": "Низький",
+                "medium": "Середній",
+                "high": "Високий",
+                "overdue": "Протерміновано",
+                "noDeadline": "Без терміну",
+                "today": "Сьогодні",
+                "tomorrow": "Завтра",
+                "thisWeek": "Цей тиждень",
+                "nextWeek": "Наступний тиждень"
+            } 
+        },
+        "editTask": "Редагувати завдання",
+        "deleteTask": {
+            "title": "Видалити завдання",
+            "contentTitle": "Ви впевнені, що хочете видалити це завдання?",
+            "contentSubtitle": "Цю дію неможливо скасувати"
+        },
+        "pending": "В процесі",
+        "completed": "Виконано",
+        "msgCreateSuccess": "Завдання успішно створено",
+        "msgUpdateSuccess": "Завдання успішно оновлено",
+        "msgDeleteSuccess": "Завдання успішно видалено"
+    },
+    "filters": {
+        "role": "Роль",
+        "sort": "Сортувати за",
+        "allRoles": "Всі ролі",
+        "admins": "Адміністратори",
+        "users": "Користувачі",
+        "newestFirst": "Новіші спочатку",
+        "oldestFirst": "Старіші спочатку",
+        "nameAsc": "Ім'я A-Z",
+        "nameDesc": "Ім'я Z-A",
+        "recentlyCreated": "Нещодавно створені",
+        "recentlyUpdated": "Нещодавно оновлені",
+        "recentlyAdded": "Нещодавно додані",
+        "priority": "Пріоритет",
+        "allPriorities": "Всі пріоритети",
+        "low": "Низький пріоритет",
+        "medium": "Середній пріоритет",
+        "high": "Високий пріоритет"
+        },
+    "dashboard": {
+        "title": "Раді бачити вас знову",
+        "todayTasks": "Сьогоднішні завдання",
+        "upcomingDeadlines": "Майбутні дедлайни",
+        "weeklyFocusGoals": "Тижневі цілі",
+        "completedTasks": "Виконано {completedTasks} з {totalTasks} завдань",
+        "tasksAttention": "Завдання, що потребують вашої уваги",
+        "topPriorities": "Ваші головні пріоритети на цей тиждень"
+    },
+    "saveBtnText": "Зберігти зміни",
+    "deleteModal": {
+        "title": "Видалити {entityName}",
+        "contentTitle": "Ви впевнені, що хочете видалити цей {entityName}?",
+        "contentSubtitle": "Цю дію неможливо скасувати"
+    },
+    "cancel": "Скасувати" 
 }

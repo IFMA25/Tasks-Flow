@@ -1,29 +1,48 @@
 <script setup lang="ts">
 import { computed } from "vue";
+import { useI18n } from "vue-i18n";
 import { useRoute } from "vue-router";
 
+import ThemeToggle from "@/features/theme/components/ThemeToggle.vue";
+import LangSwitcher from "@/features/translation/components/LangSwitcher.vue";
 import VTitle from "@/shared/ui/common/VTitle.vue";
 
+const { t } = useI18n();
 const route = useRoute();
 
 const title = computed(() => {
   const metaTitle = route.meta.titleHeader;
-  return typeof metaTitle === "string" ? metaTitle : "";
+  if (typeof metaTitle === "function") {
+    return t(metaTitle(route));
+  }
+  return typeof metaTitle === "string" ? t(metaTitle) : "";
 });
 </script>
 
 <template>
-  <div class="flex items-center justify-between rounded-xl border border-surface p-6">
-    <div class="flex-1 min-w-0">
-      <VTitle
-        v-if="title"
-        :text="title"
-      />
-      <div id="header-content" />
+  <div class="bg-border-gradient p-[2px] rounded-xl">
+    <div class="flex items-center w-full h-full bg-bgSecondary rounded-[10px] p-4">
+      <div
+        v-if="!route.query.id"
+        class="flex-1 min-w-0"
+      >
+        <VTitle
+          v-if="title"
+          :text="title"
+          variant="headerTitle"
+        />
+        <div id="header-content" />
+      </div>
+      <div class="flex items-center">
+        <div
+          id="header-actions"
+          class="pr-3 border-r border-muted"
+        />
+        <div class="flex items-center gap-2 pl-3">
+          <ThemeToggle />
+          <LangSwitcher size="sm" />
+        </div>
+      </div>
     </div>
-    <div
-      id="header-actions"
-      class="flex items-center gap-3 flex-shrink-0 ml-4 empty:hidden"
-    />
   </div>
 </template>

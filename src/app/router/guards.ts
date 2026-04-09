@@ -1,8 +1,8 @@
 import { tokenManager } from "@ametie/vue-muza-use";
 import { RouteLocationNormalized } from "vue-router";
 
-import { RouteNames } from "@/shared/config/routeNames";
 import { useProfileStore } from "@/shared/stores/useProfileStore";
+import { RouteNames } from "@/shared/types/routeNames";
 
 export const guards = async (to: RouteLocationNormalized) => {
   const token = !!tokenManager.getAccessToken();
@@ -18,8 +18,8 @@ export const guards = async (to: RouteLocationNormalized) => {
 
     const profileStore = useProfileStore();
 
-    if (!profileStore.profileData) {
-      await profileStore.execute();
+    if (token && !profileStore.profileData) {
+      await profileStore.fetchProfile();
     }
 
     const routePermission = to.meta.permission;

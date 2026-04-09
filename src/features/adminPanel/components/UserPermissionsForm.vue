@@ -6,11 +6,11 @@ import { toast } from "vue-sonner";
 import PermissionsControl from "./PermissionsControl.vue";
 import { useUpdateUserPermissions, useUpdateUserRole } from "../api/useAdminPanelRequests";
 import { usePermissionsManager } from "../composables/usePermissionsManager";
-import { Category, Permission, PermissionRole, RoleOption } from "../types";
+import { Category, Permission, PermissionRole } from "../types";
 import { sameArray } from "../utils";
 import PermissionsList from "./PermissionsList.vue";
 
-import { User } from "@/shared/types";
+import { RoleOption, User } from "@/shared/types";
 import VButton from "@/shared/ui/common/VButton.vue";
 
 const { t } = useI18n();
@@ -32,8 +32,8 @@ const {
 const emit = defineEmits(["update-success"]);
 
 const userRolesList = computed<RoleOption[]>(() => [
-  { label: t("roles.admin"), value: "admin" },
-  { label: t("roles.user"), value: "user" },
+  { key: "admin", label: t("roles.admin"), value: "admin" },
+  { key: "user", label: t("roles.user"), value: "user" },
 ]);
 
 const category = computed<Category[]> (() => [
@@ -59,7 +59,7 @@ const category = computed<Category[]> (() => [
   },
 ]);
 
-const userRole = ref<RoleOption | null>(null);
+const userRole = ref<string | null>(null);
 
 const {
   userPermissions,
@@ -86,9 +86,9 @@ const {
   loading: updateUserRoleLoad,
   data: updateUserRoleData,
 } = useUpdateUserRole(() => userId, {
-  data: () => ({ role: (userRole.value.value) }),
+  data: () => ({ role: userRole.value ?? "" }),
   onSuccess: () => {
-    userRole.value.value = updateUserRoleData.value.role;
+    userRole.value = updateUserRoleData.value.role;
   },
 });
 
@@ -110,7 +110,7 @@ const handleSubmit = async () => {
 
 const isUpdating = computed(() => updateUserPermissionsLoad.value || updateUserRoleLoad.value);
 
-const isRoleChanged = computed (() => userRole.value?.value !== userData?.role);
+const isRoleChanged = computed(() => userRole.value !== userData?.role);
 
 const isDataChanged = computed(() => {
   if (!userData) return false;
@@ -124,10 +124,7 @@ const isDataChanged = computed(() => {
 watch(() => userData, (newUser) => {
   if (!newUser) return;
   setPermissions(newUser.permissions);
-  userRole.value = {
-    label: t(`roles.${newUser.role}`),
-    value: newUser.role,
-  };
+  userRole.value = newUser.role;
 }, { immediate: true });
 </script>
 
@@ -144,7 +141,7 @@ watch(() => userData, (newUser) => {
       :loading="loading"
       :disabled="isUpdating"
       @update:all-selected="toggleAllPermissions"
-      @update:role="setPermissions(permissionsRole[userRole.value.toUpperCase()])"
+      @update:role="(value) => setPermissions(permissionsRole[value.toUpperCase()])"
     />
     <PermissionsList
       v-model="userPermissions"
@@ -157,7 +154,7 @@ watch(() => userData, (newUser) => {
       <VButton
         type="submit"
         variant="primary"
-        :text="$t('userInfo.saveBtnText')"
+        :text="$t('saveBtnText')"
         :loading="isUpdating"
         :disabled="!isDataChanged || isUpdating || loading"
       />

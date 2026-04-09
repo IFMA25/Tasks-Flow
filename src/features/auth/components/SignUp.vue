@@ -7,7 +7,7 @@ import { AuthMode } from "../types";
 
 import { useAuth } from "@/features/auth/api/composables/useAuthRequests";
 import { useSignUpValidation } from "@/features/auth/composables/useSignUpValidation";
-import { RouteNames } from "@/shared/config/routeNames";
+import { RouteNames } from "@/shared/types/routeNames";
 import VButton from "@/shared/ui/common/VButton.vue";
 import VInput from "@/shared/ui/common/VInput.vue";
 

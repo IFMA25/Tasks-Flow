@@ -25,7 +25,7 @@
     display: flex;
     flex-direction: column;
     /* Glass effect on desktop, solid on mobile for performance */
-    @apply bg-base border border-default p-6 gap-4;
+    @apply bg-bgBase border border-default p-6 gap-5;
   }
 
   .modal-header {
@@ -74,14 +74,13 @@
     overflow-y: auto;
     flex: 1;
     color: var(--color-mainText);
-     @apply text-primary text-base text-center
+     @apply text-primary text-base mb-8
   }
 
   .modal-footer {
-    padding: 1rem 1.25rem;
     display: flex;
     gap: 0.75rem;
-    justify-content: center;
+    justify-content: end;
     // @apply border-t-[1px] border-cardBorder;
   }
 
@@ -114,12 +113,6 @@
     .modal-container {
       max-height: 100vh;
       border-radius: 0;
-    }
-
-    .modal-header,
-    .modal-content,
-    .modal-footer {
-      padding: 1rem;
     }
   }
 }

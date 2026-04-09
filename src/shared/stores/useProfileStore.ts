@@ -6,7 +6,7 @@ import { useRouter } from "vue-router";
 import { useProfileRequest } from "../composables/api/useProfileRequest";
 import { User } from "../types";
 
-import { RouteNames } from "@/shared/config/routeNames";
+import { RouteNames } from "@/shared/types/routeNames";
 
 
 export const useProfileStore = defineStore("profile", () => {
@@ -14,7 +14,7 @@ export const useProfileStore = defineStore("profile", () => {
 
   const router = useRouter();
 
-  const { execute, loading, data } = useProfileRequest({
+  const { execute: fetchProfile, loading, data } = useProfileRequest({
     onSuccess: () => {
       profileData.value = data.value;
     },
@@ -35,7 +35,7 @@ export const useProfileStore = defineStore("profile", () => {
   return {
     profileData,
     loading,
-    execute,
+    fetchProfile,
     handleLogout,
     hasAccess,
   };
