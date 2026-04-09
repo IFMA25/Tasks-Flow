@@ -156,6 +156,15 @@
         "medium": "Середній пріоритет",
         "high": "Високий пріоритет"
         },
+    "dashboard": {
+        "title": "Раді бачити вас знову",
+        "todayTasks": "Сьогоднішні завдання",
+        "upcomingDeadlines": "Майбутні дедлайни",
+        "weeklyFocusGoals": "Тижневі цілі",
+        "completedTasks": "Виконано {completedTasks} з {totalTasks} завдань",
+        "tasksAttention": "Завдання, що потребують вашої уваги",
+        "topPriorities": "Ваші головні пріоритети на цей тиждень"
+    },
     "saveBtnText": "Зберігти зміни",
     "deleteModal": {
         "title": "Видалити {entityName}",

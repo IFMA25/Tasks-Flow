@@ -18,7 +18,7 @@ const routes: RouteRecordRaw[] = [
     meta: {
       permission: "read:dashboard",
       showHeader: false,
-      titleMenu: "home",
+      titleMenu: "dashboard",
       iconMenu: "home",
     },
   },
