@@ -13,10 +13,9 @@ const currentLimit = 20;
 const currentLimitUsers = 100;
 const defaultSort = "recentlyCreated";
 const defaultFilters = { search: "", sort: defaultSort };
+const filters = reactive({ ...defaultFilters });
 
 export const useListsFeature = () => {
-
-  const filters = reactive({ ...defaultFilters });
 
   const { t } = useI18n();
   const route = useRoute();
@@ -64,6 +63,7 @@ export const useListsFeature = () => {
   const { ignoreUpdates } = watchIgnorable(
     [activeTab, filters],
     () => {
+      console.log('watch');
       listsStore.fetchLists({ params: params.value });
     },
     { immediate: true, deep: true },
