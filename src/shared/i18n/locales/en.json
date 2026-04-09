@@ -154,7 +154,7 @@
             "contentSubtitle": "This action can’t be undone"
         },
     "dashboard": {
-        "title": "Good to see you again",
+        "title": "Good to see you again, {userName}",
         "todayTasks": "Today's tasks",
         "upcomingDeadlines": "Upcoming Deadlines",
         "weeklyFocusGoals": "Weekly Focus Goals",
@@ -162,5 +162,6 @@
         "tasksAttention": "Tasks that need your attention soon",
         "topPriorities": "Your top priorities for this week"
     },
-    "cancel": "Cancel"   
+    "cancel": "Cancel",
+    "viewAll": "View all"
 }

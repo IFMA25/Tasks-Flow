@@ -157,7 +157,7 @@
         "high": "Високий пріоритет"
         },
     "dashboard": {
-        "title": "Раді бачити вас знову",
+        "title": "Раді бачити вас знову, {userName}",
         "todayTasks": "Сьогоднішні завдання",
         "upcomingDeadlines": "Майбутні дедлайни",
         "weeklyFocusGoals": "Тижневі цілі",
@@ -171,5 +171,6 @@
         "contentTitle": "Ви впевнені, що хочете видалити цей {entityName}?",
         "contentSubtitle": "Цю дію неможливо скасувати"
     },
-    "cancel": "Скасувати" 
+    "cancel": "Скасувати",
+    "viewAll": "Переглянути всі"
 }
