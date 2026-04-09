@@ -5,7 +5,6 @@ import { toast } from "vue-sonner";
 
 import { FormDataList, ListData } from "../../types";
 import { useListsRequests } from "../api/useListsRequest";
-import { useListsFeature } from "../composable/useListsFeature";
 
 import { useModal } from "@/shared/composables/useModal";
 import VButton from "@/shared/ui/common/VButton.vue";
@@ -13,6 +12,11 @@ import VColorRadio from "@/shared/ui/common/VColorRadio.vue";
 import VInput from "@/shared/ui/common/VInput.vue";
 import VModal from "@/shared/ui/common/VModal.vue";
 import { colorsList } from "@/shared/variables/colorMap";
+
+const emit = defineEmits<{
+  created: [];
+  updated: [];
+}>();
 
 const formData = reactive<FormDataList>({
   title: "",
@@ -29,7 +33,6 @@ const submitData = () => ({
 const { t } = useI18n();
 const { open, close } = useModal("listFormModal");
 const { createNewList, updateList } = useListsRequests();
-const { params, listsStore, ignoreUpdates, resetFilters } = useListsFeature();
 
 const initForm = (listEdit: ListData | null) => {
   selectedList.value = listEdit;
@@ -40,32 +43,32 @@ const initForm = (listEdit: ListData | null) => {
 const { execute: createNewListExecute, loading: createListLoading } = createNewList({
   data: submitData,
   onSuccess: () => {
-    ignoreUpdates(() => {
-      resetFilters();
-    });
-    listsStore.fetchLists({ params: params.value });
+    emit("created");
     toast.success(t("lists.msgCreateSuccess"));
   },
 });
 
 const { execute: updateSelectedListExecute, loading: updateListLoading } = updateList(
-  () => selectedList.value?.id, {
+  () => selectedList.value?.id,
+  {
     data: submitData,
     onSuccess: () => {
-      listsStore.fetchLists({ params: params.value });
+      emit("updated");
       toast.success(t("lists.msgUpdateSuccess"));
     },
-  });
+  },
+);
 
 const isDataChanged = computed(() => {
   if (!selectedList.value) return true;
 
-  return formData.title !== selectedList.value.title ||
-           formData.hexColor !== (selectedList.value.hexColor || colorsList[0]);
+  return (
+    formData.title !== selectedList.value.title ||
+    formData.hexColor !== (selectedList.value.hexColor || colorsList[0])
+  );
 });
 
 const isSubmitDisabled = computed(() => !formData.title || !isDataChanged.value);
-
 const isLoading = computed(() => createListLoading.value || updateListLoading.value);
 
 const handleSubmit = async () => {
@@ -74,6 +77,7 @@ const handleSubmit = async () => {
   } else {
     await createNewListExecute();
   }
+
   close();
 };
 
@@ -105,7 +109,7 @@ defineExpose({ openModal });
         class="mb-4"
       />
       <p class="mb-2">
-        {{ $t('lists.listFormModal.labelColor') }}
+        {{ $t("lists.listFormModal.labelColor") }}
       </p>
       <div class="flex gap-4">
         <VColorRadio
@@ -116,6 +120,7 @@ defineExpose({ openModal });
         />
       </div>
     </form>
+
     <template #footer>
       <VButton
         type="text"

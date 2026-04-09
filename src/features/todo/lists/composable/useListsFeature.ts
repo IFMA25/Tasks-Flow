@@ -1,5 +1,5 @@
 import { watchIgnorable } from "@vueuse/core";
-import { computed, reactive } from "vue";
+import { computed, reactive, watch } from "vue";
 import { useI18n } from "vue-i18n";
 import { useRoute, useRouter } from "vue-router";
 
@@ -8,22 +8,31 @@ import { useListsStore } from "../store/useListsStore";
 import { SortOption } from "@/shared/types";
 import { listsTabs } from "@/shared/variables/tabListsPage";
 
-
 const currentLimit = 20;
 const currentLimitUsers = 100;
 const defaultSort = "recentlyCreated";
 const defaultFilters = { search: "", sort: defaultSort };
 
+const filters = reactive({ ...defaultFilters });
+
 export const useListsFeature = () => {
-
-  const filters = reactive({ ...defaultFilters });
-
   const { t } = useI18n();
   const route = useRoute();
   const router = useRouter();
   const listsStore = useListsStore();
 
-  const sortOptions = computed<SortOption[]>(() => [{ key: "recentlyCreated", label: t("filters.recentlyCreated"), params: { sort: "createdAt", order: "asc" } }, { key: "recentlyUpdated", label: t("filters.recentlyUpdated"), params: { sort: "updatedAt", order: "desc" } }]);
+  const sortOptions = computed<SortOption[]>(() => [
+    {
+      key: "recentlyCreated",
+      label: t("filters.recentlyCreated"),
+      params: { sort: "createdAt", order: "asc" },
+    },
+    {
+      key: "recentlyUpdated",
+      label: t("filters.recentlyUpdated"),
+      params: { sort: "updatedAt", order: "desc" },
+    },
+  ]);
 
   const resetFilters = () => {
     Object.assign(filters, defaultFilters);
@@ -44,6 +53,7 @@ export const useListsFeature = () => {
     if (!data?.length) return [];
 
     const grouped = Object.groupBy(data, (list) => list.owner.id);
+
     return Object.values(grouped).map((lists) => ({
       owner: lists![0].owner,
       lists: lists!,
@@ -52,6 +62,7 @@ export const useListsFeature = () => {
 
   const params = computed(() => {
     const sort = sortOptions.value.find((o) => o.key === filters.sort);
+
     return {
       limit: activeTab.value === listsTabs.myLists ? currentLimit : currentLimitUsers,
       q: activeTab.value === listsTabs.myLists ? filters.search : undefined,
@@ -61,13 +72,32 @@ export const useListsFeature = () => {
     };
   });
 
-  const { ignoreUpdates } = watchIgnorable(
-    [activeTab, filters],
+  watch(
+    activeTab,
     () => {
       listsStore.fetchLists({ params: params.value });
     },
-    { immediate: true, deep: true },
+    { immediate: true },
   );
+
+  const { ignoreUpdates } = watchIgnorable(
+    () => [filters.search, filters.sort],
+    () => {
+      console.log("filters changed");
+      listsStore.fetchLists({ params: params.value });
+    },
+    { immediate: true },
+  );
+
+  const handleUpdatedList = async (actionKey?: string) => {
+    if (actionKey === "create") {
+      ignoreUpdates(() => {
+        resetFilters();
+      });
+    }
+
+    await listsStore.fetchLists({ params: params.value });
+  };
 
   return {
     activeTab,
@@ -76,8 +106,8 @@ export const useListsFeature = () => {
     filters,
     sortOptions,
     listsStore,
-    ignoreUpdates,
     resetFilters,
+    ignoreUpdates,
+    handleUpdatedList,
   };
 };
-

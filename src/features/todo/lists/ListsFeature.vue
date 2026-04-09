@@ -25,15 +25,22 @@ const { t } = useI18n();
 const formModalRef = useTemplateRef<InstanceType<typeof ListFormModal>>("formModalRef");
 const deleteModalRef = useTemplateRef<InstanceType<typeof DeleteListModal>>("deleteModalRef");
 
-const { activeTab, userLists, filters, sortOptions, listsStore } = useListsFeature();
+const {
+  activeTab,
+  userLists,
+  filters,
+  sortOptions,
+  listsStore,
+  handleUpdatedList,
+} = useListsFeature();
 
 const actions = computed<Actions[]>(() => [
-  { key: "edit",   label: t("lists.editList") },
+  { key: "edit", label: t("lists.editList") },
   { key: "delete", label: t("deleteModal.title", { entityName: t("lists.list") }) },
 ]);
 
 const tabs = computed(() => [
-  { value: "myLists",    label: t("lists.myLists")    },
+  { value: "myLists", label: t("lists.myLists") },
   { value: "usersLists", label: t("lists.usersLists") },
 ]);
 
@@ -60,8 +67,15 @@ const handleAction = (list: ListData, action: ListAction) => {
     />
   </Teleport>
 
-  <ListFormModal ref="formModalRef" />
-  <DeleteListModal ref="deleteModalRef" />
+  <ListFormModal
+    ref="formModalRef"
+    @created="handleUpdatedList('create')"
+    @updated="handleUpdatedList()"
+  />
+  <DeleteListModal
+    ref="deleteModalRef"
+    @deleted="handleUpdatedList()"
+  />
 
   <ListsToolbar
     v-model:search="filters.search"
@@ -86,6 +100,7 @@ const handleAction = (list: ListData, action: ListAction) => {
             :key="n"
           />
         </template>
+
         <template v-else-if="activeTab === listsTabs.usersLists">
           <UsersListItemSkeleton
             v-for="n in skeletonCount"
@@ -94,6 +109,7 @@ const handleAction = (list: ListData, action: ListAction) => {
         </template>
       </div>
     </template>
+
     <template v-else>
       <div
         v-if="listsStore.dataLists?.data.length"
@@ -108,6 +124,7 @@ const handleAction = (list: ListData, action: ListAction) => {
             @action="handleAction"
           />
         </template>
+
         <template v-else-if="activeTab === listsTabs.usersLists">
           <UsersListItem
             v-for="group in userLists"
@@ -116,6 +133,7 @@ const handleAction = (list: ListData, action: ListAction) => {
           />
         </template>
       </div>
+
       <div
         v-else-if="!listsStore.isLoading"
         class="py-16 px-4"
