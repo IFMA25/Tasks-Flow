@@ -1,36 +1,27 @@
 <script setup lang="ts">
 import { onMounted } from "vue";
 
-import { useDashboardRequests } from "./api/useDashboardRequest";
 import ListDashboard from "./components/ListDashboard.vue";
-import { useListsStore } from "../todo/lists/store/useListsStore";
+import { useDashboardFeature } from "./composible/useDashboardFeature";
 
-const { upcomingDeadlines } = useDashboardRequests();
+const { fetchTodayTasks, fetchUpcomingDeadlines, fetchTodayTasksData, fetchUpcomingDeadlinesData, listStore } = useDashboardFeature();
 
-const { execute, data } = upcomingDeadlines({
-
-    onSuccess: () => {
-        console.log(data?.value);
-    },
-});
-
-const listStore = useListsStore();
 onMounted(async () => {
-  await execute();
+  fetchTodayTasks();
+  fetchUpcomingDeadlines();
   await listStore.fetchLists();
-  console.log(listStore.dataLists);
 });
 </script>
 
 <template>
   <div class="flex gap-6">
     <ListDashboard
-      :data="data"
+      :data="fetchTodayTasksData"
       :title-list="$t('dashboard.todayTasks')"
       :subtitle-list="$t('dashboard.completedTasks')"
     />
     <ListDashboard
-      :data="data"
+      :data="fetchUpcomingDeadlinesData"
       :title-list="$t('dashboard.upcomingDeadlines')"
       :subtitle-list="$t('dashboard.tasksAttention')"
     />

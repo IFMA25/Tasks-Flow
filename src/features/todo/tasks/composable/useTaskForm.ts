@@ -35,6 +35,7 @@ export const useTaskForm = (
     tags: formData.tags,
     priority: formData.priority,
     dueDate: formData.dueDate ? formatISO(formData.dueDate) : null,
+    deadline: formData.dueDate ? formatISO(formData.dueDate) : null,
   }));
 
   const { execute: createNewTaskExecute, loading: createNewTaskLoading } =

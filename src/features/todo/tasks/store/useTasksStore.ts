@@ -19,6 +19,7 @@ export const useTasksStore = defineStore("tasks", () => {
     currentListId.value = listId;
     tasksData.value = null;
     await execute({ params });
+    console.log(tasksData.value);
   };
 
   return {  tasksData, fetchTaskLoading, fetchTasksForList };
