@@ -4,7 +4,7 @@ import { onMounted } from "vue";
 import ListDashboard from "./components/ListDashboard.vue";
 import { useDashboardFeature } from "./composible/useDashboardFeature";
 
-const { fetchTodayTasks, fetchUpcomingDeadlines, fetchTodayTasksData, fetchUpcomingDeadlinesData, listStore } = useDashboardFeature();
+const { fetchTodayTasks, fetchUpcomingDeadlines, fetchTodayTasksData, fetchUpcomingDeadlinesData, listStore, completedTasks } = useDashboardFeature();
 
 onMounted(async () => {
   fetchTodayTasks();
@@ -18,7 +18,7 @@ onMounted(async () => {
     <ListDashboard
       :data="fetchTodayTasksData"
       :title-list="$t('dashboard.todayTasks')"
-      :subtitle-list="$t('dashboard.completedTasks')"
+      :subtitle-list="$t('dashboard.completedTasks',{completedTasks: completedTasks, totalTasks: fetchTodayTasksData?.total })"
     />
     <ListDashboard
       :data="fetchUpcomingDeadlinesData"

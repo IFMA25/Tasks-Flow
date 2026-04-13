@@ -41,6 +41,7 @@ const { execute: createNewListExecute, loading: createListLoading } = createNewL
   data: submitData,
   onSuccess: () => {
     ignoreUpdates(() => {
+      console.log('ignore')
       resetFilters();
     });
     listsStore.fetchLists({ params: params.value });

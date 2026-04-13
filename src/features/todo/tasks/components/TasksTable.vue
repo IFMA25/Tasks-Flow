@@ -10,6 +10,7 @@ import type { Actions } from "@/shared/types";
 import VActionsDropdown from "@/shared/ui/VActionsDropdown.vue";
 import VCheckbox from "@/shared/ui/common/VCheckbox.vue";
 import VTable, { TableColumn } from "@/shared/ui/table/VTable.vue";
+import { colorsPriority } from "@/shared/variables/colorMap";
 
 defineProps<{
   rows: TaskData[];
@@ -26,12 +27,6 @@ const emit = defineEmits<{
 }>();
 
 const { t } = useI18n();
-
-const colorsPriority: Record<string, string> = {
-  low:    "text-success before:bg-success",
-  medium: "text-warning before:bg-warning",
-  high:   "text-danger before:bg-danger",
-};
 
 const displayDueDate = (dueDate: string) => {
   const statusKey = getDueDateStatusFromIso(dueDate);

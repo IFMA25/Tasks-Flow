@@ -75,6 +75,18 @@ const handleAction = (list: ListData, action: ListAction) => {
       v-model="activeTab"
       :tab-items="tabs"
     />
+    <VTabs :tabs="tabs">
+  <template
+    v-for="tab in tabs"
+    :key="tab.id"
+    #[tab.id]
+  >
+    <component
+      :is="tab.component"
+      :params="requestParams"
+    />
+  </template>
+</VTabs>
   </div>
 
   <div class="relative min-h-[12.5rem]">

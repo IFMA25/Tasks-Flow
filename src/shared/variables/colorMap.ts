@@ -8,3 +8,9 @@ export const colorsList = [
   "#EF4444",
   "#EC4899",
 ];
+
+export const colorsPriority: Record<string, string> = {
+  low:    "text-success before:bg-success",
+  medium: "text-warning before:bg-warning",
+  high:   "text-danger before:bg-danger",
+};

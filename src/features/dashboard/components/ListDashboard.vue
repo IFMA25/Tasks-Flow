@@ -18,7 +18,7 @@ const router = useRouter();
 </script>
 
 <template>
-  <ul class="w-[50%] rounded-2xl border-2 border-surface p-8">
+  <div class="w-[50%] rounded-2xl border-2 border-surface p-6">
     <div class="flex justify-between items-center mb-1">
       <h3 class="text-[2rem] leading-[1.2] font-semibold">
         {{ titleList }}
@@ -33,10 +33,12 @@ const router = useRouter();
     <p class="text-sm text-secondary leading-[1.3] mb-4">
       {{ subtitleList }}
     </p>
-    <ItemDashboardList
-      v-for="task in data?.data"
-      :key="task.id"
-      :task="task"
-    />
-  </ul>
+    <ul>
+      <ItemDashboardList
+        v-for="task in data?.data"
+        :key="task.id"
+        :task="task"
+      />
+    </ul>
+  </div>
 </template>
