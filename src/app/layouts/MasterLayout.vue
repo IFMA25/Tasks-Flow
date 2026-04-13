@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { tokenManager } from "@ametie/vue-muza-use";
 import { computed } from "vue";
 import { useRoute } from "vue-router";
 
@@ -30,14 +31,20 @@ const routeLayout = computed(() => {
   }
   return layouts.default;
 });
+
+const isAppLoading = computed(() => {
+  const hasToken = !!tokenManager.getAccessToken();
+  return hasToken && (!profileStore.profileData || profileStore.loading);
+});
 </script>
 
 <template>
   <div class="bg-bgBase text-primary h-screen">
     <VTransitionLoader
-      v-if="profileStore.loading"
-      :is-loading="profileStore.loading"
+      v-if="isAppLoading"
+      :is-loading="isAppLoading"
       variant="fullscreen"
+      loader-type="dots"
     />
     <component
       :is="routeLayout"

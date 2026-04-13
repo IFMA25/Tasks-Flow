@@ -4,6 +4,7 @@ import VLoader from "./common/VLoader.vue";
 defineProps<{
   isLoading: boolean
   variant?: "fullscreen" | "overlay"
+  loaderType?: "spinner" | "dots"
 }>();
 </script>
 
@@ -23,8 +24,8 @@ defineProps<{
       ]"
     >
       <VLoader
-        color="primaryDark"
         size="h-[100px]"
+        :type="loaderType"
       />
     </div>
   </Transition>
