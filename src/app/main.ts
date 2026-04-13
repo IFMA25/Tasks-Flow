@@ -49,6 +49,4 @@ app.use(router);
 app.component("VueFeather", VueFeather);
 app.component("VueDatePicker", VueDatePicker);
 
-router.isReady().then(() => {
-  app.mount("#app");
-});
+app.mount("#app");

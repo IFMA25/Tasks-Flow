@@ -21,7 +21,7 @@ const props = withDefaults(
   }>(),
   {
     type: "button",
-    loadColor: "white",
+    loadColor: "text-white",
     variant: "",
     text: "",
     to: null,

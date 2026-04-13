@@ -1,7 +1,10 @@
-import { useListsStore } from "@/features/todo/lists/store/useListsStore";
+import { computed, ref } from "vue";
+
 import { useDashboardRequests } from "../api/useDashboardRequest";
 import { todayDate, tomorrowDate, weekDate } from "../utils/dayDate";
-import { computed, ref } from "vue";
+
+import { useListsStore } from "@/features/todo/lists/store/useListsStore";
+
 
 export function useDashboardFeature() {
   const limit = ref(20);
@@ -9,23 +12,31 @@ export function useDashboardFeature() {
   const listStore = useListsStore();
 
   const {
-    execute: fetchTodayTasks, 
-    loading: fetchTodayTasksLoading, 
-    data: fetchTodayTasksData
-  } = upcomingDeadlines({ params: {limit: limit.value, startDate: todayDate, endDate: tomorrowDate}});
+    execute: fetchTodayTasks,
+    loading: fetchTodayTasksLoading,
+    data: fetchTodayTasksData,
+  } = upcomingDeadlines({
+    params: {
+      limit: limit.value,
+      startDate: todayDate,
+      endDate: tomorrowDate,
+    },
+  });
 
   const {
-    execute: fetchUpcomingDeadlines, 
-    loading: fetchUpcomingDeadlinesLoading, 
-    data: fetchUpcomingDeadlinesData
-  } = upcomingDeadlines({ params: {limit: limit.value, startDate: tomorrowDate, endDate: weekDate}, 
-    onSuccess: () => {
-      console.log(fetchUpcomingDeadlinesData.value);
-    }}
+    execute: fetchUpcomingDeadlines,
+    loading: fetchUpcomingDeadlinesLoading,
+    data: fetchUpcomingDeadlinesData,
+  } = upcomingDeadlines({
+ params: { limit: limit.value, startDate: tomorrowDate, endDate: weekDate },
+    // onSuccess: () => {
+    //   console.log(fetchUpcomingDeadlinesData.value);
+    // },
+},
   );
 
   const completedTasks = computed(() => {
-    return fetchTodayTasksData.value?.data.filter((task) => task.status === 'done').length;
+    return fetchTodayTasksData.value?.data.filter((task) => task.status === "done").length;
   });
 
 

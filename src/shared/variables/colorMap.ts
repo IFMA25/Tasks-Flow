@@ -10,7 +10,7 @@ export const colorsList = [
 ];
 
 export const colorsPriority: Record<string, string> = {
-  low:    "text-success before:bg-success",
+  low: "text-success before:bg-success",
   medium: "text-warning before:bg-warning",
-  high:   "text-danger before:bg-danger",
+  high: "text-danger before:bg-danger",
 };

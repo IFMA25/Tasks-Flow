@@ -4,7 +4,10 @@ import { RouteLocationNormalized } from "vue-router";
 import { useProfileStore } from "@/shared/stores/useProfileStore";
 import { RouteNames } from "@/shared/types/routeNames";
 
-export const guards = async (to: RouteLocationNormalized) => {
+export const guards = async (
+  to: RouteLocationNormalized,
+  from: RouteLocationNormalized,
+) => {
   const token = !!tokenManager.getAccessToken();
 
   if (!token && to.meta.layout !== "auth") {
@@ -18,8 +21,16 @@ export const guards = async (to: RouteLocationNormalized) => {
 
     const profileStore = useProfileStore();
 
-    if (token && !profileStore.profileData) {
+    if (!profileStore.profileData) {
       await profileStore.fetchProfile();
+    }
+
+    if (
+      from.meta.layout === "auth" &&
+      to.name === RouteNames.home &&
+      profileStore.profileData?.role === "admin"
+    ) {
+      return { name: RouteNames.users };
     }
 
     const routePermission = to.meta.permission;

@@ -60,10 +60,18 @@ export const useListsFeature = () => {
     };
   });
 
+  const handleRequest = (type: "create" | "update") => {
+    if (type === "create") {
+      ignoreUpdates(() => {
+        resetFilters();
+      });
+    }
+    listsStore.fetchLists({ params: params.value });
+  };
+
   const { ignoreUpdates } = watchIgnorable(
     [activeTab, filters],
     () => {
-      console.log('watch');
       listsStore.fetchLists({ params: params.value });
     },
     { immediate: true, deep: true },
@@ -78,6 +86,7 @@ export const useListsFeature = () => {
     listsStore,
     ignoreUpdates,
     resetFilters,
+    handleRequest,
   };
 };
 
