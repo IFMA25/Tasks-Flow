@@ -113,7 +113,7 @@ defineEmits<{
           class="mx-auto px-8 mt-2"
           :text="$t('table.loadMore')"
           variant="outline"
-          load-color="primaryDark"
+          load-color="text-primaryDark"
           @click="$emit('load-more', pagination.limit)"
         />
       </div>
