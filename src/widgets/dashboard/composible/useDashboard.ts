@@ -1,4 +1,4 @@
-import { computed, ref } from "vue";
+import { ref } from "vue";
 
 import { useDashboardRequests } from "../api/useDashboardRequest";
 import { todayDate, tomorrowDate, weekDate } from "../utils/dayDate";
@@ -10,10 +10,6 @@ export function useDashboard() {
   const limit = ref(20);
   const { upcomingDeadlines } = useDashboardRequests();
   const listStore = useListsStore();
-
-  console.log(todayDate);
-  console.log(tomorrowDate);
-  console.log(weekDate);
 
   const {
     execute: fetchTodayTasks,
@@ -32,21 +28,12 @@ export function useDashboard() {
     loading: fetchUpcomingDeadlinesLoading,
     data: fetchUpcomingDeadlinesData,
   } = upcomingDeadlines({
- params: { limit: limit.value, startDate: tomorrowDate, endDate: weekDate },
-    // onSuccess: () => {
-    //   console.log(fetchUpcomingDeadlinesData.value);
-    // },
-},
-  );
-
-  const completedTasks = computed(() => {
-    return fetchTodayTasksData.value?.data.filter((task) => task.status === "done").length;
+    params: { limit: limit.value, startDate: tomorrowDate, endDate: weekDate },
   });
 
 
   return {
     listStore,
-    completedTasks,
     fetchTodayTasks,
     fetchUpcomingDeadlines,
     fetchTodayTasksLoading,

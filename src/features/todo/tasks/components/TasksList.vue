@@ -12,7 +12,7 @@ const baseHeads = [
   { key: "status",   label: "" },
   { key: "title",    label: "", columnStyles: "w-[30%]" },
   { key: "priority", label: "" , columnStyles: "w-[15%]" },
-  { key: "dueDate",  label: "", columnStyles: "w-[15%]" },
+  { key: "deadline",  label: "", columnStyles: "w-[15%]" },
   { key: "tags",     label: "" },
   { key: "actions",  label: "" },
 ];

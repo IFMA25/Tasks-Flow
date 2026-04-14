@@ -3,8 +3,8 @@ import { format } from "date-fns";
 import { useI18n } from "vue-i18n";
 
 import type { TaskData } from "../../types";
-import { getDueDateStatusFromIso } from "../utils/dateFormater";
 import TasksTableSkeleton from "./skeleton/TasksTableSkeleton.vue";
+import { getDeadlineStatusFromIso } from "../utils/dateFormater";
 
 import type { Actions } from "@/shared/types";
 import VActionsDropdown from "@/shared/ui/VActionsDropdown.vue";
@@ -28,10 +28,10 @@ const emit = defineEmits<{
 
 const { t } = useI18n();
 
-const displayDueDate = (dueDate: string) => {
-  const statusKey = getDueDateStatusFromIso(dueDate);
+const displayDeadline = (deadline: string) => {
+  const statusKey = getDeadlineStatusFromIso(deadline);
   if (!statusKey) return t("tasks.createTaskModal.select.noDeadline");
-  if (statusKey === "later") return format(new Date(dueDate), "dd MMM yyyy");
+  if (statusKey === "later") return format(new Date(deadline), "dd MMM yyyy");
   return t(`tasks.createTaskModal.select.${statusKey}`);
 };
 </script>
@@ -67,12 +67,12 @@ const displayDueDate = (dueDate: string) => {
         {{ t(`tasks.createTaskModal.select.${row.priority}`) }}
       </div>
     </template>
-    <template #cell-dueDate="{ row }">
+    <template #cell-deadline="{ row }">
       <div
         class="text-sm leading-[1.3]"
-        :class="{ 'text-danger font-medium': getDueDateStatusFromIso(row.dueDate) === 'overdue' }"
+        :class="{ 'text-danger font-medium': getDeadlineStatusFromIso(row.deadline) === 'overdue' }"
       >
-        {{ displayDueDate(row.dueDate) }}
+        {{ displayDeadline(row.deadline) }}
       </div>
     </template>
     <template #cell-tags="{ row }">

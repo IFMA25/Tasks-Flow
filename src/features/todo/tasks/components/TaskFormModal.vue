@@ -25,7 +25,7 @@ const formFields = reactive({
   taskName: "",
   tags: [] as string[],
   priority: "",
-  dueDate: null,
+  deadline: null,
 });
 
 const taskForm = useTaskForm(currentListId, selectedTask, formFields);
@@ -94,7 +94,7 @@ defineExpose({ open });
           {{ $t('tasks.createTaskModal.labelDeadline') }}
         </label>
         <VueDatePicker
-          v-model="formFields.dueDate"
+          v-model="formFields.deadline"
           :placeholder="$t('tasks.createTaskModal.placeholderDeadline')"
           centered
           auto-apply

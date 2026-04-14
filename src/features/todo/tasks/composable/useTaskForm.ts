@@ -26,7 +26,7 @@ export const useTaskForm = (
     Object.assign(formData, {
       taskName: taskEdit?.title ?? "",
       priority: taskEdit?.priority ?? priorityOptions.value[0].key,
-      dueDate: taskEdit?.dueDate ? parseISO(taskEdit.dueDate) : null,
+      deadline: taskEdit?.deadline ? parseISO(taskEdit.deadline) : null,
     });
   };
 
@@ -34,8 +34,7 @@ export const useTaskForm = (
     title: formData.taskName,
     tags: formData.tags,
     priority: formData.priority,
-    dueDate: formData.dueDate ? formatISO(formData.dueDate) : null,
-    deadline: formData.dueDate ? formatISO(formData.dueDate) : null,
+    deadline: formData.deadline ? formatISO(formData.deadline) : null,
   }));
 
   const { execute: createNewTaskExecute, loading: createNewTaskLoading } =
@@ -57,8 +56,8 @@ export const useTaskForm = (
       JSON.stringify([...formData.tags].sort()) !==
       JSON.stringify([...(selectedTask.value.tags ?? [])].sort());
     const isPriorityChanged = formData.priority !== (selectedTask.value.priority ?? "low");
-    const initialDateISO = selectedTask.value.dueDate || null;
-    const currentDateISO = formData.dueDate ? formatISO(formData.dueDate) : null;
+    const initialDateISO = selectedTask.value.deadline || null;
+    const currentDateISO = formData.deadline ? formatISO(formData.deadline) : null;
     const isDeadlineChanged = currentDateISO !== initialDateISO;
     return isNameChanged || isTagsChanged || isPriorityChanged || isDeadlineChanged;
   });

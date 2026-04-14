@@ -161,9 +161,14 @@
         "todayTasks": "Сьогоднішні завдання",
         "upcomingDeadlines": "Майбутні дедлайни",
         "weeklyFocusGoals": "Тижневі цілі",
-        "completedTasks": "Виконано {completedTasks} з {totalTasks} завдань",
+        "completedTasks": "У вас {totalTasks} завдань на сьогодні",
         "tasksAttention": "Завдання, що потребують вашої уваги",
-        "topPriorities": "Ваші головні пріоритети на цей тиждень"
+        "topPriorities": "Ваші головні пріоритети на цей тиждень",
+        "noTasks": "Завдань на сьогодні ще немає",
+        "noDeadlines": "Майбутніх дедлайнів немає",
+        "createNewTasks": "Створіть своє перше завдання, щоб почати",
+        "tasksWithDeadlines": "Завдання з термінами виконання з'являться тут",
+        "createFirstList": "Створіть свій перший список"
     },
     "saveBtnText": "Зберігти зміни",
     "deleteModal": {

@@ -158,9 +158,14 @@
         "todayTasks": "Today's tasks",
         "upcomingDeadlines": "Upcoming Deadlines",
         "weeklyFocusGoals": "Weekly Focus Goals",
-        "completedTasks": "You’ve completed {completedTasks} out of {totalTasks} tasks",
+        "completedTasks": "You have {totalTasks} tasks for today",
         "tasksAttention": "Tasks that need your attention soon",
-        "topPriorities": "Your top priorities for this week"
+        "topPriorities": "Your top priorities for this week",
+        "noTasks": "No tasks for today yet",
+        "noDeadlines": "No upcoming deadlines",
+        "createNewTasks": "Create your first task to get started",
+        "tasksWithDeadlines": "Tasks with due dates will appear here",
+        "createFirstList": "Create your first list"
     },
     "cancel": "Cancel",
     "viewAll": "View all"
