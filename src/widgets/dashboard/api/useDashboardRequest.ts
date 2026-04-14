@@ -13,5 +13,5 @@ export const useDashboardRequests = () => {
     return useApiGet<DashboardData>(() => `/tasks/deadlines`, options);
   };
 
-    return { upcomingDeadlines };
+  return { upcomingDeadlines };
 };

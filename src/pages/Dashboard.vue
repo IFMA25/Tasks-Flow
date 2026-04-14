@@ -1,10 +1,7 @@
 <script setup lang="ts">
-import DashboardFeature from "@/features/dashboard/DashboardFeature.vue";
-
-
-
+import Dashboard from "@/widgets/dashboard/Dashboard.vue";
 </script>
 
 <template>
-  <DashboardFeature />
+  <Dashboard />
 </template>

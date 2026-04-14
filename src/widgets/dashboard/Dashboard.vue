@@ -2,7 +2,8 @@
 import { onMounted } from "vue";
 
 import ListDashboard from "./components/ListDashboard.vue";
-import { useDashboardFeature } from "./composible/useDashboardFeature";
+import { useDashboard } from "./composible/useDashboard";
+
 
 const {
   fetchTodayTasks,
@@ -11,7 +12,7 @@ const {
   fetchUpcomingDeadlinesData,
   listStore,
   completedTasks,
-} = useDashboardFeature();
+} = useDashboard();
 
 onMounted(async () => {
   fetchTodayTasks();

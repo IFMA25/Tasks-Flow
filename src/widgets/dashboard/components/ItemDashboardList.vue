@@ -1,7 +1,7 @@
 <script setup lang="ts">
-import { DashboardTask } from "@/features/dashboard/types";
-import { colorsPriority } from "@/shared/variables/colorMap";
+import { DashboardTask } from "../types";
 
+import { colorsPriority } from "@/shared/variables/colorMap";
 
 const { task } = defineProps<{
     task: DashboardTask
