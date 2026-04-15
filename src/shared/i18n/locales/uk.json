@@ -174,7 +174,8 @@
         "noGoals": "Ще немає цілей на тиждень",
         "addGoals": "Додайте свої головні пріоритети, щоб залишатися зосередженими",
         "createNewGoals": "Додати ціль на тиждень",
-        "weeklyGoalsModalTitle": "Редагувати цілі на тиждень",
+        "weeklyGoalsModalTitleEdit": "Редагувати цілі на тиждень",
+        "weeklyGoalsModalTitleAdd": "Додати цілі на тиждень",
         "weeklyGoalsModalSubtitle": "Виберіть до 3 завдань, на яких варто зосередитися цього тижня"
     },
     "saveBtnText": "Зберігти зміни",

@@ -1,39 +1,38 @@
 <script setup lang="ts">
+import { ref, useTemplateRef } from "vue";
+
 import ItemDashboardList from "./ItemDashboardList.vue";
 import { DashboardData } from "../types";
+import WeeklyGoalsModal from "./WeeklyGoalsModal.vue";
 
-import { useModal } from "@/shared/composables/useModal";
+import { useListsStore } from "@/features/todo/lists/store/useListsStore";
 import VButton from "@/shared/ui/common/VButton.vue";
-import VModal from "@/shared/ui/common/VModal.vue";
+
+const modalMode = ref<"edit" | "add">("add");
 
 const { data } = defineProps<{
     data: DashboardData | null;
 }>();
 
-const { open: openModal, close: closeModal } = useModal("weeklyGoalsModal");
-// const listStore = useListsStore();
+const listStore = useListsStore();
+const weeklyGoalsModalRef = useTemplateRef<InstanceType<typeof WeeklyGoalsModal>>("weeklyGoalsModal");
+
+const handleOpenModal = async (mode: "edit" | "add") => {
+  modalMode.value = mode;
+  const res = await listStore.fetchLists();
+  console.log(res);
+  weeklyGoalsModalRef.value?.open();
+};
+
 </script>
 
 <template>
   <div>
-    <VModal
-      id="weeklyGoalsModal"
-      :title="$t('dashboard.weeklyGoalsModalTitle')"
-      :subtitle="$t('dashboard.weeklyGoalsModalSubtitle')"
-    >
-      <template #footer>
-        <VButton
-          :text="$t('cancel')"
-          variant="outline"
+    <WeeklyGoalsModal
+      ref="weeklyGoalsModal"
+      :mode="modalMode"
+    />
 
-          @click="closeModal"
-        />
-        <VButton
-          :text="$t('saveBtnText')"
-          variant="primary"
-        />
-      </template>
-    </VModal>
     <div
       class="max-h-[28rem] min-h-[13.75rem]
     overflow-x-hidden overflow-y-auto rounded-2xl border-2 border-surface py-4 px-6"
@@ -47,7 +46,7 @@ const { open: openModal, close: closeModal } = useModal("weeklyGoalsModal");
           v-if="data?.data.length"
           :text="$t('edit')"
           variant="dashboardNav"
-          @click="openModal"
+          @click="handleOpenModal('edit')"
         />
       </div>
       <p class="text-sm text-secondary leading-[1.3] mb-4">
@@ -75,7 +74,7 @@ const { open: openModal, close: closeModal } = useModal("weeklyGoalsModal");
           :text="$t('dashboard.createNewGoals')"
           variant="dashboardNav"
           icon="plus"
-          @click="openModal"
+          @click="handleOpenModal('add')"
         />
       </div>
     </div>

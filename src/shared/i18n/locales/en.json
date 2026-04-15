@@ -169,7 +169,8 @@
         "noGoals": "No weekly goals yet",
         "addGoals": "Add your top priorities to stay focused",
         "createNewGoals": "Add weekly goal",
-        "weeklyGoalsModalTitle": "Edit weekly focus goals",
+        "weeklyGoalsModalTitleEdit": "Edit weekly focus goals",
+        "weeklyGoalsModalTitleAdd": "Add weekly goals",
         "weeklyGoalsModalSubtitle": "Choose up to 3 tasks to focus on this week"
     },
     "cancel": "Cancel",

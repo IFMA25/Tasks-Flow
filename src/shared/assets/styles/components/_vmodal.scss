@@ -36,11 +36,24 @@
     // @apply border-b-[1px] border-cardBorder;
   }
 
+  .header-heading {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
   .modal-title {
     font-size: 1.25rem;
     font-weight: 600;
     margin: 0;
     @apply text-primary text-2xl font-semibold;
+  }
+
+  .modal-subtitle {
+    font-size: 0.75rem;
+    line-height: 1.1;
+    font-weight: 400;
+    @apply text-secondary mb-2
   }
 
   .modal-close-btn {

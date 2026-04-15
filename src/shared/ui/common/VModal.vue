@@ -6,6 +6,7 @@ import { useModal } from "@/shared/composables/useModal";
 interface Props {
   id: string
   title?: string
+  subtitle?: string
   showCloseButton?: boolean
   closeOnBackdrop?: boolean
   closeOnEscape?: boolean
@@ -14,6 +15,7 @@ interface Props {
 
 const props = withDefaults(defineProps<Props>(), {
   title: "",
+  subtitle: "",
   showCloseButton: true,
   closeOnBackdrop: true,
   closeOnEscape: true,
@@ -81,12 +83,20 @@ const handleKeydown = (event: KeyboardEvent) => {
             class="modal-header"
           >
             <slot name="header">
-              <h3
-                v-if="title"
-                class="modal-title"
-              >
-                {{ title }}
-              </h3>
+              <div class="header-heading">
+                <h3
+                  v-if="title"
+                  class="modal-title"
+                >
+                  {{ title }}
+                </h3>
+                <p
+                  v-if="subtitle"
+                  class="modal-subtitle"
+                >
+                  {{ subtitle }}
+                </p>
+              </div>
             </slot>
             <button
               v-if="showCloseButton"
