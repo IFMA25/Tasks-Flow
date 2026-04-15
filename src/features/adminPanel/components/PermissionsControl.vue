@@ -67,9 +67,6 @@ const labelCheckbox = computed(() =>
       class="w-[35%]"
     >
       <VCheckbox
-        width="w-5"
-        height="h-5"
-        variant="default"
         :label="labelCheckbox"
         :disabled="disabled"
         :model-value="allSelected"

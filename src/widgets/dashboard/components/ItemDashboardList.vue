@@ -1,31 +1,40 @@
 <script setup lang="ts">
 import { DashboardTask } from "../types";
 
+import VCheckbox from "@/shared/ui/common/VCheckbox.vue";
 import { colorsPriority } from "@/shared/variables/colorMap";
 
-const { task } = defineProps<{
-    task: DashboardTask
+const { task, goals } = defineProps<{
+  task: DashboardTask;
+  goals?: boolean;
 }>();
 
 const statusMap = {
   todo: "Pending",
   done: "Completed",
 };
-
 </script>
 
 <template>
   <li
-    class="grid pt-2 pb-4 border-t border-default gap-y-2 items-center
-           [grid-template-areas:'title_status'_'meta_meta'_'tags_tags']
-           [grid-template-columns:1fr_auto]
-           "
+    class="task-item border-surface gap-y-2 items-center pt-2 pb-4"
+    :class="goals
+      ? 'task-item--goals border bgBase rounded-2xl p-4'
+      : 'task-item--default border-t'"
   >
     <p class="[grid-area:title] leading-[1.3]">
       {{ task.title }}
     </p>
 
-    <p class="[grid-area:status] text-secondary text-xs leading-[1.1] justify-self-end capitalize">
+    <VCheckbox
+      v-if="goals"
+      variant="round"
+      class="[grid-area:checkbox]"
+    />
+    <p
+      v-else
+      class="[grid-area:status] text-secondary text-xs leading-[1.1] justify-self-end capitalize"
+    >
       {{ statusMap[task.status] }}
     </p>
 
@@ -43,7 +52,7 @@ const statusMap = {
 
     <ul
       v-if="task.tags.length"
-      class="[grid-area:tags] flex gap-2"
+      class="[grid-area:tags] flex gap-2 flex-wrap"
     >
       <li
         v-for="tag in task.tags"
@@ -55,3 +64,25 @@ const statusMap = {
     </ul>
   </li>
 </template>
+
+<style scoped>
+.task-item {
+  display: grid;
+  grid-template-columns: 1fr auto;
+}
+
+.task-item--goals {
+  grid-template-areas:
+    "_  checkbox"
+    "title     title"
+    "meta      meta"
+    "tags      tags";
+}
+
+.task-item--default {
+  grid-template-areas:
+    "title  status"
+    "meta   meta"
+    "tags   tags";
+}
+</style>

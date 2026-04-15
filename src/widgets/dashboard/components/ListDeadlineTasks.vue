@@ -20,11 +20,11 @@ const router = useRouter();
 
 <template>
   <div
-    class="w-[50%] max-h-[38rem] min-h-[13.75rem]
+    class="max-h-[28rem] min-h-[13.75rem]
     overflow-x-hidden overflow-y-auto rounded-2xl border-2 border-surface py-4 px-6"
   >
     <div class="flex justify-between items-center mb-1">
-      <h3 class="text-[2rem] leading-[1.2] font-semibold">
+      <h3 class="text-[2rem] leading-[1.2] font-semibold mb-2">
         {{ titleList }}
       </h3>
 

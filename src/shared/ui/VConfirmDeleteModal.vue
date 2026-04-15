@@ -27,7 +27,6 @@ defineExpose({ open, close });
   <VModal
     :id="id"
     :title="$t('deleteModal.title', { entityName: entityName })"
-    max-width="md"
   >
     <div class="flex flex-col items-center gap-2 mb-2">
       <p class="font-semibold">

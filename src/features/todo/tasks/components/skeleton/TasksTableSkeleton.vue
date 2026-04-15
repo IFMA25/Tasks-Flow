@@ -13,7 +13,7 @@ import VSkeleton from "@/shared/ui/common/VSkeleton.vue";
       <VSkeleton
         width="w-5"
         height="h-5"
-        rounded="full"
+        rounded="md"
       />
       <VSkeleton
         width="w-full"

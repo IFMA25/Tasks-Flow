@@ -7,11 +7,17 @@ import { DashboardData } from "../types";
 
 export const useDashboardRequests = () => {
 
-  const upcomingDeadlines = (
+  const getTasksWithDeadlines = (
     options?: UseApiOptions<DashboardData>,
   ) => {
     return useApiGet<DashboardData>(() => `/tasks/deadlines`, options);
   };
 
-  return { upcomingDeadlines };
+  const getWeeklyGoal = (
+    options?: UseApiOptions<DashboardData>,
+  ) => {
+    return useApiGet<DashboardData>(() => `/tasks/weekly-goals`, options);
+  };
+
+  return { getTasksWithDeadlines, getWeeklyGoal };
 };

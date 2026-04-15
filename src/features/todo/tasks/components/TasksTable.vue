@@ -47,9 +47,6 @@ const displayDeadline = (deadline: string) => {
   >
     <template #cell-status="{ row }">
       <VCheckbox
-        width="w-5"
-        height="h-5"
-        variant="default"
         :model-value="row.status === 'done'"
         box-class="group-hover:border-primaryBg"
         @update:model-value="(val) => emit('statusChange', row, val)"

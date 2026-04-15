@@ -3,56 +3,49 @@ import { computed } from "vue";
 
 import VIcon from "./VIcon.vue";
 
-const modelValue = defineModel<boolean>({
-  default: false,
-});
+const modelValue = defineModel<boolean>({ default: false });
 
-const props = defineProps<{
-  width: string
-  height: string
-  variant: string
-  validation?: {
-    error: boolean
-    message: string
-  }
-  label?: string
-  icon?: string
-  iconSize?: string
-  disabled?: boolean
-  boxClass?: string | string[]
+const {
+  variant = "default",
+  validation,
+  label,
+  disabled = false,
+  boxClass,
+} = defineProps<{
+  variant?: "default" | "round";
+  validation?: { error: boolean; message: string };
+  label?: string;
+  disabled?: boolean;
+  boxClass?: string | string[];
 }>();
 
-const variantClass: Record<string, Record<string, string>> = {
-  checked: {
-    default: "border-primaryBg bg-primaryBg text-white",
-  },
-  notChecked: {
-    default: "border-default",
-  },
+const variantMap: Record<string, string> = {
+  default: "rounded",
+  round: "rounded-full",
 };
 
-const checkboxClass = computed(() => {
-  const sizeClass = `${props.width} ${props.height}`;
-
-  const stateClass = modelValue.value
-    ? variantClass.checked[props.variant] || variantClass.checked.default
-    : variantClass.notChecked[props.variant] || variantClass.notChecked.default;
-
-  const errorClass = props.validation?.error ? "border-danger" : "";
-  const disabledClass = props.disabled ? "border-subtle bg-subtle" : "";
-
-  return [sizeClass, stateClass, errorClass, disabledClass, props.boxClass];
+const stateClass = computed(() => {
+  if (disabled) return "border-subtle bg-subtle";
+  if (validation?.error) return "border-danger";
+  if (modelValue.value) return "border-primaryBg bg-primaryBg text-white";
+  return "border-default";
 });
+
+const checkboxClass = computed(() => [
+  variantMap[variant],
+  stateClass.value,
+  boxClass,
+]);
 </script>
 
 <template>
   <label
-    class="relative flex gap-3 select-none"
-    :class="props.disabled ? 'cursor-not-allowed opacity-60' : 'cursor-pointer'"
+    class="relative flex items-center gap-2 leading-[1.3]"
+    :class="disabled ? 'cursor-not-allowed opacity-60' : 'cursor-pointer'"
   >
     <div
-      class="relative flex items-center justify-center border-2
-        rounded transition-colors duration-200 text-base"
+      class="relative flex items-center justify-center
+             w-5 h-5 border-2 transition-colors duration-200 text-base"
       :class="checkboxClass"
     >
       <VIcon
@@ -60,25 +53,28 @@ const checkboxClass = computed(() => {
         type="check"
       />
     </div>
+
     <input
       v-model="modelValue"
-      :disabled="props.disabled"
+      :disabled="disabled"
       type="checkbox"
       class="absolute opacity-0 pointer-events-none"
     >
+
     <slot name="label">
       <p
-        v-if="props.label"
-        class="inline-block leading-[1.3]"
+        v-if="label"
+        class="inline-block"
       >
-        {{ props.label }}
-      </p>
-      <p
-        v-if="props.validation?.error"
-        class="text-sm absolute top-[100%] left-0 text-danger font-medium"
-      >
-        {{ props.validation.message }}
+        {{ label }}
       </p>
     </slot>
+
+    <p
+      v-if="validation?.error"
+      class="text-sm absolute top-[100%] left-0 text-danger font-medium"
+    >
+      {{ validation.message }}
+    </p>
   </label>
 </template>
