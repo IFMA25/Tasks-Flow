@@ -1,4 +1,8 @@
 <script setup lang="ts">
+import { computed, ref } from "vue";
+
+import { useDashboardRequests } from "../api/useDashboardRequest";
+
 import { useListsStore } from "@/features/todo/lists/store/useListsStore";
 import { useModal } from "@/shared/composables/useModal";
 import VButton from "@/shared/ui/common/VButton.vue";
@@ -7,12 +11,48 @@ import VModal from "@/shared/ui/common/VModal.vue";
 import VAccordion from "@/shared/ui/common/accordion/VAccordion.vue";
 import VAccordionItem from "@/shared/ui/common/accordion/VAccordionItem.vue";
 
+const maxGoals = 3;
+
 const { mode = "add" } = defineProps<{
   mode?: "edit" | "add"
 }>();
 
+const emit = defineEmits(["save"]);
+
+const selectedIds = ref<string[]>([]);
+const isLoading = ref(false);
+
 const { open, close } = useModal("weeklyGoalsModal");
 const listStore = useListsStore();
+const { updateWeeklyGoal } = useDashboardRequests();
+
+const isDisabled = computed(() => {
+  return selectedIds.value.length === maxGoals;
+});
+
+const handleSelectTask = (taskId: string, checked: boolean) => {
+  if (checked) {
+    selectedIds.value.push(taskId);
+  } else {
+    selectedIds.value = selectedIds.value.filter(id => id !== taskId);
+  }
+};
+
+const handleSave = async () => {
+    isLoading.value = true;
+    try {
+      await Promise.all(
+        selectedIds.value.map(id => {
+          const { execute: fetchWeeklyGoal } = updateWeeklyGoal(id);
+          return fetchWeeklyGoal();
+        }),
+      );
+      emit("save");
+      close();
+    } finally {
+      isLoading.value = false;
+    }
+};
 
 defineExpose({ open });
 </script>
@@ -43,6 +83,7 @@ defineExpose({ open });
           variant="default"
           :label="task.title"
           class="mb-2"
+          @update:model-value="(value) => handleSelectTask(task.id, value)"
         />
       </VAccordionItem>
     </VAccordion>
@@ -56,6 +97,9 @@ defineExpose({ open });
       <VButton
         :text="$t('saveBtnText')"
         variant="primary"
+        :loading="isLoading"
+        :disabled="isDisabled"
+        @click="handleSave"
       />
     </template>
   </VModal>

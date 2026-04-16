@@ -1,10 +1,23 @@
 <script setup lang="ts">
-import { onMounted } from "vue";
+import { onMounted , ref, useTemplateRef } from "vue";
 
 import ListDeadlineTasks from "./components/ListDeadlineTasks.vue";
 import ListWeaklyGoals from "./components/ListWeaklyGoals.vue";
+import WeeklyGoalsModal from "./components/WeeklyGoalsModal.vue";
 import { useDashboard } from "./composible/useDashboard";
 
+import { useListsStore } from "@/features/todo/lists/store/useListsStore";
+
+const modalMode = ref<"edit" | "add">("add");
+
+const listStore = useListsStore();
+const weeklyGoalsModalRef = useTemplateRef<InstanceType<typeof WeeklyGoalsModal>>("weeklyGoalsModal");
+
+const handleOpenModal = async (mode: "edit" | "add") => {
+  modalMode.value = mode;
+  await listStore.fetchLists();
+  weeklyGoalsModalRef.value?.open();
+};
 
 const {
   fetchTodayTasks,
@@ -18,11 +31,17 @@ const {
 onMounted(async () => {
   fetchTodayTasks();
   fetchUpcomingDeadlinesTasks();
-  fetchWeeklyGoalsTasks;
+  fetchWeeklyGoalsTasks();
 });
+console.log(weeklyGoalsTasksData.value);
 </script>
 
 <template>
+  <WeeklyGoalsModal
+    ref="weeklyGoalsModal"
+    :mode="modalMode"
+    @save="fetchWeeklyGoalsTasks"
+  />
   <div
     class="grid gap-6 [grid-template-areas:'todayDeadlines_upcomingDeadlines'_'goals_goals']
            [grid-template-columns:2fr_50%]"
@@ -54,6 +73,7 @@ onMounted(async () => {
         : $t('dashboard.noGoals')"
       :empty-text="$t('dashboard.addGoals')"
       class="[grid-area:goals]"
+      @open-modal="handleOpenModal"
     />
   </div>
 </template>
