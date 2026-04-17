@@ -176,7 +176,8 @@
         "createNewGoals": "Додати ціль на тиждень",
         "weeklyGoalsModalTitleEdit": "Редагувати цілі на тиждень",
         "weeklyGoalsModalTitleAdd": "Додати цілі на тиждень",
-        "weeklyGoalsModalSubtitle": "Виберіть до 3 завдань, на яких варто зосередитися цього тижня"
+        "weeklyGoalsModalSubtitle": "Виберіть до 3 завдань, на яких варто зосередитися цього тижня",
+        "weeklyGoalsModalSubtitleError": "Ви обрали більше 3 завдань"
     },
     "saveBtnText": "Зберігти зміни",
     "deleteModal": {
@@ -186,5 +187,6 @@
     },
     "cancel": "Скасувати",
     "viewAll": "Переглянути всі",
-    "edit": "Змінити"
+    "edit": "Змінити",
+    "selected": "обрано"
 }

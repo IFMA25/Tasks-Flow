@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { onMounted , ref, useTemplateRef } from "vue";
+import { computed, onMounted , ref, useTemplateRef, watch } from "vue";
 
 import ListDeadlineTasks from "./components/ListDeadlineTasks.vue";
 import ListWeaklyGoals from "./components/ListWeaklyGoals.vue";
@@ -7,17 +7,28 @@ import WeeklyGoalsModal from "./components/WeeklyGoalsModal.vue";
 import { useDashboard } from "./composible/useDashboard";
 
 import { useListsStore } from "@/features/todo/lists/store/useListsStore";
+import { TaskData } from "@/features/todo/types";
+import { useTasksStore } from "@/features/todo/tasks/store/useTasksStore";
 
 const modalMode = ref<"edit" | "add">("add");
 
 const listStore = useListsStore();
+const tasksStore = useTasksStore();
 const weeklyGoalsModalRef = useTemplateRef<InstanceType<typeof WeeklyGoalsModal>>("weeklyGoalsModal");
+
 
 const handleOpenModal = async (mode: "edit" | "add") => {
   modalMode.value = mode;
   await listStore.fetchLists();
-  weeklyGoalsModalRef.value?.open();
+  
+  weeklyGoalsModalRef.value?.openModal();
 };
+
+const handleStatusChange = async (task: TaskData, value: boolean) => {
+  await tasksStore.completeTaskById(task.id, value, () => {
+    fetchWeeklyGoalsTasks()
+  })
+}
 
 const {
   fetchTodayTasks,
@@ -31,15 +42,16 @@ const {
 onMounted(async () => {
   fetchTodayTasks();
   fetchUpcomingDeadlinesTasks();
-  fetchWeeklyGoalsTasks();
+  await fetchWeeklyGoalsTasks();
 });
-console.log(weeklyGoalsTasksData.value);
+
 </script>
 
 <template>
   <WeeklyGoalsModal
     ref="weeklyGoalsModal"
     :mode="modalMode"
+    :weekly-goals-data="weeklyGoalsTasksData"
     @save="fetchWeeklyGoalsTasks"
   />
   <div

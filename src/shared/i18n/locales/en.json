@@ -171,10 +171,12 @@
         "createNewGoals": "Add weekly goal",
         "weeklyGoalsModalTitleEdit": "Edit weekly focus goals",
         "weeklyGoalsModalTitleAdd": "Add weekly goals",
-        "weeklyGoalsModalSubtitle": "Choose up to 3 tasks to focus on this week"
+        "weeklyGoalsModalSubtitle": "Choose up to 3 tasks to focus on this week",
+        "weeklyGoalsModalSubtitleError": "You have selected more than 3 tasks"
     },
     "cancel": "Cancel",
     "viewAll": "View all",
     "edit": "Edit",
+    "selected": "selected",
     "saveBtnText": "Save changes"
 }

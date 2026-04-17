@@ -76,7 +76,7 @@ const onLeave = (el: Element) => {
           :type="icon"
           :size="iconSize"
           class="transition-transform duration-300"
-          :class="isOpen ? 'rotate-180' : 'rotate-0'"
+          :class="isOpen ? 'rotate-[270deg]' : 'rotate-0'"
           aria-hidden="true"
         />
         <span class="font-medium text-sm">{{ title }}</span>

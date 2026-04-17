@@ -10,7 +10,6 @@ import { Actions, SortOption, PriorityOption } from "@/shared/types";
 export const useTasksListFeature = (listId: string) => {
   const { t } = useI18n();
   const tasksStore = useTasksStore();
-  const { completeTask } = useTasksRequest();
 
   const sortOptions = computed<SortOption[]>(() => [
     { key: "recentlyAdded", label: t("filters.recentlyAdded"), params: { sort: "createdAt", order: "desc" } },
@@ -41,37 +40,21 @@ export const useTasksListFeature = (listId: string) => {
 
   const rowActions = computed<Actions[]>(() => [{ key: "edit",   label: t("tasks.editTask") }, { key: "delete", label: t("deleteModal.title", { entityName: t("tasks.task") }) }]);
 
-  const pendingTasks = computed(() =>
-    tasksStore.tasksData?.data.filter((t) => t.status === "todo") ?? [],
-  );
+ const handleStatusChange = async (task: TaskData, value: boolean) => {
+  await tasksStore.completeTaskById(task.id, value, () => {
+    tasksStore.fetchTasksForList(listId, fetchParams.value)
+  })
+}
 
-  const completedTasks = computed(() =>
-    tasksStore.tasksData?.data.filter((t) => t.status === "done") ?? [],
-  );
-
-  const isLoading = computed(
-    () => completeTaskLoading.value || tasksStore.fetchTaskLoading,
-  );
-
-  const selectedTask = ref<TaskData | null>(null);
-
-  const { execute: completeTaskExecute, loading: completeTaskLoading } =
-    completeTask(() => selectedTask.value?.id, {
-      onSuccess: () => tasksStore.fetchTasksForList(listId, fetchParams.value),
-    });
-
-  const handleStatusChange = async (task: TaskData, value: boolean) => {
-    selectedTask.value = task;
-    await completeTaskExecute({ data: { completed: value } });
-  };
+const isLoading = computed(
+  () => tasksStore.completeTaskLoading || tasksStore.fetchTaskLoading
+)
 
   watch(fetchParams, () => {
     tasksStore.fetchTasksForList(listId, fetchParams.value);
   }, { immediate: true });
 
   return {
-    pendingTasks,
-    completedTasks,
     isLoading,
     rowActions,
     handleStatusChange,

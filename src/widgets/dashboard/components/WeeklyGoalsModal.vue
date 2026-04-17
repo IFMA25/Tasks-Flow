@@ -10,11 +10,13 @@ import VCheckbox from "@/shared/ui/common/VCheckbox.vue";
 import VModal from "@/shared/ui/common/VModal.vue";
 import VAccordion from "@/shared/ui/common/accordion/VAccordion.vue";
 import VAccordionItem from "@/shared/ui/common/accordion/VAccordionItem.vue";
+import { DashboardData } from "../types";
 
 const maxGoals = 3;
 
-const { mode = "add" } = defineProps<{
-  mode?: "edit" | "add"
+const { mode = "add", weeklyGoalsData  } = defineProps<{
+  mode?: "edit" | "add";
+  weeklyGoalsData: DashboardData | null;
 }>();
 
 const emit = defineEmits(["save"]);
@@ -22,12 +24,20 @@ const emit = defineEmits(["save"]);
 const selectedIds = ref<string[]>([]);
 const isLoading = ref(false);
 
+
 const { open, close } = useModal("weeklyGoalsModal");
 const listStore = useListsStore();
 const { updateWeeklyGoal } = useDashboardRequests();
 
 const isDisabled = computed(() => {
-  return selectedIds.value.length === maxGoals;
+  if(mode === "add"){
+    return selectedIds.value.length === 0 || selectedIds.value.length > maxGoals;
+  };
+  return selectedIds.value.length > maxGoals;
+});
+
+const originalSelectedIds = computed(() => {
+  return weeklyGoalsData?.data.map(t => t.id) ?? [];
 });
 
 const handleSelectTask = (taskId: string, checked: boolean) => {
@@ -40,9 +50,19 @@ const handleSelectTask = (taskId: string, checked: boolean) => {
 
 const handleSave = async () => {
     isLoading.value = true;
+    const tasksToAdd = selectedIds.value.filter(id => !originalSelectedIds.value.includes(id));
+    const tasksToRemove = originalSelectedIds.value.filter(id => !selectedIds.value.includes(id));
+
+    const tasksToUpdate = [...tasksToAdd, ...tasksToRemove];
+
+    if(!tasksToUpdate.length) {
+      close();
+      return;
+    }
+    
     try {
       await Promise.all(
-        selectedIds.value.map(id => {
+        tasksToUpdate.map(id => {
           const { execute: fetchWeeklyGoal } = updateWeeklyGoal(id);
           return fetchWeeklyGoal();
         }),
@@ -54,17 +74,38 @@ const handleSave = async () => {
     }
 };
 
-defineExpose({ open });
+const openModal = () => {
+  selectedIds.value = [...originalSelectedIds.value]
+  open();
+};
+
+defineExpose({ openModal });
 </script>
 
 <template>
   <VModal
     id="weeklyGoalsModal"
-    :title="mode === 'edit'
-      ? $t('dashboard.weeklyGoalsModalTitleEdit')
-      : $t('dashboard.weeklyGoalsModalTitleAdd')"
-    :subtitle="$t('dashboard.weeklyGoalsModalSubtitle')"
   >
+  <template #header>
+    <div class="flex flex-col gap-2 w-full">
+      <div class="flex items-center justify-between">
+        <h3
+          class="modal-title"
+        >
+          {{mode === 'edit' ? $t('dashboard.weeklyGoalsModalTitleEdit') : $t('dashboard.weeklyGoalsModalTitleAdd') }}
+        </h3>
+        <p class="text-muted text-sm">{{ selectedIds.length }}/{{ maxGoals }} {{ $t('selected') }}</p>
+      </div>
+      <p 
+        class="text-sm leading-[1.1] mt-2"
+        :class="selectedIds.length > maxGoals ? 'text-danger' : 'text-secondary'">
+        {{ selectedIds.length > maxGoals 
+          ? $t('dashboard.weeklyGoalsModalSubtitleError') 
+          : $t('dashboard.weeklyGoalsModalSubtitle') 
+        }}
+      </p>
+    </div>
+  </template>
     <VAccordion
       v-slot="{ toggle, openItems }"
       multiple
@@ -83,6 +124,7 @@ defineExpose({ open });
           variant="default"
           :label="task.title"
           class="mb-2"
+          :model-value="selectedIds.includes(task.id)"
           @update:model-value="(value) => handleSelectTask(task.id, value)"
         />
       </VAccordionItem>

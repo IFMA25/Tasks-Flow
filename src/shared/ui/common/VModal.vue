@@ -83,20 +83,12 @@ const handleKeydown = (event: KeyboardEvent) => {
             class="modal-header"
           >
             <slot name="header">
-              <div class="header-heading">
                 <h3
                   v-if="title"
                   class="modal-title"
                 >
                   {{ title }}
                 </h3>
-                <p
-                  v-if="subtitle"
-                  class="modal-subtitle"
-                >
-                  {{ subtitle }}
-                </p>
-              </div>
             </slot>
             <button
               v-if="showCloseButton"

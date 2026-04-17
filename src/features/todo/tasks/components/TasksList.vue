@@ -7,6 +7,7 @@ import TasksTable from "./TasksTable.vue";
 import { useTasksListFeature } from "../composable/useTasksListFeature";
 
 import VCollapseContainer from "@/shared/ui/VCollapseContainer.vue";
+import { useTasksStore } from "../store/useTasksStore";
 
 const baseHeads = [
   { key: "status",   label: "" },
@@ -23,6 +24,18 @@ const { listId } = defineProps<{ listId: string }>();
 const emit = defineEmits(["action"]);
 
 const route = useRoute();
+const {
+  isLoading,
+  rowActions,
+  handleStatusChange,
+  sortOptions,
+  priorityOptions,
+  activeSortKey,
+  activePriorityKey,
+} = useTasksListFeature(listId);
+
+const tasksStore = useTasksStore();
+
 const isUserList = route.query.tab === "usersLists";
 
 const heads = computed(() => {
@@ -34,23 +47,13 @@ const heads = computed(() => {
   return baseHeads;
 });
 
-const {
-  pendingTasks,
-  completedTasks,
-  isLoading,
-  rowActions,
-  handleStatusChange,
-  sortOptions,
-  priorityOptions,
-  activeSortKey,
-  activePriorityKey,
-} = useTasksListFeature(listId);
+
 </script>
 
 <template>
   <div class="relative flex flex-col gap-8 w-full h-full max-w-5xl mx-auto p-4">
     <TasksListToolbar
-      v-if="pendingTasks.length || completedTasks.length || isLoading"
+      v-if="tasksStore.pendingTasks.length || tasksStore.completedTasks.length || isLoading"
       v-model:sort="activeSortKey"
       v-model:priority="activePriorityKey"
       :sort-options="sortOptions"
@@ -58,14 +61,14 @@ const {
     />
     <VCollapseContainer
       :title="$t('tasks.pending')"
-      :count="pendingTasks.length"
+      :count="tasksStore.pendingTasks.length"
       :loading="isLoading"
     >
       <TasksTable
-        :rows="pendingTasks"
+        :rows="tasksStore.pendingTasks"
         :heads="heads"
         :loading="isLoading"
-        :show-empty-state="!pendingTasks.length && !completedTasks.length && !isLoading"
+        :show-empty-state="!tasksStore.pendingTasks.length && !tasksStore.completedTasks.length && !isLoading"
         :show-actions="true"
         :row-actions="rowActions"
         @status-change="handleStatusChange"
@@ -74,13 +77,13 @@ const {
     </VCollapseContainer>
 
     <VCollapseContainer
-      v-if="completedTasks.length || isLoading"
+      v-if="tasksStore.completedTasks.length || isLoading"
       :title="$t('tasks.completed')"
-      :count="completedTasks.length"
+      :count="tasksStore.completedTasks.length"
       :loading="isLoading"
     >
       <TasksTable
-        :rows="completedTasks"
+        :rows="tasksStore.completedTasks"
         :heads="heads"
         :loading="isLoading"
         :show-empty-state="false"
