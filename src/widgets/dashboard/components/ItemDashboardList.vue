@@ -35,7 +35,7 @@ const statusMap = {
       variant="round"
       class="[grid-area:checkbox]"
       :model-value="task.status === 'done'"
-      @update:model-value="emit('statusChange', task, $event)"
+      @update:model-value="(value: boolean) => emit('statusChange', task, value)"
     />
     <p
       v-else

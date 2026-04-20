@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import ItemDashboardList from "./ItemDashboardList.vue";
-import { DashboardData } from "../types";
+import { DashboardData, DashboardTask } from "../types";
 
 import VButton from "@/shared/ui/common/VButton.vue";
 
@@ -8,8 +8,9 @@ const { data } = defineProps<{
     data: DashboardData | null;
 }>();
 
-defineEmits<{
-  openModal: [mode: "edit" | "add"]
+const emit = defineEmits<{
+  openModal: [mode: "edit" | "add"];
+  statusChange: [task: DashboardTask, value: boolean];
 }>();
 
 </script>
@@ -43,6 +44,7 @@ defineEmits<{
         :key="task.id"
         :goals="true"
         :task="task"
+        @status-change="(task, value) => emit('statusChange', task, value)"
       />
     </ul>
     <div

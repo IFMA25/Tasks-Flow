@@ -1,4 +1,4 @@
-import { ref } from "vue";
+import { computed, ref } from "vue";
 
 import { useDashboardRequests } from "../api/useDashboardRequest";
 import { todayDate, tomorrowDate, weekDate } from "../utils/dayDate";
@@ -13,6 +13,7 @@ export function useDashboard() {
     loading: fetchTodayTasksLoading,
     data: fetchTodayTasksData,
   } = getTasksWithDeadlines({
+    immediate: true,
     params: {
       limit: limit.value,
       startDate: todayDate,
@@ -25,6 +26,7 @@ export function useDashboard() {
     loading: upcomingDeadlinesTasksLoading,
     data: upcomingDeadlinesTasksData,
   } = getTasksWithDeadlines({
+    immediate: true,
     params: { limit: limit.value, startDate: tomorrowDate, endDate: weekDate },
   });
 
@@ -32,8 +34,19 @@ export function useDashboard() {
     execute: fetchWeeklyGoalsTasks,
     loading: weeklyGoalsTasksLoading,
     data: weeklyGoalsTasksData,
-  } = getWeeklyGoal();
+  } = getWeeklyGoal(
+    {
+      immediate: true,
+    },
+  );
 
+  const isLoading = computed(() => {
+    return (
+      fetchTodayTasksLoading.value ||
+      upcomingDeadlinesTasksLoading.value ||
+      weeklyGoalsTasksLoading.value
+    );
+  });
 
   return {
     fetchTodayTasks,
@@ -45,5 +58,6 @@ export function useDashboard() {
     upcomingDeadlinesTasksData,
     weeklyGoalsTasksLoading,
     weeklyGoalsTasksData,
+    isLoading,
   };
 }
