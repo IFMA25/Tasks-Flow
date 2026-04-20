@@ -2,6 +2,7 @@
 import { computed, ref } from "vue";
 
 import { useDashboardRequests } from "../api/useDashboardRequest";
+import { DashboardData } from "../types";
 
 import { useListsStore } from "@/features/todo/lists/store/useListsStore";
 import { useModal } from "@/shared/composables/useModal";
@@ -10,7 +11,6 @@ import VCheckbox from "@/shared/ui/common/VCheckbox.vue";
 import VModal from "@/shared/ui/common/VModal.vue";
 import VAccordion from "@/shared/ui/common/accordion/VAccordion.vue";
 import VAccordionItem from "@/shared/ui/common/accordion/VAccordionItem.vue";
-import { DashboardData } from "../types";
 
 const maxGoals = 3;
 
@@ -59,7 +59,7 @@ const handleSave = async () => {
       close();
       return;
     }
-    
+
     try {
       await Promise.all(
         tasksToUpdate.map(id => {
@@ -75,7 +75,7 @@ const handleSave = async () => {
 };
 
 const openModal = () => {
-  selectedIds.value = [...originalSelectedIds.value]
+  selectedIds.value = [...originalSelectedIds.value];
   open();
 };
 
@@ -86,26 +86,32 @@ defineExpose({ openModal });
   <VModal
     id="weeklyGoalsModal"
   >
-  <template #header>
-    <div class="flex flex-col gap-2 w-full">
-      <div class="flex items-center justify-between">
-        <h3
-          class="modal-title"
+    <template #header>
+      <div class="flex flex-col gap-2 w-full">
+        <div class="flex items-center justify-between">
+          <h3
+            class="modal-title"
+          >
+            {{ mode === 'edit'
+              ? $t('dashboard.weeklyGoalsModalTitleEdit')
+              : $t('dashboard.weeklyGoalsModalTitleAdd')
+            }}
+          </h3>
+          <p class="text-muted text-sm">
+            {{ selectedIds.length }}/{{ maxGoals }} {{ $t('selected') }}
+          </p>
+        </div>
+        <p
+          class="text-sm leading-[1.1] mt-2"
+          :class="selectedIds.length > maxGoals ? 'text-danger' : 'text-secondary'"
         >
-          {{mode === 'edit' ? $t('dashboard.weeklyGoalsModalTitleEdit') : $t('dashboard.weeklyGoalsModalTitleAdd') }}
-        </h3>
-        <p class="text-muted text-sm">{{ selectedIds.length }}/{{ maxGoals }} {{ $t('selected') }}</p>
+          {{ selectedIds.length > maxGoals
+            ? $t('dashboard.weeklyGoalsModalSubtitleError')
+            : $t('dashboard.weeklyGoalsModalSubtitle')
+          }}
+        </p>
       </div>
-      <p 
-        class="text-sm leading-[1.1] mt-2"
-        :class="selectedIds.length > maxGoals ? 'text-danger' : 'text-secondary'">
-        {{ selectedIds.length > maxGoals 
-          ? $t('dashboard.weeklyGoalsModalSubtitleError') 
-          : $t('dashboard.weeklyGoalsModalSubtitle') 
-        }}
-      </p>
-    </div>
-  </template>
+    </template>
     <VAccordion
       v-slot="{ toggle, openItems }"
       multiple

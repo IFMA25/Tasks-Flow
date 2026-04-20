@@ -1,4 +1,4 @@
-import { tokenManager } from "@ametie/vue-muza-use";
+import { clearAllCache, tokenManager } from "@ametie/vue-muza-use";
 import { defineStore } from "pinia";
 import { ref } from "vue";
 import { useRouter } from "vue-router";
@@ -11,14 +11,28 @@ import { RouteNames } from "@/shared/types/routeNames";
 
 export const useProfileStore = defineStore("profile", () => {
   const profileData = ref<User | null>(null);
+  const initialized = ref(false);
+  const error = ref<unknown | null>(null);
 
   const router = useRouter();
 
-  const { execute: fetchProfile, loading, data } = useProfileRequest({
+  const { execute: fetchProfileRequest, loading, data } = useProfileRequest({
     onSuccess: () => {
       profileData.value = data.value;
+      error.value = null;
+      initialized.value = true;
+    },
+     onError: (apiError) => {
+      error.value = apiError;
+      initialized.value = true;
+      handleLogout();
     },
   });
+
+   const fetchProfile = async () => {
+    if (initialized.value) return;
+    await fetchProfileRequest();
+  };
 
   const hasAccess = (routePermission: string) => {
     if (!profileData.value?.permissions) return false;
@@ -28,13 +42,19 @@ export const useProfileStore = defineStore("profile", () => {
 
   const handleLogout = () => {
     profileData.value = null;
+    initialized.value = false;
+    error.value = null;
+
     tokenManager.clearTokens();
     router.push({ name: RouteNames.auth, query: { mode: "signin" } });
+    clearAllCache();
   };
 
   return {
     profileData,
     loading,
+    initialized,
+    error,
     fetchProfile,
     handleLogout,
     hasAccess,

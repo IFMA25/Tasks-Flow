@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, onMounted , ref, useTemplateRef, watch } from "vue";
+import { onMounted , ref, useTemplateRef } from "vue";
 
 import ListDeadlineTasks from "./components/ListDeadlineTasks.vue";
 import ListWeaklyGoals from "./components/ListWeaklyGoals.vue";
@@ -7,8 +7,8 @@ import WeeklyGoalsModal from "./components/WeeklyGoalsModal.vue";
 import { useDashboard } from "./composible/useDashboard";
 
 import { useListsStore } from "@/features/todo/lists/store/useListsStore";
-import { TaskData } from "@/features/todo/types";
 import { useTasksStore } from "@/features/todo/tasks/store/useTasksStore";
+import { TaskData } from "@/features/todo/types";
 
 const modalMode = ref<"edit" | "add">("add");
 
@@ -20,15 +20,15 @@ const weeklyGoalsModalRef = useTemplateRef<InstanceType<typeof WeeklyGoalsModal>
 const handleOpenModal = async (mode: "edit" | "add") => {
   modalMode.value = mode;
   await listStore.fetchLists();
-  
+
   weeklyGoalsModalRef.value?.openModal();
 };
 
 const handleStatusChange = async (task: TaskData, value: boolean) => {
   await tasksStore.completeTaskById(task.id, value, () => {
-    fetchWeeklyGoalsTasks()
-  })
-}
+    fetchWeeklyGoalsTasks();
+  });
+};
 
 const {
   fetchTodayTasks,
@@ -86,6 +86,7 @@ onMounted(async () => {
       :empty-text="$t('dashboard.addGoals')"
       class="[grid-area:goals]"
       @open-modal="handleOpenModal"
+      @status-change="handleStatusChange"
     />
   </div>
 </template>

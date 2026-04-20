@@ -20,7 +20,10 @@ export const useListsRequests = () => {
     listId: MaybeRefOrGetter<string>,
     options?: UseApiOptions<ListData, RequestBodyListData>,
   ) => {
-    return useApiPatch<ListData, RequestBodyListData>(() => `/lists/${toValue(listId)}`, options);
+    return useApiPatch<ListData, RequestBodyListData>(() => `/lists/${toValue(listId)}`, {
+      lazy: true,
+      ...options,
+    });
   };
 
   const getListById = (
@@ -33,14 +36,20 @@ export const useListsRequests = () => {
   const createNewList = (
     options?: UseApiOptions<ListData, RequestBodyListData>,
   ) => {
-    return useApiPost<ListData, RequestBodyListData>("/lists", options);
+    return useApiPost<ListData, RequestBodyListData>("/lists", {
+      lazy: true,
+      ...options,
+    });
   };
 
   const deleteList = (
     listId: MaybeRefOrGetter<string>,
     options?: UseApiOptions<ListData>,
   ) => {
-    return useApiDelete<ListData>(() => `/lists/${toValue(listId)}`, options);
+    return useApiDelete<ListData>(() => `/lists/${toValue(listId)}`, {
+      lazy: true,
+      ...options,
+    });
   };
 
   return { getAllLists, updateList, createNewList, deleteList, getListById };

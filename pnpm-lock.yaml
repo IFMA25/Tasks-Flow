@@ -9,8 +9,8 @@ importers:
   .:
     dependencies:
       '@ametie/vue-muza-use':
-        specifier: ^0.8.0
-        version: 0.8.0(axios@1.14.0)(vue@3.5.31(typescript@6.0.2))
+        specifier: ^1.0.0
+        version: 1.0.0(axios@1.14.0)(vue@3.5.31(typescript@6.0.2))
       '@vuelidate/core':
         specifier: ^2.0.3
         version: 2.0.3(vue@3.5.31(typescript@6.0.2))
@@ -136,11 +136,11 @@ packages:
     resolution: {integrity: sha512-UrcABB+4bUrFABwbluTIBErXwvbsU/V7TZWfmbgJfbkwiBuziS9gxdODUyuiecfdGQ85jglMW6juS3+z5TsKLw==}
     engines: {node: '>=10'}
 
-  '@ametie/vue-muza-use@0.8.0':
-    resolution: {integrity: sha512-eQgfxYfhzTHRgLm9CRFw0856TJCs2ybYs0iD8YN6ZssSMNI6nXt/I8gCuxVVsiOIa1Wi1+j0yN6eljeUZAWq2w==}
+  '@ametie/vue-muza-use@1.0.0':
+    resolution: {integrity: sha512-fQCb4qgV7XfAfCcn7U/BBBLZQZZcnfWMdusUcWIoLmtjLTOVBjBDCiv2LLaQxC9MFF4cYi+zDgIlOkDpWOmJKQ==}
     peerDependencies:
       axios: ^1.0.0
-      vue: ^3.3.0
+      vue: ^3.5.0
 
   '@babel/helper-string-parser@7.27.1':
     resolution: {integrity: sha512-qMlSxKbpRlAridDExk92nSobyDdpPijUq2DW6oDnUqd0iOGxmQjyqhMIihI9+zv4LPyZdRje2cavWPbCbWm3eA==}
@@ -2814,7 +2814,7 @@ snapshots:
 
   '@alloc/quick-lru@5.2.0': {}
 
-  '@ametie/vue-muza-use@0.8.0(axios@1.14.0)(vue@3.5.31(typescript@6.0.2))':
+  '@ametie/vue-muza-use@1.0.0(axios@1.14.0)(vue@3.5.31(typescript@6.0.2))':
     dependencies:
       axios: 1.14.0
       vue: 3.5.31(typescript@6.0.2)

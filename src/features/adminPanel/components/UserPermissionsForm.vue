@@ -29,7 +29,7 @@ const {
   loading?: boolean;
 }>();
 
-const emit = defineEmits(["update-success"]);
+// const emit = defineEmits(["update-success"]);
 
 const userRolesList = computed<RoleOption[]>(() => [
   { key: "admin", label: t("roles.admin"), value: "admin" },
@@ -75,7 +75,7 @@ const {
   loading: updateUserPermissionsLoad,
   data: updateUserPermissionsData,
 } = useUpdateUserPermissions(() => userId, {
-  data: () => ({ permissions: getActivePermissions() }),
+  // data: () => ({ permissions: getActivePermissions() }),
   onSuccess: () => {
     setPermissions(updateUserPermissionsData.value.permissions);
   },
@@ -86,7 +86,6 @@ const {
   loading: updateUserRoleLoad,
   data: updateUserRoleData,
 } = useUpdateUserRole(() => userId, {
-  data: () => ({ role: userRole.value ?? "" }),
   onSuccess: () => {
     userRole.value = updateUserRoleData.value.role;
   },
@@ -96,13 +95,17 @@ const handleSubmit = async () => {
   try {
     const promises = [];
     if (isRoleChanged.value) {
-      promises.push(updateUserRole());
+      promises.push(updateUserRole({
+        data: { role: userRole.value ?? "" },
+      }));
     }
-    promises.push(updateUserPermissions());
+    promises.push(updateUserPermissions({
+      data: { permissions: getActivePermissions() },
+    }));
 
     await Promise.all(promises);
     toast.success(t("userInfo.saveSuccess"));
-    emit("update-success");
+    // emit("update-success"); - ??? думаю не стоит делать дополнительный гет запрос, патч ответы такие же как и гет. есть ли смысл?
   } catch (e) {
     toast.error(t("userInfo.saveError"));
   }
@@ -121,11 +124,15 @@ const isDataChanged = computed(() => {
   return isRoleChanged.value || isPermissionsChanged;
 });
 
-watch(() => userData, (newUser) => {
-  if (!newUser) return;
-  setPermissions(newUser.permissions);
-  userRole.value = newUser.role;
-}, { immediate: true });
+watch(
+  [() => userData, () => permissions],
+  ([newUser, allPermissions]) => {
+    if (!newUser || !allPermissions?.length) return;
+    setPermissions(newUser.permissions);
+    userRole.value = newUser.role;
+  },
+  { immediate: true },
+);
 </script>
 
 <template>

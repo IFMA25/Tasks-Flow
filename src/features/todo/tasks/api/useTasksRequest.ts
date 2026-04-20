@@ -29,28 +29,40 @@ export const useTasksRequest = () => {
     taskId: MaybeRefOrGetter<string>,
     options?: UseApiOptions<TasksResponse, RequestBodyTaskData>,
   ) => {
-    return useApiPatch(() => `/tasks/${toValue(taskId)}`, options);
+    return useApiPatch(() => `/tasks/${toValue(taskId)}`, {
+      lazy: true,
+      ...options,
+    });
   };
 
   const createNewTask = (
     listId: MaybeRefOrGetter<string>,
     options?: UseApiOptions<TasksResponse, RequestBodyTaskData>,
   ) => {
-    return useApiPost(() => `/tasks/lists/${toValue(listId)}`, options);
+    return useApiPost(() => `/tasks/lists/${toValue(listId)}`, {
+      lazy: true,
+      ...options,
+    });
   };
 
   const deleteTask = (
     taskId: MaybeRefOrGetter<string>,
     options?: UseApiOptions<TasksResponse>,
   ) => {
-    return useApiDelete(() => `/tasks/${toValue(taskId)}`, options);
+    return useApiDelete(() => `/tasks/${toValue(taskId)}`, {
+      lazy: true,
+      ...options,
+    });
   };
 
   const completeTask = (
     taskId: MaybeRefOrGetter<string>,
     options?: UseApiOptions<TasksResponse>,
   ) => {
-    return useApiPatch(() => `/tasks/${toValue(taskId)}/complete`, options);
+    return useApiPatch(() => `/tasks/${toValue(taskId)}/complete`, {
+      lazy: true,
+      ...options,
+    });
   };
 
   return { getAllTasks, updateTask, createNewTask, deleteTask, completeTask };

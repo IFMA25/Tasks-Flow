@@ -6,7 +6,7 @@ import type { TaskData } from "../../types";
 import TasksTableSkeleton from "./skeleton/TasksTableSkeleton.vue";
 import { getDeadlineStatusFromIso } from "../utils/dateFormater";
 
-import type { Actions } from "@/shared/types";
+import type { ActionKey, Actions } from "@/shared/types";
 import VActionsDropdown from "@/shared/ui/VActionsDropdown.vue";
 import VCheckbox from "@/shared/ui/common/VCheckbox.vue";
 import VTable, { TableColumn } from "@/shared/ui/table/VTable.vue";
@@ -23,7 +23,7 @@ defineProps<{
 
 const emit = defineEmits<{
   statusChange: [task: TaskData, value: boolean];
-  action: [task: TaskData, key: string];
+  action: [task: TaskData, key: ActionKey];
 }>();
 
 const { t } = useI18n();
@@ -96,7 +96,7 @@ const displayDeadline = (deadline: string) => {
       >
         <VActionsDropdown
           :actions="rowActions"
-          @action="(key) => emit('action', row, key)"
+          @action="(key: ActionKey) => emit('action', row, key)"
         />
       </div>
     </template>

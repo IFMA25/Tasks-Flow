@@ -9,6 +9,10 @@ const { task, goals } = defineProps<{
   goals?: boolean;
 }>();
 
+const emit = defineEmits<{
+  statusChange: [task: DashboardTask, value: boolean];
+}>();
+
 const statusMap = {
   todo: "Pending",
   done: "Completed",
@@ -31,7 +35,7 @@ const statusMap = {
       variant="round"
       class="[grid-area:checkbox]"
       :model-value="task.status === 'done'"
-      @update:model-value="$emit('statusChange', task, $event)"
+      @update:model-value="emit('statusChange', task, $event)"
     />
     <p
       v-else
