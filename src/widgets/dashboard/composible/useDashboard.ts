@@ -7,7 +7,6 @@ export function useDashboard() {
   const limit = ref(20);
   const { getTasksWithDeadlines, getWeeklyGoal } = useDashboardRequests();
 
-
   const {
     execute: fetchTodayTasks,
     loading: fetchTodayTasksLoading,

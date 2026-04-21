@@ -30,7 +30,7 @@ const handleStatusChange = async (task: DashboardTask, value: boolean) => {
 };
 
 const {
-  // isLoading,
+  isLoading,
   fetchTodayTasksData,
   upcomingDeadlinesTasksData,
   weeklyGoalsTasksData,
@@ -57,6 +57,7 @@ const {
         ? $t('dashboard.completedTasks' , {totalTasks: fetchTodayTasksData?.total})
         : $t('dashboard.noTasks')"
       :empty-text="$t('dashboard.createNewTasks')"
+      :loading="isLoading"
       class="[grid-area:todayDeadlines]"
     />
     <ListDeadlineTasks
@@ -66,6 +67,7 @@ const {
         ? $t('dashboard.tasksAttention')
         : $t('dashboard.noDeadlines')"
       :empty-text="$t('dashboard.tasksWithDeadlines')"
+      :loading="isLoading"
       class="[grid-area:upcomingDeadlines]"
     />
     <ListWeaklyGoals
@@ -76,6 +78,7 @@ const {
         ? $t('dashboard.weeklyGoalsSubtitle')
         : $t('dashboard.noGoals')"
       :empty-text="$t('dashboard.addGoals')"
+      :loading="isLoading"
       class="[grid-area:goals]"
       @open-modal="handleOpenModal"
       @status-change="handleStatusChange"

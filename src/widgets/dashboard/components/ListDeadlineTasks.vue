@@ -3,16 +3,18 @@ import { useRouter } from "vue-router";
 
 import { DashboardData } from "../types";
 import ItemDashboardList from "./ItemDashboardList.vue";
+import SkeltonDeadlineTasks from "./skeleton/SkeltonDeadlineTasks.vue";
 
 import { RouteNames } from "@/shared/types/routeNames";
 import VButton from "@/shared/ui/common/VButton.vue";
 
 
-const { titleList, data, subtitleList, emptyText } = defineProps<{
+const { titleList, data, subtitleList, emptyText, loading } = defineProps<{
     data: DashboardData | null;
     titleList: string;
     subtitleList: string;
     emptyText: string;
+    loading: boolean;
 }>();
 
 const router = useRouter();
@@ -38,7 +40,8 @@ const router = useRouter();
     <p class="text-sm text-secondary leading-[1.3] mb-4">
       {{ subtitleList }}
     </p>
-    <ul v-if="data?.data.length">
+    <SkeltonDeadlineTasks v-if="loading" />
+    <ul v-else-if="data?.data.length">
       <ItemDashboardList
         v-for="task in data?.data"
         :key="task.id"

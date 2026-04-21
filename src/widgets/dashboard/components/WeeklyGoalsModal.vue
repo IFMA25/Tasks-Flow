@@ -24,7 +24,6 @@ const emit = defineEmits(["save"]);
 const selectedIds = ref<string[]>([]);
 const isLoading = ref(false);
 
-
 const { open, close } = useModal("weeklyGoalsModal");
 const listStore = useListsStore();
 const { updateWeeklyGoal } = useDashboardRequests();
@@ -55,10 +54,7 @@ const handleSave = async () => {
 
     const tasksToUpdate = [...tasksToAdd, ...tasksToRemove];
 
-    if(!tasksToUpdate.length) {
-      close();
-      return;
-    }
+    if(!tasksToUpdate.length) return close();
 
     try {
       await Promise.all(

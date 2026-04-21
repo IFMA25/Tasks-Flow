@@ -74,8 +74,9 @@ const {
   execute: updateUserPermissions,
   loading: updateUserPermissionsLoad,
   data: updateUserPermissionsData,
-} = useUpdateUserPermissions(() => userId, {
-  // data: () => ({ permissions: getActivePermissions() }),
+} = useUpdateUserPermissions(userId, {
+  lazy: true,
+  data: () => ({ permissions: getActivePermissions() }),
   onSuccess: () => {
     setPermissions(updateUserPermissionsData.value.permissions);
   },
@@ -85,7 +86,7 @@ const {
   execute: updateUserRole,
   loading: updateUserRoleLoad,
   data: updateUserRoleData,
-} = useUpdateUserRole(() => userId, {
+} = useUpdateUserRole(userId, {
   onSuccess: () => {
     userRole.value = updateUserRoleData.value.role;
   },
@@ -99,13 +100,10 @@ const handleSubmit = async () => {
         data: { role: userRole.value ?? "" },
       }));
     }
-    promises.push(updateUserPermissions({
-      data: { permissions: getActivePermissions() },
-    }));
+    promises.push(updateUserPermissions());
 
     await Promise.all(promises);
     toast.success(t("userInfo.saveSuccess"));
-    // emit("update-success"); - ??? думаю не стоит делать дополнительный гет запрос, патч ответы такие же как и гет. есть ли смысл?
   } catch (e) {
     toast.error(t("userInfo.saveError"));
   }

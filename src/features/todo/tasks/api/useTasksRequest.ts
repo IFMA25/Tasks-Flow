@@ -30,7 +30,6 @@ export const useTasksRequest = () => {
     options?: UseApiOptions<TasksResponse, RequestBodyTaskData>,
   ) => {
     return useApiPatch(() => `/tasks/${toValue(taskId)}`, {
-      lazy: true,
       ...options,
     });
   };
@@ -40,7 +39,6 @@ export const useTasksRequest = () => {
     options?: UseApiOptions<TasksResponse, RequestBodyTaskData>,
   ) => {
     return useApiPost(() => `/tasks/lists/${toValue(listId)}`, {
-      lazy: true,
       ...options,
     });
   };
@@ -50,7 +48,6 @@ export const useTasksRequest = () => {
     options?: UseApiOptions<TasksResponse>,
   ) => {
     return useApiDelete(() => `/tasks/${toValue(taskId)}`, {
-      lazy: true,
       ...options,
     });
   };
@@ -60,7 +57,6 @@ export const useTasksRequest = () => {
     options?: UseApiOptions<TasksResponse>,
   ) => {
     return useApiPatch(() => `/tasks/${toValue(taskId)}/complete`, {
-      lazy: true,
       ...options,
     });
   };

@@ -1,11 +1,13 @@
 <script setup lang="ts">
 import ItemDashboardList from "./ItemDashboardList.vue";
 import { DashboardData, DashboardTask } from "../types";
+import SkeletonWeeklyGoals from "./skeleton/SkeletonWeeklyGoals.vue";
 
 import VButton from "@/shared/ui/common/VButton.vue";
 
-const { data } = defineProps<{
+const { data, loading } = defineProps<{
     data: DashboardData | null;
+    loading: boolean;
 }>();
 
 const emit = defineEmits<{
@@ -35,8 +37,9 @@ const emit = defineEmits<{
     <p class="text-sm text-secondary leading-[1.3] mb-4">
       {{ $t('dashboard.weeklyGoalsSubtitle') }}
     </p>
+    <SkeletonWeeklyGoals v-if="loading" />
     <ul
-      v-if="data?.data.length"
+      v-else-if="data?.data.length"
       class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4"
     >
       <ItemDashboardList
