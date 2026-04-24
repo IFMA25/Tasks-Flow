@@ -1,6 +1,8 @@
 <script setup>
+import AnalyticsFeature from "@/features/analytics/AnalyticsFeature.vue";
+
 </script>
 
 <template>
-  <div>Analytics</div>
+  <AnalyticsFeature />
 </template>

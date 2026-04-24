@@ -4,6 +4,7 @@ import { useI18n } from "vue-i18n";
 
 import type { TaskData } from "../../types";
 import TasksTableSkeleton from "./skeleton/TasksTableSkeleton.vue";
+import { useTasksStore } from "../store/useTasksStore";
 import { getDeadlineStatusFromIso } from "../utils/dateFormater";
 
 import type { ActionKey, Actions } from "@/shared/types";
@@ -20,6 +21,8 @@ defineProps<{
   showActions?: boolean;
   rowActions?: Actions[];
 }>();
+
+const tasksStore = useTasksStore();
 
 const emit = defineEmits<{
   statusChange: [task: TaskData, value: boolean];
@@ -49,6 +52,7 @@ const displayDeadline = (deadline: string) => {
       <VCheckbox
         :model-value="row.status === 'done'"
         box-class="group-hover:border-primaryBg"
+        :disabled="tasksStore.completingTaskId === row.id"
         @update:model-value="(val) => emit('statusChange', row, val)"
       />
     </template>

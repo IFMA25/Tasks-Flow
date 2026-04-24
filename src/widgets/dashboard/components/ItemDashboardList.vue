@@ -4,19 +4,15 @@ import { DashboardTask } from "../types";
 import VCheckbox from "@/shared/ui/common/VCheckbox.vue";
 import { colorsPriority } from "@/shared/variables/colorMap";
 
-const { task, goals } = defineProps<{
+const { task, goals, loading } = defineProps<{
   task: DashboardTask;
+  loading?: boolean;
   goals?: boolean;
 }>();
 
 const emit = defineEmits<{
   statusChange: [task: DashboardTask, value: boolean];
 }>();
-
-const statusMap = {
-  todo: "Pending",
-  done: "Completed",
-};
 </script>
 
 <template>
@@ -35,14 +31,9 @@ const statusMap = {
       variant="round"
       class="[grid-area:checkbox]"
       :model-value="task.status === 'done'"
+      :disabled="loading"
       @update:model-value="(value: boolean) => emit('statusChange', task, value)"
     />
-    <p
-      v-else
-      class="[grid-area:status] text-secondary text-xs leading-[1.1] justify-self-end capitalize"
-    >
-      {{ statusMap[task.status] }}
-    </p>
 
     <div class="[grid-area:meta] flex items-center gap-4 text-xs leading-[1.3]">
       <p class="capitalize text-secondary">
@@ -57,8 +48,7 @@ const statusMap = {
     </div>
 
     <ul
-      v-if="task.tags.length"
-      class="[grid-area:tags] flex gap-2 flex-wrap"
+      class="[grid-area:tags] flex gap-2 flex-wrap min-h-[1.6rem]"
     >
       <li
         v-for="tag in task.tags"

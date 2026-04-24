@@ -176,8 +176,17 @@
         "createNewGoals": "Додати ціль на тиждень",
         "weeklyGoalsModalTitleEdit": "Редагувати цілі на тиждень",
         "weeklyGoalsModalTitleAdd": "Додати цілі на тиждень",
-        "weeklyGoalsModalSubtitle": "Виберіть до 3 завдань, на яких варто зосередитися цього тижня",
-        "weeklyGoalsModalSubtitleError": "Ви обрали більше 3 завдань"
+        "weeklyGoalsModalSubtitle": "Виберіть до 3 завдань, на яких варто зосередитися цього тижня"
+    },
+    "analytics": {
+        "statusOverview": "Огляд статусу",
+        "taskCompletion": "Виконання завдань",
+        "tagsPopularity": "Популярність тегів",
+        "tasksByPriority": "Завдання за пріоритетом",
+        "completed": "Виконано",
+        "created": "Створено",
+        "active": "Активно",
+        "overdue": "Протерміновано"
     },
     "saveBtnText": "Зберігти зміни",
     "deleteModal": {

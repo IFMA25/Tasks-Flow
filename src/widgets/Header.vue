@@ -15,7 +15,7 @@ const profileStore = useProfileStore();
 
 const title = computed(() => {
   const metaTitle = route.meta.titleHeader;
-  const userName = profileStore.profileData.name;
+  const userName = profileStore.profileData?.name || "";
   if (typeof metaTitle === "function") {
     const { translateKey, paramsStore } = metaTitle({ route, userName });
     return t(translateKey, paramsStore);

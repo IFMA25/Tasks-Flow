@@ -1,19 +1,24 @@
 <script setup lang="ts">
 import ItemDashboardList from "./ItemDashboardList.vue";
-import { DashboardData, DashboardTask } from "../types";
+import { DashboardTask } from "../types";
 import SkeletonWeeklyGoals from "./skeleton/SkeletonWeeklyGoals.vue";
+import { useDashboardStore } from "../store/useDashboardStore";
 
+import { useTasksStore } from "@/features/todo/tasks/store/useTasksStore";
 import VButton from "@/shared/ui/common/VButton.vue";
 
-const { data, loading } = defineProps<{
-    data: DashboardData | null;
-    loading: boolean;
+defineEmits<{
+  openModal: [mode: "edit" | "add"];
 }>();
 
-const emit = defineEmits<{
-  openModal: [mode: "edit" | "add"];
-  statusChange: [task: DashboardTask, value: boolean];
-}>();
+const tasksStore = useTasksStore();
+const dashboardStore = useDashboardStore();
+
+const handleStatusChange = async (task: DashboardTask, value: boolean) => {
+  await tasksStore.completeTaskById(task.id, value, () => {
+    dashboardStore.updateDashboardExecute();
+  });
+};
 
 </script>
 
@@ -28,7 +33,7 @@ const emit = defineEmits<{
       </h3>
 
       <VButton
-        v-if="data?.data.length"
+        v-if="dashboardStore.weeklyGoalsData?.data.length"
         :text="$t('edit')"
         variant="dashboardNav"
         @click="$emit('openModal', 'edit')"
@@ -37,17 +42,20 @@ const emit = defineEmits<{
     <p class="text-sm text-secondary leading-[1.3] mb-4">
       {{ $t('dashboard.weeklyGoalsSubtitle') }}
     </p>
-    <SkeletonWeeklyGoals v-if="loading" />
+    <SkeletonWeeklyGoals
+      v-if="dashboardStore.updateDashboardLoading || dashboardStore.updateWeeklyGoalsLoading"
+    />
     <ul
-      v-else-if="data?.data.length"
+      v-else-if="dashboardStore.weeklyGoalsData?.data.length"
       class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4"
     >
       <ItemDashboardList
-        v-for="task in data?.data"
+        v-for="task in dashboardStore.weeklyGoalsData?.data"
         :key="task.id"
         :goals="true"
+        :loading="tasksStore.completingTaskId === task.id"
         :task="task"
-        @status-change="(task, value) => emit('statusChange', task, value)"
+        @status-change="handleStatusChange"
       />
     </ul>
     <div

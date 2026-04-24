@@ -1,12 +1,19 @@
 <script setup lang="ts">
-import { ref } from "vue";
+import { computed } from "vue";
 
-const { multiple = false, defaultOpen = [] } = defineProps<{
+const { multiple = false, open = [] } = defineProps<{
   multiple?: boolean;
-  defaultOpen?: string[];
+  open?: string[];
 }>();
 
-const openItems = ref<string[]>(defaultOpen);
+const emit = defineEmits<{
+  "update:open": [value: string[]];
+}>();
+
+const openItems = computed({
+  get: () => open ?? [],
+  set: (value: string[]) => emit("update:open", value),
+});
 
 const isOpen = (id: string) => openItems.value.includes(id);
 
@@ -23,10 +30,8 @@ const toggle = (id: string) => {
 </script>
 
 <template>
-  <div>
-    <slot
-      :toggle="toggle"
-      :open-items="openItems"
-    />
-  </div>
+  <slot
+    :toggle="toggle"
+    :open-items="openItems"
+  />
 </template>

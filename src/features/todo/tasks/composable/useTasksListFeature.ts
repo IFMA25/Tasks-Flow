@@ -87,7 +87,6 @@ export const useTasksListFeature = (listId: string) => {
 
   const isLoading = computed(
     () =>
-      tasksStore.completeTaskLoading ||
       fetchTaskLoading.value ||
       createNewTaskLoading.value ||
       updateTaskLoading.value ||

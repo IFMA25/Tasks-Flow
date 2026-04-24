@@ -17,7 +17,7 @@ const {
   toggle: (id: string) => void
   icon?: string
   iconSize?: string
-  title: string
+  title?: string
   disabled?: boolean
 }>();
 
@@ -79,7 +79,9 @@ const onLeave = (el: Element) => {
           :class="isOpen ? 'rotate-[270deg]' : 'rotate-0'"
           aria-hidden="true"
         />
-        <span class="font-medium text-sm">{{ title }}</span>
+        <slot name="title">
+          <span class="font-medium text-sm">{{ title }}</span>
+        </slot>
       </div>
     </button>
 
@@ -95,7 +97,7 @@ const onLeave = (el: Element) => {
         role="region"
         class="accordion-content"
       >
-        <div class="px-4 pb-4 pt-1 text-sm text-gray-700">
+        <div class="px-4 pb-4 pt-1 text-sm">
           <slot />
         </div>
       </div>

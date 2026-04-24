@@ -28,7 +28,7 @@ const stateClass = computed(() => {
   if (disabled) return "border-subtle bg-subtle";
   if (validation?.error) return "border-danger";
   if (modelValue.value) return "border-primaryBg bg-primaryBg text-white";
-  return "border-default";
+  return "border-default hover:border-hover";
 });
 
 const checkboxClass = computed(() => [

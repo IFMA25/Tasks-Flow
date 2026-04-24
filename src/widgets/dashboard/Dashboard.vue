@@ -1,87 +1,78 @@
 <script setup lang="ts">
-import { ref, useTemplateRef } from "vue";
+import { computed, ref, useTemplateRef } from "vue";
+import { useI18n } from "vue-i18n";
 
 import ListDeadlineTasks from "./components/ListDeadlineTasks.vue";
 import ListWeaklyGoals from "./components/ListWeaklyGoals.vue";
 import WeeklyGoalsModal from "./components/WeeklyGoalsModal.vue";
-import { useDashboard } from "./composible/useDashboard";
-import { DashboardTask } from "./types";
+import { useDashboardStore } from "./store/useDashboardStore";
 
 import { useListsStore } from "@/features/todo/lists/store/useListsStore";
-import { useTasksStore } from "@/features/todo/tasks/store/useTasksStore";
 
 const modalMode = ref<"edit" | "add">("add");
 
-const listStore = useListsStore();
-const tasksStore = useTasksStore();
 const weeklyGoalsModalRef = useTemplateRef<InstanceType<typeof WeeklyGoalsModal>>("weeklyGoalsModal");
+
+const { t } = useI18n();
+const listStore = useListsStore();
+const dashboardStore = useDashboardStore();
+
+const listsDeadlineTasks = computed(() => ([
+  {
+    data: dashboardStore.todayData,
+    loading: dashboardStore.updateDashboardLoading,
+    titleList: t("dashboard.todayTasks"),
+    subtitleList: dashboardStore.todayData?.data.length
+      ? t("dashboard.completedTasks", { totalTasks: dashboardStore.todayData?.total })
+      : t("dashboard.noTasks"),
+    emptyText: t("dashboard.createNewTasks"),
+    gridArea: "todayDeadlines",
+  },
+  {
+    data: dashboardStore.upcomingData,
+    loading: dashboardStore.updateDashboardLoading,
+    titleList: t("dashboard.upcomingDeadlines"),
+    subtitleList: dashboardStore.upcomingData?.data.length
+      ? t("dashboard.tasksAttention")
+      : t("dashboard.noDeadlines"),
+    emptyText: t("dashboard.tasksWithDeadlines"),
+    gridArea: "upcomingDeadlines",
+  },
+]));
 
 const handleOpenModal = async (mode: "edit" | "add") => {
   modalMode.value = mode;
-  await listStore.fetchLists();
-
   weeklyGoalsModalRef.value?.openModal();
+
+  if (!listStore.dataLists?.data.length) {
+    await listStore.fetchLists({ params: { isOwn: true } });
+  }
 };
-
-const handleStatusChange = async (task: DashboardTask, value: boolean) => {
-  await tasksStore.completeTaskById(task.id, value, () => {
-    fetchWeeklyGoalsTasks();
-  });
-};
-
-const {
-  isLoading,
-  fetchTodayTasksData,
-  upcomingDeadlinesTasksData,
-  weeklyGoalsTasksData,
-  fetchWeeklyGoalsTasks,
-} = useDashboard();
-
 </script>
 
 <template>
   <WeeklyGoalsModal
     ref="weeklyGoalsModal"
     :mode="modalMode"
-    :weekly-goals-data="weeklyGoalsTasksData"
-    @save="fetchWeeklyGoalsTasks"
+    :weekly-goals-data="dashboardStore.weeklyGoalsData"
   />
   <div
     class="grid gap-6 [grid-template-areas:'todayDeadlines_upcomingDeadlines'_'goals_goals']
            [grid-template-columns:2fr_50%]"
   >
     <ListDeadlineTasks
-      :data="fetchTodayTasksData"
-      :title-list="$t('dashboard.todayTasks')"
-      :subtitle-list="fetchTodayTasksData?.data.length
-        ? $t('dashboard.completedTasks' , {totalTasks: fetchTodayTasksData?.total})
-        : $t('dashboard.noTasks')"
-      :empty-text="$t('dashboard.createNewTasks')"
-      :loading="isLoading"
-      class="[grid-area:todayDeadlines]"
-    />
-    <ListDeadlineTasks
-      :data="upcomingDeadlinesTasksData"
-      :title-list="$t('dashboard.upcomingDeadlines')"
-      :subtitle-list="upcomingDeadlinesTasksData?.data.length
-        ? $t('dashboard.tasksAttention')
-        : $t('dashboard.noDeadlines')"
-      :empty-text="$t('dashboard.tasksWithDeadlines')"
-      :loading="isLoading"
-      class="[grid-area:upcomingDeadlines]"
+      v-for="value in listsDeadlineTasks"
+      :key="value.gridArea"
+      :data="value.data"
+      :title-list="value.titleList"
+      :subtitle-list="value.subtitleList"
+      :empty-text="value.emptyText"
+      :loading="value.loading"
+      :class="`[grid-area:${value.gridArea}]`"
     />
     <ListWeaklyGoals
-      :goals="true"
-      :data="weeklyGoalsTasksData"
-      :title-list="$t('dashboard.weeklyGoalsTitle')"
-      :subtitle-list="weeklyGoalsTasksData?.data.length
-        ? $t('dashboard.weeklyGoalsSubtitle')
-        : $t('dashboard.noGoals')"
-      :empty-text="$t('dashboard.addGoals')"
-      :loading="isLoading"
       class="[grid-area:goals]"
       @open-modal="handleOpenModal"
-      @status-change="handleStatusChange"
     />
   </div>
 </template>

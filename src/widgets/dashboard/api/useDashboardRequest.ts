@@ -1,32 +1,34 @@
 import {
+  BatchRequestConfig,
+  useApiBatch,
+  UseApiBatchOptions,
   useApiGet,
   UseApiOptions,
-  useApiPatch,
 } from "@ametie/vue-muza-use";
-import { MaybeRefOrGetter, toValue } from "vue";
+import { MaybeRefOrGetter } from "vue";
 
 import { DashboardData } from "../types";
 
 export const useDashboardRequests = () => {
 
-  const getTasksWithDeadlines = (
-    options?: UseApiOptions<DashboardData>,
+  const batchDashboard = (
+    requests: MaybeRefOrGetter<(string | BatchRequestConfig)[]>,
+    options?: UseApiBatchOptions<DashboardData>,
   ) => {
-    return useApiGet<DashboardData>(() => `/tasks/deadlines`, options);
+    return useApiBatch<DashboardData>(requests, {
+      settled: true,
+      // cache: "dashboard", - кеш на батче нельзя, оставить просто батч или делать отдельными запросами и кешировать? но кеш будет с swr? есть ли смысл?
+      ...options,
+    });
   };
 
-  const getWeeklyGoal = (
+  const updateWeeklyGoals = (
     options?: UseApiOptions<DashboardData>,
   ) => {
-    return useApiGet<DashboardData>(() => `/tasks/weekly-goals`, options);
+    return useApiGet<DashboardData>(() => `/tasks/weekly-goals`, {
+      ...options,
+    });
   };
 
-  const updateWeeklyGoal = (
-    taskId: MaybeRefOrGetter<string>,
-    options?: UseApiOptions<DashboardData>,
-  ) => {
-    return useApiPatch<DashboardData>(() => `/tasks/${toValue(taskId)}/toggle-weekly-goal`, options);
-  };
-
-  return { getTasksWithDeadlines, getWeeklyGoal, updateWeeklyGoal };
+  return { batchDashboard, updateWeeklyGoals };
 };
