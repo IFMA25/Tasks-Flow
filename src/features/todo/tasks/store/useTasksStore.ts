@@ -4,22 +4,35 @@ import { ref } from "vue";
 import { useTasksRequest } from "../api/useTasksRequest";
 
 export const useTasksStore = defineStore("tasks", () => {
-
-  const currentListId = ref<string | null>(null);
-
-  const { getAllTasks } = useTasksRequest();
+  const selectedTaskId = ref<string | null>(null);
+  const completingTaskId = ref<string | null>(null);
+  const { completeTask } = useTasksRequest();
 
   const {
-    execute,
-    data: tasksData,
-    loading: fetchTaskLoading,
-  } = getAllTasks(() => currentListId.value);
+    execute: completeTaskExecute,
+    loading: completeTaskLoading,
+  } = completeTask(() => selectedTaskId.value, {
+    lazy: true,
+  });
 
-  const fetchTasksForList = async (listId: string, params = {}) => {
-    currentListId.value = listId;
-    tasksData.value = null;
-    await execute({ params });
+  const completeTaskById = async (
+  taskId: string,
+  completed: boolean,
+  onSuccess?: () => void,
+) => {
+  selectedTaskId.value = taskId;
+  completingTaskId.value = taskId;
+  try {
+    await completeTaskExecute({ data: { completed } });
+    onSuccess?.();
+  } finally {
+    completingTaskId.value = null;
+  }
+};
+
+  return {
+    completeTaskLoading,
+    completingTaskId,
+    completeTaskById,
   };
-
-  return {  tasksData, fetchTaskLoading, fetchTasksForList };
 });

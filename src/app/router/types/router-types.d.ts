@@ -1,17 +1,21 @@
 import 'vue-router';
 
+type HeaderTitleConfig = (context: {
+  route: RouteLocationNormalized;
+  userName?: string;
+}) => {
+  translateKey: string;
+  paramsStore?: Record<string, string | number>;
+};
+
 declare module 'vue-router' {
   interface RouteMeta {
-    role?: 'admin' | 'user' | string
-    permission?: string
-    showHeader?: boolean
-    showInMenu?: boolean
-    titleHeader?: string | ((route: RouteLocationNormalized) => string)
-    parent?: {
-      textKey: string
-      to: string
-    }
-    titleMenu?: string
+   titleHeader?: string | HeaderTitleConfig;
+    permission?: string;
+    role?: string;
+    titleMenu?: string;
     iconMenu?: string;
+    showInMenu?: boolean;
+    showHeader?: boolean;
   }
 }

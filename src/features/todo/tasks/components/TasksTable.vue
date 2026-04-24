@@ -3,13 +3,15 @@ import { format } from "date-fns";
 import { useI18n } from "vue-i18n";
 
 import type { TaskData } from "../../types";
-import { getDueDateStatusFromIso } from "../utils/dateFormater";
 import TasksTableSkeleton from "./skeleton/TasksTableSkeleton.vue";
+import { useTasksStore } from "../store/useTasksStore";
+import { getDeadlineStatusFromIso } from "../utils/dateFormater";
 
-import type { Actions } from "@/shared/types";
+import type { ActionKey, Actions } from "@/shared/types";
 import VActionsDropdown from "@/shared/ui/VActionsDropdown.vue";
 import VCheckbox from "@/shared/ui/common/VCheckbox.vue";
 import VTable, { TableColumn } from "@/shared/ui/table/VTable.vue";
+import { colorsPriority } from "@/shared/variables/colorMap";
 
 defineProps<{
   rows: TaskData[];
@@ -20,23 +22,19 @@ defineProps<{
   rowActions?: Actions[];
 }>();
 
+const tasksStore = useTasksStore();
+
 const emit = defineEmits<{
   statusChange: [task: TaskData, value: boolean];
-  action: [task: TaskData, key: string];
+  action: [task: TaskData, key: ActionKey];
 }>();
 
 const { t } = useI18n();
 
-const colorsPriority: Record<string, string> = {
-  low:    "text-success before:bg-success",
-  medium: "text-warning before:bg-warning",
-  high:   "text-danger before:bg-danger",
-};
-
-const displayDueDate = (dueDate: string) => {
-  const statusKey = getDueDateStatusFromIso(dueDate);
+const displayDeadline = (deadline: string) => {
+  const statusKey = getDeadlineStatusFromIso(deadline);
   if (!statusKey) return t("tasks.createTaskModal.select.noDeadline");
-  if (statusKey === "later") return format(new Date(dueDate), "dd MMM yyyy");
+  if (statusKey === "later") return format(new Date(deadline), "dd MMM yyyy");
   return t(`tasks.createTaskModal.select.${statusKey}`);
 };
 </script>
@@ -52,11 +50,9 @@ const displayDueDate = (dueDate: string) => {
   >
     <template #cell-status="{ row }">
       <VCheckbox
-        width="w-5"
-        height="h-5"
-        variant="default"
         :model-value="row.status === 'done'"
         box-class="group-hover:border-primaryBg"
+        :disabled="tasksStore.completingTaskId === row.id"
         @update:model-value="(val) => emit('statusChange', row, val)"
       />
     </template>
@@ -72,12 +68,12 @@ const displayDueDate = (dueDate: string) => {
         {{ t(`tasks.createTaskModal.select.${row.priority}`) }}
       </div>
     </template>
-    <template #cell-dueDate="{ row }">
+    <template #cell-deadline="{ row }">
       <div
         class="text-sm leading-[1.3]"
-        :class="{ 'text-danger font-medium': getDueDateStatusFromIso(row.dueDate) === 'overdue' }"
+        :class="{ 'text-danger font-medium': getDeadlineStatusFromIso(row.deadline) === 'overdue' }"
       >
-        {{ displayDueDate(row.dueDate) }}
+        {{ displayDeadline(row.deadline) }}
       </div>
     </template>
     <template #cell-tags="{ row }">
@@ -104,7 +100,7 @@ const displayDueDate = (dueDate: string) => {
       >
         <VActionsDropdown
           :actions="rowActions"
-          @action="(key) => emit('action', row, key)"
+          @action="(key: ActionKey) => emit('action', row, key)"
         />
       </div>
     </template>

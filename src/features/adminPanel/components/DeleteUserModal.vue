@@ -24,7 +24,7 @@ const openModal = (user: User) => {
 };
 
 const { execute, loading  }
-= useUserDelete(() => selectedUser.value.id, {
+= useUserDelete(() => selectedUser.value?.id, {
   onSuccess: () => {
     emit("deleted");
     close();

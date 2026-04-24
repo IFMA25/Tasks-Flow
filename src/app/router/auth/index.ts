@@ -6,7 +6,7 @@ const authRoutes: RouteRecordRaw[] = [
   {
     path: "/auth",
     name: RouteNames.auth,
-    component: () => import("@/pages/Auth/index.vue"),
+    component: () => import("@/pages/Auth.vue"),
     meta: {
       title: "Authentication",
       layout: "auth",

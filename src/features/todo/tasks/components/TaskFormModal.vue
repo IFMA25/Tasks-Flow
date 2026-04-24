@@ -1,13 +1,14 @@
 <script setup lang="ts">
 import { VueDatePicker } from "@vuepic/vue-datepicker";
+import { formatISO, parseISO } from "date-fns";
 import {
   computed,
   ref,
   reactive,
 } from "vue";
+import { useI18n } from "vue-i18n";
 
-import { TaskData } from "../../types";
-import { useTaskForm } from "../composable/useTaskForm";
+import { RequestBodyTaskData, TaskData } from "../../types";
 
 import { useModal } from "@/shared/composables/useModal";
 import VButton from "@/shared/ui/common/VButton.vue";
@@ -15,6 +16,11 @@ import VInput from "@/shared/ui/common/VInput.vue";
 import VModal from "@/shared/ui/common/VModal.vue";
 import VSelect from "@/shared/ui/common/VSelect.vue";
 
+const emit = defineEmits<{
+  submit: [mode: "create" | "edit", payload: RequestBodyTaskData];
+}>();
+
+const { t } = useI18n();
 const { open: openModal, close: closeModal } = useModal("taskFormModal");
 
 const currentListId = ref("");
@@ -25,15 +31,36 @@ const formFields = reactive({
   taskName: "",
   tags: [] as string[],
   priority: "",
-  dueDate: null,
+  deadline: null,
 });
 
-const taskForm = useTaskForm(currentListId, selectedTask, formFields);
+const priorityOptions = computed(() => [
+    { key: "low", label: t("tasks.createTaskModal.select.low") },
+    { key: "medium", label: t("tasks.createTaskModal.select.medium") },
+    { key: "high", label: t("tasks.createTaskModal.select.high") },
+]);
+
 const isTagLimitReached = computed(() => formFields.tags.length >= 5);
+
+const initForm = (taskEdit: TaskData | null) => {
+    selectedTask.value = taskEdit;
+    Object.assign(formFields, {
+      taskName: taskEdit?.title ?? "",
+      priority: taskEdit?.priority ?? priorityOptions.value[0].key,
+      deadline: taskEdit?.deadline ? parseISO(taskEdit.deadline) : null,
+    });
+  };
+
+const submitData = computed<RequestBodyTaskData>(() => ({
+  title: formFields.taskName,
+  tags: formFields.tags,
+  priority: formFields.priority,
+  deadline: formFields.deadline ? formatISO(formFields.deadline) : null,
+}));
 
 const open = (listId: string, task?: TaskData) => {
   currentListId.value = listId;
-  taskForm.initForm(task ?? null);
+  initForm(task ?? null);
   formFields.tags = task?.tags ?? [];
   tagInput.value = "";
   openModal();
@@ -41,7 +68,7 @@ const open = (listId: string, task?: TaskData) => {
 
 const close = () => {
   selectedTask.value = null;
-  taskForm.initForm(null);
+  initForm(null);
   formFields.tags = [];
   tagInput.value = "";
   closeModal();
@@ -60,6 +87,29 @@ const handleTagKeydown = (e: KeyboardEvent) => {
 
 const removeTag = (tag: string) => {
   formFields.tags = formFields.tags.filter(t => t !== tag);
+};
+
+const isDataChanged = computed(() => {
+    if (!selectedTask.value) return true;
+    const isNameChanged = formFields.taskName !== selectedTask.value.title;
+    const isTagsChanged =
+      JSON.stringify([...formFields.tags].sort()) !==
+      JSON.stringify([...(selectedTask.value.tags ?? [])].sort());
+    const isPriorityChanged = formFields.priority !== (selectedTask.value.priority ?? "low");
+    const initialDateISO = selectedTask.value.deadline || null;
+    const currentDateISO = formFields.deadline ? formatISO(formFields.deadline) : null;
+    const isDeadlineChanged = currentDateISO !== initialDateISO;
+    return isNameChanged || isTagsChanged || isPriorityChanged || isDeadlineChanged;
+  });
+
+const isSubmitDisabled = computed(
+    () => !formFields.taskName.trim() || !isDataChanged.value,
+  );
+
+const handleSubmit = () => {
+  const mode = selectedTask.value ? "edit" as const : "create" as const;
+  emit("submit", mode, submitData.value);
+  close();
 };
 
 defineExpose({ open });
@@ -83,7 +133,7 @@ defineExpose({ open });
         id="priority"
         v-model="formFields.priority"
         :label-text="$t('tasks.createTaskModal.labelPriority')"
-        :options="taskForm.priorityOptions.value"
+        :options="priorityOptions"
         label="label"
         track-by="key"
         :close-on-select="true"
@@ -94,7 +144,7 @@ defineExpose({ open });
           {{ $t('tasks.createTaskModal.labelDeadline') }}
         </label>
         <VueDatePicker
-          v-model="formFields.dueDate"
+          v-model="formFields.deadline"
           :placeholder="$t('tasks.createTaskModal.placeholderDeadline')"
           centered
           auto-apply
@@ -146,8 +196,8 @@ defineExpose({ open });
         :text="selectedTask ? $t('saveBtnText') : $t('tasks.createTaskModal.createBtn')"
         variant="outline"
         load-color="text-disabled"
-        :disabled="taskForm.isSubmitDisabled.value || taskForm.isLoading.value"
-        @click="taskForm.handleSubmit(close)"
+        :disabled="isSubmitDisabled"
+        @click="handleSubmit"
       />
     </template>
   </VModal>

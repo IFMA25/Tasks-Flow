@@ -78,7 +78,6 @@ const fetchParams = computed(() => {
 
 const { execute, loading, data: usersData } = useUsersDataRequest({
   immediate: true,
-  watch: [roleModel, sortModel, debouncedSearch],
   params: fetchParams,
 });
 

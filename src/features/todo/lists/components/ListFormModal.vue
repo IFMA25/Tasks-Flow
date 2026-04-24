@@ -41,7 +41,6 @@ const initForm = (listEdit: ListData | null) => {
 };
 
 const { execute: createNewListExecute, loading: createListLoading } = createNewList({
-  data: submitData,
   onSuccess: () => {
     emit("request", "create");
     toast.success(t("lists.msgCreateSuccess"));
@@ -50,7 +49,6 @@ const { execute: createNewListExecute, loading: createListLoading } = createNewL
 
 const { execute: updateSelectedListExecute, loading: updateListLoading } = updateList(
   () => selectedList.value?.id, {
-    data: submitData,
     onSuccess: () => {
       emit("request", "update");
       toast.success(t("lists.msgUpdateSuccess"));
@@ -70,9 +68,9 @@ const isLoading = computed(() => createListLoading.value || updateListLoading.va
 
 const handleSubmit = async () => {
   if (selectedList.value?.id) {
-    await updateSelectedListExecute();
+    await updateSelectedListExecute({ data: submitData() });
   } else {
-    await createNewListExecute();
+    await createNewListExecute({ data: submitData() });
   }
   close();
 };

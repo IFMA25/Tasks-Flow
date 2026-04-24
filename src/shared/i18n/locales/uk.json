@@ -157,13 +157,36 @@
         "high": "Високий пріоритет"
         },
     "dashboard": {
-        "title": "Раді бачити вас знову",
+        "title": "Раді бачити вас знову, {userName}",
         "todayTasks": "Сьогоднішні завдання",
         "upcomingDeadlines": "Майбутні дедлайни",
         "weeklyFocusGoals": "Тижневі цілі",
-        "completedTasks": "Виконано {completedTasks} з {totalTasks} завдань",
+        "completedTasks": "У вас {totalTasks} завдань на сьогодні",
         "tasksAttention": "Завдання, що потребують вашої уваги",
-        "topPriorities": "Ваші головні пріоритети на цей тиждень"
+        "topPriorities": "Ваші головні пріоритети на цей тиждень",
+        "noTasks": "Завдань на сьогодні ще немає",
+        "noDeadlines": "Майбутніх дедлайнів немає",
+        "createNewTasks": "Створіть своє перше завдання, щоб почати",
+        "tasksWithDeadlines": "Завдання з термінами виконання з'являться тут",
+        "createFirstList": "Створіть свій перший список",
+        "weeklyGoalsTitle": "Щотижневі ключові цілі",
+        "weeklyGoalsSubtitle": "Ваші головні пріоритети на цей тиждень",
+        "noGoals": "Ще немає цілей на тиждень",
+        "addGoals": "Додайте свої головні пріоритети, щоб залишатися зосередженими",
+        "createNewGoals": "Додати ціль на тиждень",
+        "weeklyGoalsModalTitleEdit": "Редагувати цілі на тиждень",
+        "weeklyGoalsModalTitleAdd": "Додати цілі на тиждень",
+        "weeklyGoalsModalSubtitle": "Виберіть до 3 завдань, на яких варто зосередитися цього тижня"
+    },
+    "analytics": {
+        "statusOverview": "Огляд статусу",
+        "taskCompletion": "Виконання завдань",
+        "tagsPopularity": "Популярність тегів",
+        "tasksByPriority": "Завдання за пріоритетом",
+        "completed": "Виконано",
+        "created": "Створено",
+        "active": "Активно",
+        "overdue": "Протерміновано"
     },
     "saveBtnText": "Зберігти зміни",
     "deleteModal": {
@@ -171,5 +194,8 @@
         "contentTitle": "Ви впевнені, що хочете видалити цей {entityName}?",
         "contentSubtitle": "Цю дію неможливо скасувати"
     },
-    "cancel": "Скасувати" 
+    "cancel": "Скасувати",
+    "viewAll": "Переглянути всі",
+    "edit": "Змінити",
+    "selected": "обрано"
 }

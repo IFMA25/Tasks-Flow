@@ -34,17 +34,23 @@ const userId = computed(() => {
 const isAdminMode = computed(() => !!userId.value);
 
 const { loading: permissionsLoad, data: permissionsData }
-= usePermissionsRequest({ immediate: isAdminMode.value });
+= usePermissionsRequest({
+  immediate: isAdminMode.value,
+});
 
 const {
   loading: permissionsRoleLoad,
   data: permissionsRole,
-} = usePermissionsRoleRequest({ immediate: isAdminMode.value });
+} = usePermissionsRoleRequest({
+  immediate: isAdminMode.value,
+});
 
 const { execute: fetchUser, loading: loadingInfoUser, data: dataInfoUser }
 = useUserInfoRequest(() => userId.value, {
   immediate: isAdminMode.value,
-  watch: [userId],
+  onSuccess: () => {
+    console.log(dataInfoUser.value.id);
+  },
   onError: () => {
     router.push({ name: RouteNames.notFound });
   },

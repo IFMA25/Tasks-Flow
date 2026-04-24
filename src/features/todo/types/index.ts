@@ -52,7 +52,7 @@ export interface TaskFormState {
   taskName: string;
   tags: string[];
   priority: string;
-  dueDate: Date | null;
+  deadline: Date | null;
 }
 
 export interface RequestBodyListData {
@@ -87,11 +87,11 @@ export interface RequestBodyTaskData {
   title: string;
   priority: string;
   tags: string[];
-  dueDate: string;
+  deadline: string;
+  dueDate?: string;
   description?: string;
   longDescription?: string;
   status?: string;
-  deadline?: string;
   isStarred?: boolean;
   isWeeklyGoal?: boolean;
   order?: number;

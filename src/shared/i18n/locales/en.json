@@ -147,20 +147,45 @@
         "medium": "Medium priority",
         "high": "High priority"
         },
-    "saveBtnText": "Save changes",
     "deleteModal": {
             "title": "Delete {entityName}",
             "contentTitle": "Are you sure you want to delete this {entityName}?",
             "contentSubtitle": "This action can’t be undone"
         },
     "dashboard": {
-        "title": "Good to see you again",
+        "title": "Good to see you again, {userName}",
         "todayTasks": "Today's tasks",
         "upcomingDeadlines": "Upcoming Deadlines",
-        "weeklyFocusGoals": "Weekly Focus Goals",
-        "completedTasks": "You’ve completed {completedTasks} out of {totalTasks} tasks",
+        "completedTasks": "You have {totalTasks} tasks for today",
         "tasksAttention": "Tasks that need your attention soon",
-        "topPriorities": "Your top priorities for this week"
+        "topPriorities": "Your top priorities for this week",
+        "noTasks": "No tasks for today yet",
+        "noDeadlines": "No upcoming deadlines",
+        "createNewTasks": "Create your first task to get started",
+        "tasksWithDeadlines": "Tasks with due dates will appear here",
+        "createFirstList": "Create your first list",
+        "weeklyGoalsTitle": "Weekly focus goals",
+        "weeklyGoalsSubtitle": "Your top priorities for this week",
+        "noGoals": "No weekly goals yet",
+        "addGoals": "Add your top priorities to stay focused",
+        "createNewGoals": "Add weekly goal",
+        "weeklyGoalsModalTitleEdit": "Edit weekly focus goals",
+        "weeklyGoalsModalTitleAdd": "Add weekly goals",
+        "weeklyGoalsModalSubtitle": "Choose up to 3 tasks to focus on this week"
     },
-    "cancel": "Cancel"   
+    "analytics": {
+        "statusOverview": "Status Overview",
+        "taskCompletion": "Task completion",
+        "tagsPopularity": "Tags popularity",
+        "tasksByPriority": "Tasks by priority",
+        "completed": "Completed",
+        "created": "Created",
+        "active": "Active",
+        "overdue": "Overdue"
+    },
+    "cancel": "Cancel",
+    "viewAll": "View all",
+    "edit": "Edit",
+    "selected": "selected",
+    "saveBtnText": "Save changes"
 }

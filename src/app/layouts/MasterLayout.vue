@@ -34,7 +34,7 @@ const routeLayout = computed(() => {
 
 const isAppLoading = computed(() => {
   const hasToken = !!tokenManager.getAccessToken();
-  return hasToken && (!profileStore.profileData || profileStore.loading);
+  return hasToken && !profileStore.initialized;
 });
 </script>
 

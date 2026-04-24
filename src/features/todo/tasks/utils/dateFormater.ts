@@ -1,8 +1,8 @@
 import { isToday, isTomorrow, isSameWeek, addWeeks, isBefore, startOfDay, parseISO } from "date-fns";
 
-export type DueDateKey = "noDeadline" | "overdue" | "today" | "tomorrow" | "thisWeek" | "nextWeek" | "later";
+export type DeadlineKey = "noDeadline" | "overdue" | "today" | "tomorrow" | "thisWeek" | "nextWeek" | "later";
 
-export const getDueDateStatusFromIso = (isoString: string | null): DueDateKey => {
+export const getDeadlineStatusFromIso = (isoString: string | null): DeadlineKey => {
   if (!isoString) return "noDeadline";
 
   const target = parseISO(isoString);

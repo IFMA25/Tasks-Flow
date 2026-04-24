@@ -6,6 +6,7 @@ import { useModal } from "@/shared/composables/useModal";
 interface Props {
   id: string
   title?: string
+  subtitle?: string
   showCloseButton?: boolean
   closeOnBackdrop?: boolean
   closeOnEscape?: boolean
@@ -14,6 +15,7 @@ interface Props {
 
 const props = withDefaults(defineProps<Props>(), {
   title: "",
+  subtitle: "",
   showCloseButton: true,
   closeOnBackdrop: true,
   closeOnEscape: true,

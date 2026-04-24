@@ -1,53 +1,43 @@
 <script setup lang="ts">
 import { computed, ref } from "vue";
 import { useI18n } from "vue-i18n";
-import { useRoute } from "vue-router";
-import { toast } from "vue-sonner";
 
-import { TaskData } from "../../types";
-import { useTasksRequest } from "../api/useTasksRequest";
-import { useTasksStore } from "../store/useTasksStore";
+import type { TaskData } from "../../types";
 
 import { useModal } from "@/shared/composables/useModal";
 import VConfirmDeleteModal from "@/shared/ui/VConfirmDeleteModal.vue";
 
-const selectedTask = ref<TaskData | null>(null);
-const selectedListId = ref("");
+const emit = defineEmits<{
+  "confirm-delete": [];
+}>();
 
 const { t } = useI18n();
-const { open, close } = useModal("listDeleteModal");
-const { deleteTask } = useTasksRequest();
-const tasksStore = useTasksStore();
-const route = useRoute();
+const { open, close } = useModal("taskDeleteModal");
 
-const listId = computed(() => String(route.params.listId));
+const selectedTask = ref<TaskData | null>(null);
 
-const openModal = (listId: string, task: TaskData) => {
+const itemName = computed(() => selectedTask.value?.title || "");
+
+const openModal = (task: TaskData) => {
   selectedTask.value = task;
-  selectedListId.value = listId;
   open();
 };
 
-const { execute, loading } = deleteTask(
-  () => selectedTask.value?.id,
-  {
-    onSuccess: () => {
-      close();
-      tasksStore.fetchTasksForList(listId.value);
-      toast.warning(t("tasks.msgDeleteSuccess"));
-    },
-  },
-);
+const handleConfirm = () => {
+  emit("confirm-delete");
+  close();
+};
 
 defineExpose({ openModal });
 </script>
 
 <template>
   <VConfirmDeleteModal
-    id="listDeleteModal"
+    id="taskDeleteModal"
     entity-name="task"
-    :item-name="selectedTask?.title || ''"
-    :loading="loading"
-    @confirm="execute()"
+    :title="t('deleteModal.title')"
+    :item-name="itemName"
+    :loading="false"
+    @confirm="handleConfirm"
   />
 </template>

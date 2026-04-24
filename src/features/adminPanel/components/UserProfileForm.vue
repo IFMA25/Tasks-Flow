@@ -16,15 +16,17 @@ const { t } = useI18n();
 const userName = ref<string>("");
 
 const { execute, loading, data } = useUpdateUserProfile({
-  data: () => ({ name: userName.value }),
   onSuccess: () => {
     profileStore.profileData = data.value;
     toast.success(t("userInfo.saveSuccess"));
   },
+  skipErrorNotification: true,
 });
 
 const handleSubmit = () => {
-  execute();
+  execute({
+    data: { name: userName.value },
+  });
 };
 
 const isChanged = computed(() => profileStore.profileData.name !== userName.value);

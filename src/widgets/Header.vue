@@ -5,15 +5,20 @@ import { useRoute } from "vue-router";
 
 import ThemeToggle from "@/features/theme/components/ThemeToggle.vue";
 import LangSwitcher from "@/features/translation/components/LangSwitcher.vue";
+import { useProfileStore } from "@/shared/stores/useProfileStore";
 import VTitle from "@/shared/ui/common/VTitle.vue";
+
 
 const { t } = useI18n();
 const route = useRoute();
+const profileStore = useProfileStore();
 
 const title = computed(() => {
   const metaTitle = route.meta.titleHeader;
+  const userName = profileStore.profileData?.name || "";
   if (typeof metaTitle === "function") {
-    return t(metaTitle(route));
+    const { translateKey, paramsStore } = metaTitle({ route, userName });
+    return t(translateKey, paramsStore);
   }
   return typeof metaTitle === "string" ? t(metaTitle) : "";
 });

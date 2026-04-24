@@ -1,4 +1,4 @@
-import { computed, ref, watch } from "vue";
+import { computed, ref } from "vue";
 import { useI18n } from "vue-i18n";
 
 import { TaskData } from "../../types";
@@ -7,10 +7,12 @@ import { useTasksStore } from "../store/useTasksStore";
 
 import { Actions, SortOption, PriorityOption } from "@/shared/types";
 
+const selectedTask = ref<TaskData | null>(null);
+
 export const useTasksListFeature = (listId: string) => {
   const { t } = useI18n();
   const tasksStore = useTasksStore();
-  const { completeTask } = useTasksRequest();
+  const { getAllTasks, createNewTask, updateTask, deleteTask } = useTasksRequest();
 
   const sortOptions = computed<SortOption[]>(() => [
     { key: "recentlyAdded", label: t("filters.recentlyAdded"), params: { sort: "createdAt", order: "desc" } },
@@ -26,6 +28,8 @@ export const useTasksListFeature = (listId: string) => {
     { key: "high",   label: t("filters.high"),          params: { priority: "high"    } },
   ]);
 
+  const rowActions = computed<Actions[]>(() => [{ key: "edit",   label: t("tasks.editTask") }, { key: "delete", label: t("deleteModal.title", { entityName: t("tasks.task") }) }]);
+
   const activeSortKey = ref(sortOptions.value[0].key);
   const activePriorityKey = ref(priorityOptions.value[0].key);
 
@@ -39,45 +43,73 @@ export const useTasksListFeature = (listId: string) => {
     };
   });
 
-  const rowActions = computed<Actions[]>(() => [{ key: "edit",   label: t("tasks.editTask") }, { key: "delete", label: t("deleteModal.title", { entityName: t("tasks.task") }) }]);
-
-  const pendingTasks = computed(() =>
-    tasksStore.tasksData?.data.filter((t) => t.status === "todo") ?? [],
+  const {
+    execute: fetchTasks,
+    data: tasksData,
+    loading: fetchTaskLoading,
+  } = getAllTasks(
+    () => listId,
+    {
+      params: fetchParams,
+      immediate: true,
+    },
   );
 
-  const completedTasks = computed(() =>
-    tasksStore.tasksData?.data.filter((t) => t.status === "done") ?? [],
-  );
+  const { execute: createNewTaskExecute, loading: createNewTaskLoading } =
+    createNewTask(() => listId, {
+      lazy: true,
+      onSuccess: async () => {
+        await fetchTasks();
+      },
+    });
 
-  const isLoading = computed(
-    () => completeTaskLoading.value || tasksStore.fetchTaskLoading,
-  );
+  const { execute: updateSelectedTaskExecute, loading: updateTaskLoading } =
+    updateTask(() => selectedTask.value?.id, {
+      lazy: true,
+      onSuccess: async () => {
+        await fetchTasks();
+      },
+    });
 
-  const selectedTask = ref<TaskData | null>(null);
-
-  const { execute: completeTaskExecute, loading: completeTaskLoading } =
-    completeTask(() => selectedTask.value?.id, {
-      onSuccess: () => tasksStore.fetchTasksForList(listId, fetchParams.value),
+  const { execute: deleteTaskExecute, loading: deleteTaskLoading } =
+    deleteTask(() => selectedTask.value?.id, {
+      lazy: true,
+      onSuccess: async () => {
+        await fetchTasks();
+      },
     });
 
   const handleStatusChange = async (task: TaskData, value: boolean) => {
-    selectedTask.value = task;
-    await completeTaskExecute({ data: { completed: value } });
+    await tasksStore.completeTaskById(task.id, value, async () => {
+      await fetchTasks();
+    });
   };
 
-  watch(fetchParams, () => {
-    tasksStore.fetchTasksForList(listId, fetchParams.value);
-  }, { immediate: true });
+  const isLoading = computed(
+    () =>
+      fetchTaskLoading.value ||
+      createNewTaskLoading.value ||
+      updateTaskLoading.value ||
+      deleteTaskLoading.value,
+  );
+
+  const setSelectedTask = (task: TaskData | null) => {
+    selectedTask.value = task;
+  };
 
   return {
-    pendingTasks,
-    completedTasks,
+    tasksData,
     isLoading,
-    rowActions,
-    handleStatusChange,
     sortOptions,
     priorityOptions,
     activeSortKey,
     activePriorityKey,
+    rowActions,
+    fetchTasks,
+    handleStatusChange,
+    createNewTaskExecute,
+    updateSelectedTaskExecute,
+    deleteTaskExecute,
+    setSelectedTask,
   };
 };

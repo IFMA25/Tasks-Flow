@@ -39,6 +39,7 @@ const btnStyles = {
   "navItem-active": "py-3 text-primaryTextDark font-medium",
   authMode: "text-primaryTextDark font-medium hover:text-primaryBg",
   cardTitle: "text-lg font-semibold text-primary hover:text-primaryBg",
+  dashboardNav: "font-medium text-primaryBg hover:text-primary disabled:text-disabled",
   danger: "bg-danger py-3 px-4 text-base font-medium border-2 border-danger rounded-xl hover:bg-dangerHover disabled:bg-disabled disabled:text-muted disabled:border-disabled",
 };
 

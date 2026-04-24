@@ -1,7 +1,6 @@
 import {
   createRouter,
   createWebHashHistory,
-  RouteLocationNormalized,
   RouteRecordRaw,
 } from "vue-router";
 
@@ -14,21 +13,28 @@ const routes: RouteRecordRaw[] = [
   {
     path: "/",
     name: RouteNames.home,
-    component: () => import("@/pages/Home/index.vue"),
+    component: () => import("@/pages/Dashboard.vue"),
     meta: {
       permission: "read:dashboard",
-      showHeader: false,
       titleMenu: "dashboard",
+      titleHeader: ({ userName }) => ({
+        translateKey: "dashboard.title",
+        paramsStore: { userName: userName ?? "" },
+      }),
       iconMenu: "home",
     },
   },
   {
     path: "/lists",
     name: RouteNames.lists,
-    component: () => import("@/pages/Lists/index.vue"),
+    component: () => import("@/pages/Lists.vue"),
     meta: {
-      titleHeader: (route: RouteLocationNormalized) =>
-        route.query.tab === "usersLists" ? "lists.titleOverview" : "lists.title",
+      titleHeader: ({ route }) => ({
+        translateKey:
+          route.query.tab === "usersLists"
+            ? "lists.titleOverview"
+            : "lists.title",
+      }),
       permission: "read:list",
       titleMenu: "lists",
       iconMenu: "lists",
@@ -37,7 +43,7 @@ const routes: RouteRecordRaw[] = [
   {
     path: "/lists/:listId",
     name: RouteNames.tasks,
-    component: () => import("@/pages/Tasks/index.vue"),
+    component: () => import("@/pages/Tasks.vue"),
     meta: {
       permission: "read:list",
       showInMenu: false,
@@ -46,7 +52,7 @@ const routes: RouteRecordRaw[] = [
   {
     path: "/analytics",
     name: RouteNames.analytics,
-    component: () => import("@/pages/Analytics/index.vue"),
+    component: () => import("@/pages/Analytics.vue"),
     meta: {
       permission: "read:analytics",
       titleMenu: "analytics",
@@ -56,7 +62,7 @@ const routes: RouteRecordRaw[] = [
   {
     path: "/profile",
     name: RouteNames.profile,
-    component: () => import("@/pages/Profile/index.vue"),
+    component: () => import("@/pages/Profile.vue"),
     meta: {
       titleMenu: "profile",
       iconMenu: "profile",
@@ -66,7 +72,7 @@ const routes: RouteRecordRaw[] = [
   {
     path: "/users",
     name: RouteNames.users,
-    component: () => import("@/pages/Users/index.vue"),
+    component: () => import("@/pages/Users.vue"),
     meta: {
       role: "admin",
       permission: "read:users",
@@ -78,7 +84,7 @@ const routes: RouteRecordRaw[] = [
   {
     path: "/:pathMatch(.*)*",
     name: RouteNames.notFound,
-    component: () => import("@/pages/NotFound/index.vue"),
+    component: () => import("@/pages/NotFound.vue"),
     meta: {
       title: "404 - Page not found",
       showHeader: false,

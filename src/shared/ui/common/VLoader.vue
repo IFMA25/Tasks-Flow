@@ -22,7 +22,6 @@ const props = withDefaults(
 <template>
   <div
     class="flex gap-3 justify-center items-center"
-    :class="[props.size, props.color]"
     v-bind="$attrs"
   >
     <p v-if="props.text">
@@ -32,6 +31,7 @@ const props = withDefaults(
       <div
         v-if="props.type === 'spinner'"
         class="loader-spinner"
+        :class="[props.size, props.color]"
       />
       <div
         v-else-if="props.type === 'dots'"

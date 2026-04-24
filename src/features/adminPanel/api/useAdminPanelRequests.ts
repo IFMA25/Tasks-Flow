@@ -5,7 +5,11 @@ import { Permission, PermissionRole } from "@/features/adminPanel/types";
 import { User, UsersResponse } from "@/shared/types";
 
 export const useUsersDataRequest = (options?: UseApiOptions<UsersResponse>) => {
-  return useApiGet("/users", {
+  return useApiGet<UsersResponse>("/users", {
+    // cache: {
+    //   id: "users", //не подходит из-за фильтров
+    //   swr: true, //на ux  получаем странный эффект не понятный юзеру
+    // },
     ...options,
   });
 };
@@ -14,7 +18,11 @@ export const useUserInfoRequest = (
   userId: MaybeRefOrGetter<string>,
   options?: UseApiOptions<User>,
 ) => {
-  return useApiGet(`/users/${toValue(userId)}`, {
+  return useApiGet<User>(`/users/${toValue(userId)}`, {
+    cache: {
+      id: `user-${toValue(userId)}`,
+      swr: true,
+    },
     ...options,
   });
 };
@@ -22,7 +30,8 @@ export const useUserInfoRequest = (
 export const usePermissionsRequest = (
   options?: UseApiOptions<Permission[]>,
 ) => {
-  return useApiGet("/permissions", {
+  return useApiGet<Permission[]>("/permissions", {
+    cache: "permissions",
     ...options,
   });
 };
@@ -30,7 +39,8 @@ export const usePermissionsRequest = (
 export const usePermissionsRoleRequest = (
   options?: UseApiOptions<PermissionRole>,
 ) => {
-  return useApiGet("/permissions/roles", {
+  return useApiGet<PermissionRole>("/permissions/roles", {
+    cache: "permissions-roles",
     ...options,
   });
 };
@@ -42,6 +52,7 @@ export const useUpdateUserPermissions = (
   return useApiPatch<User, { permissions: string[] }>(
     `/users/${toValue(userId)}/permissions`,
     {
+      invalidateCache: `user-${toValue(userId)}`,
       ...options,
     },
   );
@@ -52,6 +63,7 @@ export const useUpdateUserRole = (
   options?: UseApiOptions<User, { role: string }>,
 ) => {
   return useApiPatch<User, { role: string }>(`/users/${toValue(userId)}/role`, {
+    invalidateCache: `user-${toValue(userId)}`,
     ...options,
   });
 };
@@ -60,7 +72,11 @@ export const useUserDelete = (
   userId: MaybeRefOrGetter<string>,
   options?: UseApiOptions<User>,
 ) => {
-  return useApiDelete<User>(() => `/users/${toValue(userId)}`, options);
+  return useApiDelete<User>(() => `/users/${toValue(userId)}`, {
+    lazy: true,
+    invalidateCache: `user-${toValue(userId)}`,
+    ...options,
+  });
 };
 
 

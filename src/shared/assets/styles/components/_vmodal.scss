@@ -43,6 +43,13 @@
     @apply text-primary text-2xl font-semibold;
   }
 
+  .modal-subtitle {
+    font-size: 0.75rem;
+    line-height: 1.1;
+    font-weight: 400;
+    @apply text-secondary mb-2
+  }
+
   .modal-close-btn {
     position: absolute;
     top: -18px;

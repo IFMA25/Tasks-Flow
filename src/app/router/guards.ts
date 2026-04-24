@@ -6,42 +6,37 @@ import { RouteNames } from "@/shared/types/routeNames";
 
 export const guards = async (
   to: RouteLocationNormalized,
-  from: RouteLocationNormalized,
+  // from: RouteLocationNormalized,
 ) => {
-  const token = !!tokenManager.getAccessToken();
+  const hasToken = !!tokenManager.getAccessToken();
+  const profileStore = useProfileStore();
 
-  if (!token && to.meta.layout !== "auth") {
-    return { name: "auth" };
+  const isAuthRoute = to.name === RouteNames.auth;
+
+  if (!hasToken && !isAuthRoute) {
+    return { name: RouteNames.auth, query: { mode: "signin" } };
   }
 
-  if (token) {
-    if (to.name === "auth") {
-      return { name: "home" };
-    }
+  if (hasToken && isAuthRoute) {
+    return { name: RouteNames.home };
+  }
 
-    const profileStore = useProfileStore();
+  if (hasToken && !profileStore.initialized) {
+    await profileStore.fetchProfile();
 
-    if (!profileStore.profileData) {
-      await profileStore.fetchProfile();
-    }
-
-    if (
-      from.meta.layout === "auth" &&
-      to.name === RouteNames.home &&
-      profileStore.profileData?.role === "admin"
-    ) {
-      return { name: RouteNames.users };
+    if (!tokenManager.getAccessToken()) {
+      return { name: RouteNames.auth, query: { mode: "signin" } };
     }
 
     const routePermission = to.meta.permission;
+    if (routePermission && !profileStore.hasAccess(routePermission)) {
+      console.warn(`[Guard] Access denied. Required: ${routePermission}`);
+      return { name: RouteNames.notFound };
+    }
 
-    if (routePermission) {
-      const isAllowed = profileStore.hasAccess(routePermission);
-
-      if (!isAllowed) {
-        console.warn(`[Guard] Access denied. Required: ${routePermission}`);
-        return { name: RouteNames.notFound };
-      }
+    const requiredRole = to.meta.role;
+    if (requiredRole && profileStore.profileData?.role !== requiredRole) {
+      return { name: RouteNames.home };
     }
   }
 };
