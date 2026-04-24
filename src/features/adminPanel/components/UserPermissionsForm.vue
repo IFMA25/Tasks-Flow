@@ -29,8 +29,6 @@ const {
   loading?: boolean;
 }>();
 
-// const emit = defineEmits(["update-success"]);
-
 const userRolesList = computed<RoleOption[]>(() => [
   { key: "admin", label: t("roles.admin"), value: "admin" },
   { key: "user", label: t("roles.user"), value: "user" },
