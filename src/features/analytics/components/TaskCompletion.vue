@@ -1,71 +1,55 @@
 <script setup lang="ts">
 import { format, parseISO } from "date-fns";
 import * as echarts from "echarts";
-import { onMounted, onBeforeUnmount, ref, watch, computed } from "vue";
+import { onBeforeUnmount, ref, watch, computed } from "vue";
 import { useI18n } from "vue-i18n";
 
-import { useAnalyticsRequests } from "../api/useAnaliticsRequests";
 import type { DailyActivityResponse } from "../types";
+import { chartColors } from "../variable";
 
+import VSkeleton from "@/shared/ui/common/VSkeleton.vue";
 import VTitle from "@/shared/ui/common/VTitle.vue";
-import { todayDate, lastWeekDate } from "@/shared/utils/dayDate";
 
+const countMaxSeries = 5;
 
 const { t } = useI18n();
 const chartRef = ref<HTMLDivElement | null>(null);
-let chartInstance: echarts.ECharts | null = null;
+let chart: echarts.ECharts | null = null;
 
-const { dailyActivity } = useAnalyticsRequests();
-
-const chartColors = {
-  axisLine: "#323855",
-  axisLabel: "#323855",
-  splitLine: "#CBD5E1",
-  series1: "#3B82F6",
-  series2: "#10B981",
-} as const;
-
-const {
-  data: dailyActivityData,
-  // loading: dailyActivityLoading,
-} = dailyActivity({
-  immediate: true,
-  params: {
-    startDate: lastWeekDate,
-    endDate: todayDate,
-  },
-});
+const { data, loading } = defineProps<{
+  data: DailyActivityResponse[] | null;
+  loading: boolean;
+}>();
 
 const dates = computed(() =>
-  (dailyActivityData.value ?? []).map((item: DailyActivityResponse) => item.date),
+  (data ?? []).map((item: DailyActivityResponse) => item.date),
 );
 
 const createdSeries = computed(() =>
-  (dailyActivityData.value ?? []).map((item: DailyActivityResponse) => item.created),
+  (data ?? []).map((item: DailyActivityResponse) => item.created),
 );
 
 const completedSeries = computed(() =>
-  (dailyActivityData.value ?? []).map((item: DailyActivityResponse) => item.completed),
+  (data ?? []).map((item: DailyActivityResponse) => item.completed),
 );
-
-const initChart = () => {
-  if (!chartRef.value) return;
-  chartInstance = echarts.init(chartRef.value);
-  updateChart();
-};
 
 const yMax = computed(() => {
   const all = [...createdSeries.value, ...completedSeries.value];
 
-  if (!all.length) return 5;
+  if (!all.length) return countMaxSeries;
 
   const max = Math.max(...all);
 
   return max + 1;
 });
 
+const legendLabels = computed(() => [
+  t("analytics.created"),
+  t("analytics.completed"),
+]);
+
 const updateChart = () => {
-  if (!chartInstance) return;
+  if (!chart) return;
 
   const option: echarts.EChartsOption = {
     grid: {
@@ -79,7 +63,7 @@ const updateChart = () => {
       trigger: "axis",
     },
     legend: {
-      data: [t("analytics.created"), t("analytics.completed")],
+      data: legendLabels.value,
       top: 0,
     },
     xAxis: {
@@ -126,34 +110,58 @@ const updateChart = () => {
     ],
   };
 
-  chartInstance.setOption(option, true);
+  chart.setOption(option, true);
 };
-
-onMounted(() => {
-  initChart();
-  window.addEventListener("resize", handleResize);
-});
-
-watch(dailyActivityData, updateChart);
 
 const handleResize = () => {
-  chartInstance?.resize();
+  chart?.resize();
 };
+
+watch(
+  [() => chartRef.value, () => data, () => legendLabels.value],
+  ([el, data]) => {
+    if (!el) return;
+    if (!data || !data.length) return;
+
+    if (!chart) {
+      chart = echarts.init(el);
+      window.addEventListener("resize", handleResize);
+    }
+
+    updateChart();
+  },
+  { deep: true },
+);
 
 onBeforeUnmount(() => {
   window.removeEventListener("resize", handleResize);
-  chartInstance?.dispose();
-  chartInstance = null;
+  chart?.dispose();
+  chart = null;
 });
 </script>
 
 <template>
   <VTitle
     :text="$t('analytics.taskCompletion')"
-    class="mb-4 capitalize"
+    class="capitalize"
   />
-  <div
-    ref="chartRef"
-    class="w-full h-[400px] bg-base border border-surface rounded-2xl"
-  />
+  <div class="h-[19rem] bg-bgCards border border-surface rounded-2xl">
+    <div
+      v-if="loading"
+      class="flex flex-col gap-4"
+    >
+      <VSkeleton
+        v-for="value in countMaxSeries"
+        :key="value"
+        width="w-full"
+        height="h-[2.5rem]"
+        rounded="md"
+      />
+    </div>
+    <div
+      v-else
+      ref="chartRef"
+      class="w-full h-full"
+    />
+  </div>
 </template>

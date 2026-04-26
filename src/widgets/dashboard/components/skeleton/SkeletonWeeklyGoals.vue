@@ -7,7 +7,7 @@ import VSkeleton from "@/shared/ui/common/VSkeleton.vue";
     <li
       v-for="n in 3"
       :key="n"
-      class="task-item border-surface border bgBase rounded-2xl p-4"
+      class="task-item border-surface border bg-bgBase rounded-2xl p-4"
     >
       <div class="flex justify-end mb-2">
         <VSkeleton

@@ -1,37 +1,33 @@
-<script setup>
+<script setup lang="ts">
 import { computed } from "vue";
 import { useI18n } from "vue-i18n";
 
-import { useAnalyticsRequests } from "../api/useAnaliticsRequests";
+import { AnalyticsSummaryResponse } from "../types";
 
 import VSkeleton from "@/shared/ui/common/VSkeleton.vue";
 import VTitle from "@/shared/ui/common/VTitle.vue";
 
-
 const { t } = useI18n();
-const { analyticsSummary } = useAnalyticsRequests();
 
-const { data: analyticsSummaryData, loading: analyticsSummaryLoading } = analyticsSummary({
-    immediate: true,
-    onSuccess: () => {
-        console.log(analyticsSummaryData.value);
-    },
-});
+const { data, loading } = defineProps<{
+  data: AnalyticsSummaryResponse | null;
+  loading: boolean;
+}>();
 
 const analiticsCards = computed(() => ([
     {
         title: t("analytics.completed"),
-        data: analyticsSummaryData.value?.tasks.completed,
+        data: data?.tasks.completed,
         color: "text-positive",
     },
     {
         title: t("analytics.active"),
-        data: analyticsSummaryData.value?.tasks.todo,
+        data: data?.tasks.todo,
         color: "text-muted",
     },
     {
         title: t("analytics.overdue"),
-        data: analyticsSummaryData.value?.tasks.archived,
+        data: data?.tasks.archived,
         color: "text-negative",
     },
 ]));
@@ -47,13 +43,13 @@ const analiticsCards = computed(() => ([
       v-for="card in analiticsCards"
       :key="card.title"
       class="w-[300px] flex flex-col items-start gap-4
-             border border-surface rounded-2xl bg-base p-8"
+             border border-surface rounded-2xl bg-bgCards p-8"
     >
       <p class="text-sm leading-[1.2] font-medium text-secondary">
         {{ card.title }}
       </p>
       <VSkeleton
-        v-if="analyticsSummaryLoading"
+        v-if="loading"
         width="w-[50px]"
         height="h-[36px]"
       />

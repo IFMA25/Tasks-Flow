@@ -110,9 +110,6 @@
             "placeholderTags": "Add up to 3 tags",
             "createBtn": "Add task",
             "select": {
-                "low": "Low",
-                "medium": "Medium",
-                "high": "High",
                 "overdue": "Overdue",
                 "noDeadline": "No due date",
                 "today": "Today",
@@ -120,6 +117,11 @@
                 "thisWeek": "This week",
                 "nextWeek": "Next week"
             }
+        },
+        "priority": {
+            "low": "Low",
+            "medium": "Medium",
+            "high": "High"
         },
         "editTask": "Edit task",
         "pending": "Pending",
@@ -174,6 +176,7 @@
         "weeklyGoalsModalSubtitle": "Choose up to 3 tasks to focus on this week"
     },
     "analytics": {
+        "title": "See how your tasks are progressing over time",
         "statusOverview": "Status Overview",
         "taskCompletion": "Task completion",
         "tagsPopularity": "Tags popularity",

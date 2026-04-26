@@ -35,9 +35,9 @@ const formFields = reactive({
 });
 
 const priorityOptions = computed(() => [
-    { key: "low", label: t("tasks.createTaskModal.select.low") },
-    { key: "medium", label: t("tasks.createTaskModal.select.medium") },
-    { key: "high", label: t("tasks.createTaskModal.select.high") },
+    { key: "low", label: t("tasks.priority.low") },
+    { key: "medium", label: t("tasks.priority.medium") },
+    { key: "high", label: t("tasks.priority.high") },
 ]);
 
 const isTagLimitReached = computed(() => formFields.tags.length >= 5);
