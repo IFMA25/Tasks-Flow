@@ -184,7 +184,11 @@
         "completed": "Completed",
         "created": "Created",
         "active": "Active",
-        "overdue": "Overdue"
+        "overdue": "Overdue",
+        "week": "Week",
+        "month": "Month",
+        "noAnalyticsTitle": "No activity yet",
+        "noAnalyticsSubtitle": "Complete tasks to see your progress over time"
     },
     "cancel": "Cancel",
     "viewAll": "View all",

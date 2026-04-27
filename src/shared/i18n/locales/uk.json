@@ -189,7 +189,11 @@
         "completed": "Виконано",
         "created": "Створено",
         "active": "Активно",
-        "overdue": "Протерміновано"
+        "overdue": "Протерміновано",
+        "week": "Тиждень",
+        "month": "Місяць",
+        "noAnalyticsTitle": "Ще немає активності",
+        "noAnalyticsSubtitle": "Виконуйте завдання, щоб побачити ваш прогрес у часі"
     },
     "saveBtnText": "Зберігти зміни",
     "deleteModal": {

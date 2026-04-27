@@ -2,32 +2,32 @@
 import { computed } from "vue";
 import { useI18n } from "vue-i18n";
 
-import { AnalyticsSummaryResponse } from "../types";
+import { useAnalyticsRequests } from "../api/useAnaliticsRequests";
 
 import VSkeleton from "@/shared/ui/common/VSkeleton.vue";
 import VTitle from "@/shared/ui/common/VTitle.vue";
 
 const { t } = useI18n();
+const { analyticsSummary } = useAnalyticsRequests();
 
-const { data, loading } = defineProps<{
-  data: AnalyticsSummaryResponse | null;
-  loading: boolean;
-}>();
+const { data, loading } = analyticsSummary({
+    immediate: true,
+  });
 
 const analiticsCards = computed(() => ([
     {
         title: t("analytics.completed"),
-        data: data?.tasks.completed,
+        data: data.value?.tasks.completed,
         color: "text-positive",
     },
     {
         title: t("analytics.active"),
-        data: data?.tasks.todo,
+        data: data.value?.tasks.todo,
         color: "text-muted",
     },
     {
         title: t("analytics.overdue"),
-        data: data?.tasks.archived,
+        data: data.value?.tasks.archived,
         color: "text-negative",
     },
 ]));
@@ -56,9 +56,9 @@ const analiticsCards = computed(() => ([
       <p
         v-else
         class="text-3xl leading-[1.2] font-semibold "
-        :class="card.color"
+        :class="data?.tasks?.total > 0 ? card.color : 'text-disabled'"
       >
-        {{ card.data }}
+        {{ card.data || 0 }}
       </p>
     </div>
   </div>

@@ -15,7 +15,7 @@ import { useListsFeature } from "./composable/useListsFeature";
 import type { Actions } from "@/shared/types";
 import VEmptyState from "@/shared/ui/EmptyState.vue";
 import VButton from "@/shared/ui/common/VButton.vue";
-import VTab from "@/shared/ui/common/VTab.vue";
+import VButtonGroup from "@/shared/ui/common/VButtonGroup.vue";
 import { listsTabs } from "@/shared/variables/tabListsPage";
 
 const skeletonCount = 6;
@@ -77,9 +77,10 @@ const handleAction = (list: ListData, action: ListAction) => {
   />
 
   <div class="border border-subtle p-1 rounded-2xl w-fit mb-7">
-    <VTab
+    <VButtonGroup
       v-model="activeTab"
-      :tab-items="tabs"
+      :group-items="tabs"
+      label="Lists users"
     />
   </div>
 

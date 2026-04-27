@@ -4,33 +4,56 @@ import * as echarts from "echarts";
 import { onBeforeUnmount, ref, watch, computed } from "vue";
 import { useI18n } from "vue-i18n";
 
-import type { DailyActivityResponse } from "../types";
+import { useAnalyticsRequests } from "../api/useAnaliticsRequests";
 import { chartColors } from "../variable";
+import EmptyStateAnalitics from "./EmptyStateAnalitics.vue";
 
+import VButtonGroup from "@/shared/ui/common/VButtonGroup.vue";
 import VSkeleton from "@/shared/ui/common/VSkeleton.vue";
 import VTitle from "@/shared/ui/common/VTitle.vue";
+import { lastMonthDate, lastWeekDate, todayDate } from "@/shared/utils/dayDate";
+
+
+
+const { t } = useI18n();
 
 const countMaxSeries = 5;
 
-const { t } = useI18n();
+const periodItems = computed(() => [
+  { value: "week", label: t("analytics.week") },
+  { value: "month", label: t("analytics.month") },
+]);
+
+const period = ref<string>(periodItems.value[0].value);
 const chartRef = ref<HTMLDivElement | null>(null);
+
 let chart: echarts.ECharts | null = null;
 
-const { data, loading } = defineProps<{
-  data: DailyActivityResponse[] | null;
-  loading: boolean;
-}>();
+const { dailyActivity } = useAnalyticsRequests();
+
+const { data, loading } = dailyActivity({
+  immediate: true,
+  params: () => ({
+    startDate: period.value === "week" ? lastWeekDate() : lastMonthDate(),
+    endDate: todayDate(),
+  }),
+});
+
+const legendLabels = computed(() => [
+  t("analytics.created"),
+  t("analytics.completed"),
+]);
 
 const dates = computed(() =>
-  (data ?? []).map((item: DailyActivityResponse) => item.date),
+  (data.value ?? []).map((item) => item.date),
 );
 
 const createdSeries = computed(() =>
-  (data ?? []).map((item: DailyActivityResponse) => item.created),
+  (data.value ?? []).map((item) => item.created),
 );
 
 const completedSeries = computed(() =>
-  (data ?? []).map((item: DailyActivityResponse) => item.completed),
+  (data.value ?? []).map((item) => item.completed),
 );
 
 const yMax = computed(() => {
@@ -42,11 +65,6 @@ const yMax = computed(() => {
 
   return max + 1;
 });
-
-const legendLabels = computed(() => [
-  t("analytics.created"),
-  t("analytics.completed"),
-]);
 
 const updateChart = () => {
   if (!chart) return;
@@ -114,14 +132,18 @@ const updateChart = () => {
 };
 
 const handleResize = () => {
-  chart?.resize();
+  if (!chart) {
+    return;
+  }
+
+  chart.resize();
 };
 
 watch(
-  [() => chartRef.value, () => data, () => legendLabels.value],
-  ([el, data]) => {
+  [() => chartRef.value, () => data.value, () => legendLabels.value],
+  ([el, dataValue]) => {
     if (!el) return;
-    if (!data || !data.length) return;
+    if (!dataValue || !dataValue.length) return;
 
     if (!chart) {
       chart = echarts.init(el);
@@ -145,23 +167,29 @@ onBeforeUnmount(() => {
     :text="$t('analytics.taskCompletion')"
     class="capitalize"
   />
-  <div class="h-[19rem] bg-bgCards border border-surface rounded-2xl">
+  <div class="relative h-[19rem] bg-bgCards border border-surface rounded-2xl p-3 overflow-hidden">
+    <VButtonGroup
+      v-model="period"
+      :group-items="periodItems"
+      label="Time period"
+      variant="charts"
+    />
     <div
       v-if="loading"
-      class="flex flex-col gap-4"
+      class="flex flex-col gap-4 mt-4"
     >
       <VSkeleton
         v-for="value in countMaxSeries"
         :key="value"
         width="w-full"
-        height="h-[2.5rem]"
+        height="h-[2rem]"
         rounded="md"
       />
     </div>
+    <EmptyStateAnalitics v-else-if="!loading && !data?.length" />
     <div
-      v-else
       ref="chartRef"
-      class="w-full h-full"
+      class="w-full h-[calc(100%-1rem)]"
     />
   </div>
 </template>

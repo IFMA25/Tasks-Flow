@@ -3,8 +3,9 @@ import * as echarts from "echarts";
 import { ref, onBeforeUnmount, watch, computed } from "vue";
 import { useI18n } from "vue-i18n";
 
-import { TasksByPriorityResponse } from "../types";
+import { useAnalyticsRequests } from "../api/useAnaliticsRequests";
 import { chartColors } from "../variable";
+import EmptyStateAnalitics from "./EmptyStateAnalitics.vue";
 
 import VSkeleton from "@/shared/ui/common/VSkeleton.vue";
 import VTitle from "@/shared/ui/common/VTitle.vue";
@@ -18,19 +19,21 @@ const priorityKeyMap: Record<string, string> = {
 };
 
 const tasksPriorityChartRef = ref<HTMLDivElement | null>(null);
-let chart: echarts.ECharts | null = null;
-const { t } = useI18n();
 
-const { data, loading } = defineProps<{
-  data: TasksByPriorityResponse[] | null;
-  loading: boolean;
-}>();
+let chart: echarts.ECharts | null = null;
+
+const { t } = useI18n();
+const { tasksByPriority } = useAnalyticsRequests();
+
+const { data, loading } = tasksByPriority({
+    immediate: true,
+  });
 
 const pieData = computed(() =>
-  data?.map(item => ({
+  (data?.value || []).map(item => ({
     name: t(priorityKeyMap[item.priority] ?? item.priority),
     value: item.count,
-  })) || [],
+  })),
 );
 
 const buildOption = (): echarts.EChartsOption => ({
@@ -80,7 +83,11 @@ const buildOption = (): echarts.EChartsOption => ({
 });
 
 const handleResize = () => {
-  chart?.resize();
+  if (!chart) {
+    return;
+  }
+
+  chart.resize();
 };
 
 watch(
@@ -113,7 +120,7 @@ onBeforeUnmount(() => {
       class="capitalize"
     />
     <div
-      class="flex flex-col items-center justify-center gap-4 h-[20rem]
+      class="flex flex-col items-center justify-center gap-4 h-[19rem]
      bg-bgCards border border-surface rounded-2xl"
     >
       <VSkeleton
@@ -122,6 +129,7 @@ onBeforeUnmount(() => {
         height="h-[15rem]"
         rounded="full"
       />
+      <EmptyStateAnalitics v-else-if="!loading && !data?.length" />
       <div
         v-else
         ref="tasksPriorityChartRef"

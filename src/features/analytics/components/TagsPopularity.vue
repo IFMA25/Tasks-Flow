@@ -2,25 +2,37 @@
 import * as echarts from "echarts";
 import { computed, onBeforeUnmount, ref, watch } from "vue";
 
-import { PopularTagsResponse } from "../types";
+import { useAnalyticsRequests } from "../api/useAnaliticsRequests";
 import { chartColors } from "../variable";
+import EmptyStateAnalitics from "./EmptyStateAnalitics.vue";
 
+import VButtonGroup from "@/shared/ui/common/VButtonGroup.vue";
 import VSkeleton from "@/shared/ui/common/VSkeleton.vue";
 import VTitle from "@/shared/ui/common/VTitle.vue";
 
 const countMaxSeries = 10;
 
-const { data, loading } = defineProps<{
-  data: PopularTagsResponse[] | null;
-  loading: boolean;
-}>();
+const topCountItems = [
+  { value: 5, label: "Top 5" },
+  { value: 10, label: "Top 10" },
+  { value: 15, label: "Top 15" },
+];
+
+const countTagValue = ref(topCountItems[0].value);
 
 const tagChartRef = ref<HTMLDivElement | null>(null);
 let chart: echarts.ECharts | null = null;
 
-const categories = computed(() => data?.map(item => item.tag));
+const { popularTags } = useAnalyticsRequests();
 
-const values = computed(() => data?.map(item => item.count));
+const { data, loading } = popularTags({
+  immediate: true,
+  params: () => ({ limit: countTagValue.value }),
+});
+
+const categories = computed(() => data.value?.map(item => item.tag));
+
+const values = computed(() => data.value?.map(item => item.count));
 
 const buildOption = (): echarts.EChartsOption => ({
   grid: {
@@ -76,7 +88,11 @@ const buildOption = (): echarts.EChartsOption => ({
 });
 
 const handleResize = () => {
-  chart?.resize();
+  if (!chart) {
+    return;
+  }
+
+  chart.resize();
 };
 
 watch(
@@ -108,10 +124,16 @@ onBeforeUnmount(() => {
       :text="$t('analytics.tagsPopularity')"
       class="capitalize"
     />
-    <div class="h-[20rem] bg-bgCards border border-surface rounded-2xl">
+    <div class="h-[19rem] bg-bgCards border border-surface rounded-2xl p-2 overflow-hidden">
+      <VButtonGroup
+        v-model="countTagValue"
+        :group-items="topCountItems"
+        label="Top tags"
+        variant="charts"
+      />
       <div
         v-if="loading"
-        class="flex flex-col items-center justify-center gap-3 p-4"
+        class="flex flex-col items-center justify-center gap-2 p-4"
       >
         <VSkeleton
           v-for="value in countMaxSeries"
@@ -121,8 +143,8 @@ onBeforeUnmount(() => {
           rounded="md"
         />
       </div>
+      <EmptyStateAnalitics v-else-if="!loading && !data?.length" />
       <div
-        v-else
         ref="tagChartRef"
         class="w-full h-full"
       />

@@ -22,8 +22,8 @@ export const useDashboardStore = defineStore("dashboard", () => {
     loading: updateDashboardLoading,
   } = batchDashboard(
     () => [
-      `/tasks/deadlines?limit=${limit.value}&startDate=${todayDate}&endDate=${tomorrowDate}`,
-      `/tasks/deadlines?limit=${limit.value}&startDate=${tomorrowDate}&endDate=${weekDate}`,
+      `/tasks/deadlines?limit=${limit.value}&startDate=${todayDate()}&endDate=${tomorrowDate()}`,
+      `/tasks/deadlines?limit=${limit.value}&startDate=${tomorrowDate()}&endDate=${weekDate()}`,
       `/tasks/weekly-goals`,
     ],
     {
