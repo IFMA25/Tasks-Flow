@@ -11,6 +11,7 @@
         "placeholderCreatePassword": "Create your password",
         "signin": "Log In",
         "signup": "Sign Up",
+        "testUser": "Test user",
         "supportTextPassword": "Use at least 8 characters",
         "registrationMsg": "Registration successful!",
         "logout": {

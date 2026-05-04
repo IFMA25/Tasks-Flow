@@ -17,7 +17,7 @@ const emit = defineEmits<{
 
 <template>
   <li
-    class="task-item bg-bgBase border-surface gap-y-2 items-center pt-2 pb-4"
+    class="task-item border-surface gap-y-2 items-center pt-2 pb-4"
     :class="goals
       ? 'task-item--goals border rounded-2xl p-4'
       : 'task-item--default border-t'"

@@ -6,10 +6,13 @@ import { toast } from "vue-sonner";
 
 import { useAuth } from "../api/composables/useAuthRequests";
 import { useSignInValidation } from "../composables/useSignInValidation";
-import { AuthMode } from "../types";
+import type { AuthMode, LoginResponse } from "../types";
 
 import VButton from "@/shared/ui/common/VButton.vue";
 import VInput from "@/shared/ui/common/VInput.vue";
+
+const TEST_USER_EMAIL = import.meta.env.VITE_TEST_USER_EMAIL;
+const TEST_USER_PASSWORD = import.meta.env.VITE_TEST_USER_PASSWORD;
 
 type SigninFieldName = keyof typeof formData;
 
@@ -34,34 +37,50 @@ const errorLogin = ref<string | null>(null);
 
 const { login } = useAuth();
 
-const { execute, loading, error } = login({
-  onSuccess: (response) => {
-    tokenManager.setTokens({
-      accessToken: response.data.accessToken,
-      refreshToken: response.data.refreshToken,
-    });
-    toast.success("auth.msgLoginSuccess");
-    router.replace({ name: "home" });
-  },
+const handleSuccess = (response: { data: LoginResponse }) => {
+  tokenManager.setTokens({
+    accessToken: response.data.accessToken,
+    refreshToken: response.data.refreshToken,
+  });
+  toast.success("auth.msgLoginSuccess");
+  router.replace({ name: "home" });
+};
+
+const { execute: executeForm, loading: loadingForm, error: errorForm } = login({
+  data: () => ({
+    email: formData.email,
+    password: formData.password,
+  }),
+  onSuccess: handleSuccess,
   onError: () => {
-    errorLogin.value = error.value.message;
+    if (errorForm.value) {
+      errorLogin.value = errorForm.value.message;
+    }
+  },
+});
+
+const { execute: executeTest, loading: loadingTest, error: errorTest } = login({
+  lazy: true,
+  data: () => ({
+    email: TEST_USER_EMAIL,
+    password: TEST_USER_PASSWORD,
+  }),
+  onSuccess: handleSuccess,
+  onError: () => {
+    if (errorTest.value) {
+      errorLogin.value = errorTest.value.message;
+    }
   },
 });
 
 const handleSubmit = async() => {
   const isValid = await v$.value.$validate();
-
   if (!isValid) {
     return;
   }
-
-  await execute({
-    data: {
-      email: formData.email,
-      password: formData.password,
-    },
-  });
+  await executeForm();
 };
+
 </script>
 
 <template>
@@ -81,7 +100,7 @@ const handleSubmit = async() => {
       @blur="v$[field.name].$touch()"
     />
     <p
-      v-if="error"
+      v-if="errorForm || errorTest"
       class="text-sm text-danger font-medium mb-4"
     >
       {{ errorLogin }}
@@ -91,7 +110,25 @@ const handleSubmit = async() => {
       class="mt-2"
       variant="primary"
       :text="$t('auth.signin')"
-      :loading="loading"
+      :loading="loadingForm"
     />
   </form>
+  <p
+    class="relative my-4 text-center text-secondaryText
+         before:absolute before:left-0 before:top-1/2 before:h-px
+         before:w-[20%] before:-translate-y-1/2 before:bg-surface
+         after:absolute after:right-0 after:top-1/2 after:h-px
+         after:w-[20%] after:-translate-y-1/2 after:bg-surface"
+  >
+    or log in with test account
+  </p>
+
+  <VButton
+    type="button"
+    class="w-full mt-2"
+    variant="primary"
+    :text="$t('auth.testUser')"
+    :loading="loadingTest"
+    @click="executeTest"
+  />
 </template>
