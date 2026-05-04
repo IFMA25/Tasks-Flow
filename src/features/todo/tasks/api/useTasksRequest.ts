@@ -30,6 +30,13 @@ export const useTasksRequest = () => {
     options?: UseApiOptions<TasksResponse, RequestBodyTaskData>,
   ) => {
     return useApiPatch(() => `/tasks/${toValue(taskId)}`, {
+      invalidateCache: [
+        "todayData",
+        "upcomingData",
+        "weeklyGoalsData",
+        "analyticsSummary",
+        "tasksByPriority",
+      ],
       ...options,
     });
   };

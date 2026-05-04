@@ -66,11 +66,6 @@ export const useTasksListFeature = (listId: string) => {
   const { execute: updateSelectedTaskExecute, loading: updateTaskLoading } =
     updateTask(() => selectedTask.value?.id, {
       lazy: true,
-      invalidateCache: [
-"todayData",
-"upcomingData",
-"weeklyGoalsData",
-],
       onSuccess: async () => {
         await fetchTasks();
       },

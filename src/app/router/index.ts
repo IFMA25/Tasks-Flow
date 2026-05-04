@@ -54,6 +54,7 @@ const routes: RouteRecordRaw[] = [
     name: RouteNames.analytics,
     component: () => import("@/pages/Analytics.vue"),
     meta: {
+      titleHeader: () => ({ translateKey: "analytics.title" }),
       permission: "read:analytics",
       titleMenu: "analytics",
       iconMenu: "chart",

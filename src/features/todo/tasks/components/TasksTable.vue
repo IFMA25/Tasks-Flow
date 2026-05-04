@@ -35,7 +35,7 @@ const displayDeadline = (deadline: string) => {
   const statusKey = getDeadlineStatusFromIso(deadline);
   if (!statusKey) return t("tasks.createTaskModal.select.noDeadline");
   if (statusKey === "later") return format(new Date(deadline), "dd MMM yyyy");
-  return t(`tasks.createTaskModal.select.${statusKey}`);
+  return t(`tasks.priority.${statusKey}`);
 };
 </script>
 
@@ -65,7 +65,7 @@ const displayDeadline = (deadline: string) => {
                      before:content-[''] before:block before:w-1.5 before:h-1.5 before:rounded-full"
         :class="colorsPriority[row.priority]"
       >
-        {{ t(`tasks.createTaskModal.select.${row.priority}`) }}
+        {{ t(`tasks.priority.${row.priority}`) }}
       </div>
     </template>
     <template #cell-deadline="{ row }">

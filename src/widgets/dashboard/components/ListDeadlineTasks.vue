@@ -22,7 +22,7 @@ const router = useRouter();
 
 <template>
   <div
-    class="max-h-[28rem] min-h-[13.75rem]
+    class="max-h-[28rem] min-h-[13.75rem] bg-bgCards
     overflow-x-hidden overflow-y-auto rounded-2xl border-2 border-surface py-4 px-6"
   >
     <div class="flex justify-between items-center mb-1">

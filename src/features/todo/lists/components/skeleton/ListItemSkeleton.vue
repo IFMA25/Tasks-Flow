@@ -5,7 +5,7 @@ import VSkeleton from "@/shared/ui/common/VSkeleton.vue";
 <template>
   <div
     class="relative h-[8.4rem] rounded-xl border
-    border-surface shadow p-6 flex flex-col gap-4 bg-bgBase"
+    border-surface shadow p-6 flex flex-col gap-4 bg-bgCards"
   >
     <div class="flex gap-2 items-center">
       <VSkeleton

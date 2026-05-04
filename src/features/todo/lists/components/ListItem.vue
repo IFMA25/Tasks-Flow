@@ -25,7 +25,7 @@ const emit = defineEmits<{
   <VContainer
     icon="circle"
     :color-icon="data.hexColor"
-    class=" flex flex-col gap-4 bg-bgBase"
+    class=" flex flex-col gap-4 bg-bgCards"
   >
     <template #title>
       <VButton
