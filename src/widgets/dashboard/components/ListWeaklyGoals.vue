@@ -1,25 +1,28 @@
 <script setup lang="ts">
 import ItemDashboardList from "./ItemDashboardList.vue";
-import { DashboardTask } from "../types";
+import { DashboardData, DashboardTask } from "../types";
 import SkeletonWeeklyGoals from "./skeleton/SkeletonWeeklyGoals.vue";
-import { useDashboardStore } from "../store/useDashboardStore";
 
 import { useTasksStore } from "@/features/todo/tasks/store/useTasksStore";
 import VButton from "@/shared/ui/common/VButton.vue";
 
-defineEmits<{
+const { data, loading } = defineProps<{
+  data: DashboardData | null;
+  loading: boolean;
+}>();
+
+const emit = defineEmits<{
   openModal: [mode: "edit" | "add"];
+  updateDashboard: [];
 }>();
 
 const tasksStore = useTasksStore();
-const dashboardStore = useDashboardStore();
 
 const handleStatusChange = async (task: DashboardTask, value: boolean) => {
   await tasksStore.completeTaskById(task.id, value, () => {
-    dashboardStore.updateDashboardExecute();
+    emit("updateDashboard");
   });
 };
-
 </script>
 
 <template>
@@ -33,7 +36,7 @@ const handleStatusChange = async (task: DashboardTask, value: boolean) => {
       </h3>
 
       <VButton
-        v-if="dashboardStore.weeklyGoalsData?.data.length"
+        v-if="data?.data.length"
         :text="$t('edit')"
         variant="dashboardNav"
         @click="$emit('openModal', 'edit')"
@@ -43,14 +46,14 @@ const handleStatusChange = async (task: DashboardTask, value: boolean) => {
       {{ $t('dashboard.weeklyGoalsSubtitle') }}
     </p>
     <SkeletonWeeklyGoals
-      v-if="dashboardStore.updateDashboardLoading || dashboardStore.updateWeeklyGoalsLoading"
+      v-if="loading"
     />
     <ul
-      v-else-if="dashboardStore.weeklyGoalsData?.data.length"
+      v-else-if="data?.data.length"
       class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4"
     >
       <ItemDashboardList
-        v-for="task in dashboardStore.weeklyGoalsData?.data"
+        v-for="task in data?.data"
         :key="task.id"
         :goals="true"
         :loading="tasksStore.completingTaskId === task.id"

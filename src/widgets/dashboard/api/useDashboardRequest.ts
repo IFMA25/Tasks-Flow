@@ -11,24 +11,27 @@ import { DashboardData } from "../types";
 
 export const useDashboardRequests = () => {
 
+  const getTasksWithDeadlines = (
+    options?: UseApiOptions<DashboardData>,
+  ) => {
+    return useApiGet<DashboardData>(() => `/tasks/deadlines`, options);
+  };
+
+  const getWeeklyGoal = (
+    options?: UseApiOptions<DashboardData>,
+  ) => {
+    return useApiGet<DashboardData>(() => `/tasks/weekly-goals`, options);
+  };
+
   const batchDashboard = (
     requests: MaybeRefOrGetter<(string | BatchRequestConfig)[]>,
     options?: UseApiBatchOptions<DashboardData>,
   ) => {
     return useApiBatch<DashboardData>(requests, {
       settled: true,
-      // cache: "dashboard", - кеш на батче нельзя, оставить просто батч или делать отдельными запросами и кешировать? но кеш будет с swr? есть ли смысл?
       ...options,
     });
   };
 
-  const updateWeeklyGoals = (
-    options?: UseApiOptions<DashboardData>,
-  ) => {
-    return useApiGet<DashboardData>(() => `/tasks/weekly-goals`, {
-      ...options,
-    });
-  };
-
-  return { batchDashboard, updateWeeklyGoals };
+  return { getTasksWithDeadlines, getWeeklyGoal, batchDashboard };
 };
