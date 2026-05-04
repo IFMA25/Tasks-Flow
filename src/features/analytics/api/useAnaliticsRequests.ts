@@ -11,7 +11,9 @@ export const useAnalyticsRequests = () => {
   };
 
   const popularTags = (options?: UseApiOptions<PopularTagsResponse[]>) => {
-    return useApiGet<PopularTagsResponse[]>("/analytics/popular-tags", options);
+    return useApiGet<PopularTagsResponse[]>("/analytics/popular-tags", {
+      ...options,
+    });
   };
 
   const tasksByPriority = (options?: UseApiOptions<TasksByPriorityResponse[]>) => {
@@ -22,7 +24,9 @@ export const useAnalyticsRequests = () => {
   };
 
   const dailyActivity = (options?: UseApiOptions<DailyActivityResponse[]>) => {
-    return useApiGet<DailyActivityResponse[]>("/analytics/daily-activity", options);
+    return useApiGet<DailyActivityResponse[]>("/analytics/daily-activity", {
+      ...options,
+    });
   };
 
   return { analyticsSummary, popularTags, tasksByPriority, dailyActivity };

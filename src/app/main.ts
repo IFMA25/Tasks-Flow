@@ -1,7 +1,16 @@
 import { createApi, createApiClient, tokenManager } from "@ametie/vue-muza-use";
 import { VueDatePicker } from "@vuepic/vue-datepicker";
+import { BarChart, LineChart, PieChart } from "echarts/charts";
+import {
+  GridComponent,
+  TooltipComponent,
+  LegendComponent,
+} from "echarts/components";
+import { use } from "echarts/core";
+import { CanvasRenderer } from "echarts/renderers";
 import { createPinia } from "pinia";
 import { createApp } from "vue";
+import VChart from "vue-echarts";
 import VueFeather from "vue-feather";
 import { toast } from "vue-sonner";
 
@@ -14,6 +23,16 @@ import { RouteNames } from "@/shared/types/routeNames";
 import "vue-multiselect/dist/vue-multiselect.min.css";
 import "@vuepic/vue-datepicker/dist/main.css";
 import "./main.scss";
+
+use([
+  CanvasRenderer,
+  BarChart,
+  LineChart,
+  PieChart,
+  GridComponent,
+  TooltipComponent,
+  LegendComponent,
+]);
 
 const app = createApp(App);
 
@@ -44,5 +63,6 @@ app.use(router);
 
 app.component("VueFeather", VueFeather);
 app.component("VueDatePicker", VueDatePicker);
+app.component("VChart", VChart);
 
 app.mount("#app");

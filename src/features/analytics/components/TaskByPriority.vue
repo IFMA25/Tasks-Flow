@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import * as echarts from "echarts";
-import { ref, onBeforeUnmount, watch, computed } from "vue";
+import type { EChartsOption } from "echarts";
+import { computed } from "vue";
 import { useI18n } from "vue-i18n";
 
 import { useAnalyticsRequests } from "../api/useAnaliticsRequests";
@@ -18,10 +18,6 @@ const priorityKeyMap: Record<string, string> = {
   high: "tasks.priority.high",
 };
 
-const tasksPriorityChartRef = ref<HTMLDivElement | null>(null);
-
-let chart: echarts.ECharts | null = null;
-
 const { t } = useI18n();
 const { tasksByPriority } = useAnalyticsRequests();
 
@@ -30,13 +26,13 @@ const { data, loading } = tasksByPriority({
   });
 
 const pieData = computed(() =>
-  (data?.value || []).map(item => ({
+  (data.value || []).map(item => ({
     name: t(priorityKeyMap[item.priority] ?? item.priority),
     value: item.count,
   })),
 );
 
-const buildOption = (): echarts.EChartsOption => ({
+const option = computed<EChartsOption>(() => ({
   color: pieColors,
   tooltip: {
     trigger: "item",
@@ -80,37 +76,8 @@ const buildOption = (): echarts.EChartsOption => ({
       animationEasing: "cubicOut",
     },
   ],
-});
+}));
 
-const handleResize = () => {
-  if (!chart) {
-    return;
-  }
-
-  chart.resize();
-};
-
-watch(
-  [() => tasksPriorityChartRef.value, () => pieData.value],
-  ([el, pie]) => {
-    if (!el) return;
-    if (!pie || !pie.length) return;
-
-    if (!chart) {
-      chart = echarts.init(el);
-      window.addEventListener("resize", handleResize);
-    }
-
-    chart.setOption(buildOption(), true);
-  },
-  { deep: true },
-);
-
-onBeforeUnmount(() => {
-  window.removeEventListener("resize", handleResize);
-  chart?.dispose();
-  chart = null;
-});
 </script>
 
 <template>
@@ -121,7 +88,7 @@ onBeforeUnmount(() => {
     />
     <div
       class="flex flex-col items-center justify-center gap-4 h-[19rem]
-     bg-bgCards border border-surface rounded-2xl"
+      bg-bgCards border border-surface rounded-2xl"
     >
       <VSkeleton
         v-if="loading"
@@ -130,10 +97,11 @@ onBeforeUnmount(() => {
         rounded="full"
       />
       <EmptyStateAnalitics v-else-if="!loading && !data?.length" />
-      <div
+      <VChart
         v-else
-        ref="tasksPriorityChartRef"
         class="w-full h-full"
+        :option="option"
+        autoresize
       />
     </div>
   </div>

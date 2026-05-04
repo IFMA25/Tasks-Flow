@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import * as echarts from "echarts";
-import { computed, onBeforeUnmount, ref, watch } from "vue";
+import type { EChartsOption } from "echarts";
+import { computed, ref } from "vue";
 
 import { useAnalyticsRequests } from "../api/useAnaliticsRequests";
 import { chartColors } from "../variable";
@@ -20,9 +20,6 @@ const topCountItems = [
 
 const countTagValue = ref(topCountItems[0].value);
 
-const tagChartRef = ref<HTMLDivElement | null>(null);
-let chart: echarts.ECharts | null = null;
-
 const { popularTags } = useAnalyticsRequests();
 
 const { data, loading } = popularTags({
@@ -30,11 +27,10 @@ const { data, loading } = popularTags({
   params: () => ({ limit: countTagValue.value }),
 });
 
-const categories = computed(() => data.value?.map(item => item.tag));
+const categories = computed(() => data.value?.map(item => item.tag) ?? []);
+const values = computed(() => data.value?.map(item => item.count) ?? []);
 
-const values = computed(() => data.value?.map(item => item.count));
-
-const buildOption = (): echarts.EChartsOption => ({
+const option = computed<EChartsOption>(() => ({
   grid: {
     left: "3%",
     right: "3%",
@@ -85,37 +81,7 @@ const buildOption = (): echarts.EChartsOption => ({
   ],
   animationDuration: 600,
   animationEasing: "cubicOut",
-});
-
-const handleResize = () => {
-  if (!chart) {
-    return;
-  }
-
-  chart.resize();
-};
-
-watch(
-  [() => tagChartRef.value, () => values.value],
-  ([el, val]) => {
-    if (!el) return;
-    if (!val || !val.length) return;
-
-    if (!chart) {
-      chart = echarts.init(el);
-      window.addEventListener("resize", handleResize);
-    }
-
-    chart.setOption(buildOption(), true);
-  },
-  { deep: true },
-);
-
-onBeforeUnmount(() => {
-  window.removeEventListener("resize", handleResize);
-  chart?.dispose();
-  chart = null;
-});
+}));
 </script>
 
 <template>
@@ -144,9 +110,11 @@ onBeforeUnmount(() => {
         />
       </div>
       <EmptyStateAnalitics v-else-if="!loading && !data?.length" />
-      <div
-        ref="tagChartRef"
+      <VChart
+        v-else
         class="w-full h-full"
+        :option="option"
+        autoresize
       />
     </div>
   </div>

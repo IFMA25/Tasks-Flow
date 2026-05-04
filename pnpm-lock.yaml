@@ -38,6 +38,9 @@ importers:
       vue:
         specifier: ^3.5.31
         version: 3.5.31(typescript@6.0.2)
+      vue-echarts:
+        specifier: ^8.0.1
+        version: 8.0.1(echarts@6.0.0)(vue@3.5.31(typescript@6.0.2))
       vue-feather:
         specifier: ^2.0.0
         version: 2.0.0(feather-icons@4.29.2)(vue@3.5.31(typescript@6.0.2))
@@ -2705,6 +2708,12 @@ packages:
     peerDependenciesMeta:
       '@vue/composition-api':
         optional: true
+
+  vue-echarts@8.0.1:
+    resolution: {integrity: sha512-23rJTFLu1OUEGRWjJGmdGt8fP+8+ja1gVgzMYPIPaHWpXegcO1viIAaeu2H4QHESlVeHzUAHIxKXGrwjsyXAaA==}
+    peerDependencies:
+      echarts: ^6.0.0
+      vue: ^3.3.0
 
   vue-eslint-parser@10.4.0:
     resolution: {integrity: sha512-Vxi9pJdbN3ZnVGLODVtZ7y4Y2kzAAE2Cm0CZ3ZDRvydVYxZ6VrnBhLikBsRS+dpwj4Jv4UCv21PTEwF5rQ9WXg==}
@@ -5412,6 +5421,11 @@ snapshots:
 
   vue-demi@0.14.10(vue@3.5.31(typescript@6.0.2)):
     dependencies:
+      vue: 3.5.31(typescript@6.0.2)
+
+  vue-echarts@8.0.1(echarts@6.0.0)(vue@3.5.31(typescript@6.0.2)):
+    dependencies:
+      echarts: 6.0.0
       vue: 3.5.31(typescript@6.0.2)
 
   vue-eslint-parser@10.4.0(eslint@8.57.1):

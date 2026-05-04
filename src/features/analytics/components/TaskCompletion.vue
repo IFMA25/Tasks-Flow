@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { format, parseISO } from "date-fns";
-import * as echarts from "echarts";
-import { onBeforeUnmount, ref, watch, computed } from "vue";
+import type { EChartsOption } from "echarts";
+import { ref, computed } from "vue";
 import { useI18n } from "vue-i18n";
 
 import { useAnalyticsRequests } from "../api/useAnaliticsRequests";
@@ -11,9 +11,7 @@ import EmptyStateAnalitics from "./EmptyStateAnalitics.vue";
 import VButtonGroup from "@/shared/ui/common/VButtonGroup.vue";
 import VSkeleton from "@/shared/ui/common/VSkeleton.vue";
 import VTitle from "@/shared/ui/common/VTitle.vue";
-import { lastMonthDate, lastWeekDate, todayDate } from "@/shared/utils/dayDate";
-
-
+import { getLastMonthDate, getLastWeekDate, getTodayDate  } from "@/shared/utils/dayDate";
 
 const { t } = useI18n();
 
@@ -25,17 +23,14 @@ const periodItems = computed(() => [
 ]);
 
 const period = ref<string>(periodItems.value[0].value);
-const chartRef = ref<HTMLDivElement | null>(null);
-
-let chart: echarts.ECharts | null = null;
 
 const { dailyActivity } = useAnalyticsRequests();
 
 const { data, loading } = dailyActivity({
   immediate: true,
   params: () => ({
-    startDate: period.value === "week" ? lastWeekDate() : lastMonthDate(),
-    endDate: todayDate(),
+    startDate: period.value === "week" ? getLastWeekDate() : getLastMonthDate(),
+    endDate: getTodayDate(),
   }),
 });
 
@@ -66,10 +61,7 @@ const yMax = computed(() => {
   return max + 1;
 });
 
-const updateChart = () => {
-  if (!chart) return;
-
-  const option: echarts.EChartsOption = {
+const option = computed<EChartsOption>(() => ({
     grid: {
       left: "3%",
       right: "3%",
@@ -126,40 +118,8 @@ const updateChart = () => {
         data: completedSeries.value,
       },
     ],
-  };
+  }));
 
-  chart.setOption(option, true);
-};
-
-const handleResize = () => {
-  if (!chart) {
-    return;
-  }
-
-  chart.resize();
-};
-
-watch(
-  [() => chartRef.value, () => data.value, () => legendLabels.value],
-  ([el, dataValue]) => {
-    if (!el) return;
-    if (!dataValue || !dataValue.length) return;
-
-    if (!chart) {
-      chart = echarts.init(el);
-      window.addEventListener("resize", handleResize);
-    }
-
-    updateChart();
-  },
-  { deep: true },
-);
-
-onBeforeUnmount(() => {
-  window.removeEventListener("resize", handleResize);
-  chart?.dispose();
-  chart = null;
-});
 </script>
 
 <template>
@@ -187,9 +147,11 @@ onBeforeUnmount(() => {
       />
     </div>
     <EmptyStateAnalitics v-else-if="!loading && !data?.length" />
-    <div
-      ref="chartRef"
-      class="w-full h-[calc(100%-1rem)]"
+    <VChart
+      v-else
+      class="w-full h-full"
+      :option="option"
+      autoresize
     />
   </div>
 </template>
