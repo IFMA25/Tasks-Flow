@@ -2,7 +2,6 @@
 import { computed, ref, watch } from "vue";
 
 import { useDashboardRequests } from "../api/useDashboardRequest";
-import { useDashboardStore } from "../store/useDashboardStore";
 import { DashboardData } from "../types";
 
 import { useListsStore } from "@/features/todo/lists/store/useListsStore";
@@ -21,24 +20,30 @@ const { mode = "add", weeklyGoalsData  } = defineProps<{
   weeklyGoalsData: DashboardData | null;
 }>();
 
+const emit = defineEmits<{
+  updateWeeklyGoals: [];
+}>();
+
 const selectedIds = ref<string[]>([]);
 const openListIds = ref<string[]>([]);
-const isLoading = ref(false);
 
-const { open, close } = useModal("weeklyGoalsModal");
 const listStore = useListsStore();
-const dashboardStore = useDashboardStore();
+const { open, close } = useModal("weeklyGoalsModal");
 const { batchDashboard } = useDashboardRequests();
+
+const tasksToAdd = computed(() =>
+  selectedIds.value.filter(id => !originalSelectedIds.value.includes(id)),
+);
+const tasksToRemove = computed(() =>
+  originalSelectedIds.value.filter(id => !selectedIds.value.includes(id)),
+);
 
 const originalSelectedIds = computed(() => {
   return weeklyGoalsData?.data.map(task => task.id) ?? [];
 });
 
 const tasksToUpdate = computed(() => {
-  const tasksToAdd = selectedIds.value.filter(id => !originalSelectedIds.value.includes(id));
-  const tasksToRemove = originalSelectedIds.value.filter(id => !selectedIds.value.includes(id));
-
-  return [...tasksToAdd, ...tasksToRemove];
+    return [...tasksToAdd.value, ...tasksToRemove.value];
 });
 
 const isDisabled = computed(() => {
@@ -47,6 +52,21 @@ const isDisabled = computed(() => {
   };
   return selectedIds.value.length > maxGoals;
 });
+
+const { execute: batchUpdateWeeklyGoalsExecute, loading: batchLoading } = batchDashboard(
+    () =>
+      tasksToUpdate.value.map(id => ({
+        url: `/tasks/${id}/toggle-weekly-goal`,
+        method: "PATCH",
+      })),
+    {
+      immediate: false,
+      onFinish: () => {
+        close();
+        emit("updateWeeklyGoals");
+      },
+    },
+  );
 
 const handleSelectTask = (taskId: string, checked: boolean) => {
   if (checked) {
@@ -57,26 +77,7 @@ const handleSelectTask = (taskId: string, checked: boolean) => {
 };
 
 const handleSave = () => {
-  isLoading.value = true;
-
   if(!tasksToUpdate.value.length) return close();
-
-  const { execute: batchUpdateWeeklyGoalsExecute } = batchDashboard(
-    () =>
-      tasksToUpdate.value.map(id => ({
-        url: `/tasks/${id}/toggle-weekly-goal`,
-        method: "PATCH",
-      })),
-    {
-      immediate: false,
-      onFinish: () => {
-        close();
-        isLoading.value = false;
-        dashboardStore.updateWeeklyGoalsExecute();
-      },
-    },
-  );
-
   batchUpdateWeeklyGoalsExecute();
 };
 
@@ -96,10 +97,9 @@ const openModal = () => {
 };
 
 watch(
-  () => listStore.dataLists?.data,
-  () => {
-    computeOpenListIds();
-  },
+  [() => listStore.dataLists?.data, selectedIds],
+  () => computeOpenListIds(),
+  { deep: true },
 );
 
 defineExpose({ openModal });
@@ -187,7 +187,7 @@ defineExpose({ openModal });
       <VButton
         :text="$t('saveBtnText')"
         variant="primary"
-        :loading="isLoading"
+        :loading="batchLoading"
         :disabled="isDisabled"
         @click="handleSave"
       />

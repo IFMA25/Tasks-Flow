@@ -1,23 +1,23 @@
 <script setup lang="ts">
 import { useRouter } from "vue-router";
 
-import { DashboardData } from "../types";
 import ItemDashboardList from "./ItemDashboardList.vue";
+import { DashboardData } from "../types";
 import SkeletonDeadlineTasks from "./skeleton/SkeletonDeadlineTasks.vue";
 
 import { RouteNames } from "@/shared/types/routeNames";
 import VButton from "@/shared/ui/common/VButton.vue";
 
-
-const { titleList, data, subtitleList, emptyText, loading } = defineProps<{
-    data: DashboardData | null;
-    titleList: string;
-    subtitleList: string;
-    emptyText: string;
-    loading: boolean;
+const { data, loading, titleList, subtitleList, emptyText } = defineProps<{
+  data: DashboardData | null;
+  loading: boolean;
+  titleList: string;
+  subtitleList: string;
+  emptyText: string;
 }>();
 
 const router = useRouter();
+
 </script>
 
 <template>
