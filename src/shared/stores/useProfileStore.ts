@@ -8,7 +8,6 @@ import { User } from "../types";
 
 import { RouteNames } from "@/shared/types/routeNames";
 
-
 export const useProfileStore = defineStore("profile", () => {
   const profileData = ref<User | null>(null);
   const initialized = ref(false);

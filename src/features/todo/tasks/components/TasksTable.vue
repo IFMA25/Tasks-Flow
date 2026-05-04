@@ -35,7 +35,7 @@ const displayDeadline = (deadline: string) => {
   const statusKey = getDeadlineStatusFromIso(deadline);
   if (!statusKey) return t("tasks.createTaskModal.select.noDeadline");
   if (statusKey === "later") return format(new Date(deadline), "dd MMM yyyy");
-  return t(`tasks.priority.${statusKey}`);
+  return t(`tasks.createTaskModal.select.${statusKey}`);
 };
 </script>
 

@@ -32,6 +32,9 @@ const { data, loading } = dailyActivity({
     startDate: period.value === "week" ? getLastWeekDate() : getLastMonthDate(),
     endDate: getTodayDate(),
   }),
+  onSuccess: () => {
+    console.log("data", data.value);
+  },
 });
 
 const legendLabels = computed(() => [

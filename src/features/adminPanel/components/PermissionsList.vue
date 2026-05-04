@@ -19,6 +19,7 @@ const {
 const emit = defineEmits(["update:modelValue"]);
 
 const permissionsForCategory  = (category: Category) => {
+  console.log("perm", allPermissions);
   return allPermissions.filter(p => category.value.includes(p.category));
 };
 </script>

@@ -12,6 +12,7 @@ import ListItemSkeleton from "./components/skeleton/ListItemSkeleton.vue";
 import UsersListItemSkeleton from "./components/skeleton/UsersListItemSkeleton.vue";
 import { useListsFeature } from "./composable/useListsFeature";
 
+import { useProfileStore } from "@/shared/stores/useProfileStore";
 import type { Actions } from "@/shared/types";
 import VEmptyState from "@/shared/ui/EmptyState.vue";
 import VButton from "@/shared/ui/common/VButton.vue";
@@ -21,6 +22,8 @@ import { listsTabs } from "@/shared/variables/tabListsPage";
 const skeletonCount = 6;
 
 const { t } = useI18n();
+
+const profileStore = useProfileStore();
 
 const formModalRef = useTemplateRef<InstanceType<typeof ListFormModal>>("formModalRef");
 const deleteModalRef = useTemplateRef<InstanceType<typeof DeleteListModal>>("deleteModalRef");
@@ -33,7 +36,7 @@ const actions = computed<Actions[]>(() => [
 ]);
 
 const tabs = computed(() => [
-  { value: "myLists",    label: t("lists.myLists")    },
+  { value: "myLists",    label: t("lists.myLists") },
   { value: "usersLists", label: t("lists.usersLists") },
 ]);
 
@@ -78,6 +81,7 @@ const handleAction = (list: ListData, action: ListAction) => {
 
   <div class="border border-subtle p-1 rounded-2xl w-fit mb-7">
     <VButtonGroup
+      v-if="profileStore.hasAccess('read:users')"
       v-model="activeTab"
       :group-items="tabs"
       label="Lists users"
@@ -115,7 +119,10 @@ const handleAction = (list: ListData, action: ListAction) => {
             @action="handleAction"
           />
         </template>
-        <template v-else-if="activeTab === listsTabs.usersLists">
+        <template
+          v-else-if="activeTab === listsTabs.usersLists &&
+            profileStore.hasAccess('read:users-lists')"
+        >
           <UsersListItem
             v-for="group in userLists"
             :key="group.owner.id"

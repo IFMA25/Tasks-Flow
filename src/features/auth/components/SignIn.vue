@@ -47,6 +47,7 @@ const handleSuccess = (response: { data: LoginResponse }) => {
 };
 
 const { execute: executeForm, loading: loadingForm, error: errorForm } = login({
+  lazy: true,
   data: () => ({
     email: formData.email,
     password: formData.password,
@@ -60,7 +61,6 @@ const { execute: executeForm, loading: loadingForm, error: errorForm } = login({
 });
 
 const { execute: executeTest, loading: loadingTest, error: errorTest } = login({
-  lazy: true,
   data: () => ({
     email: TEST_USER_EMAIL,
     password: TEST_USER_PASSWORD,

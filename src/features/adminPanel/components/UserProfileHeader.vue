@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { useI18n } from "vue-i18n";
+import { useRoute } from "vue-router";
 
 import { RouteNames } from "@/shared/types/routeNames";
 import VButton from "@/shared/ui/common/VButton.vue";
@@ -13,11 +14,13 @@ defineProps<{
 }>();
 
 const { t } = useI18n();
+const route = useRoute();
 </script>
 
 <template>
   <div class="inline-block mb-6">
     <VButton
+      v-if="route.query.id"
       variant="navItem"
       :to="RouteNames.users"
       :text="t('userInfo.backAllUsers')"
