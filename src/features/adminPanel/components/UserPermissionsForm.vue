@@ -4,16 +4,18 @@ import { useI18n } from "vue-i18n";
 import { toast } from "vue-sonner";
 
 import PermissionsControl from "./PermissionsControl.vue";
-import { useUpdateUserPermissions, useUpdateUserRole } from "../api/useAdminPanelRequests";
 import { usePermissionsManager } from "../composables/usePermissionsManager";
 import { Category, Permission, PermissionRole } from "../types";
 import { sameArray } from "../utils";
 import PermissionsList from "./PermissionsList.vue";
+import { useAdminPanelRequests } from "../api/useAdminPanelRequests";
 
+import { useProfileStore } from "@/shared/stores/useProfileStore";
 import { RoleOption, User } from "@/shared/types";
 import VButton from "@/shared/ui/common/VButton.vue";
 
 const { t } = useI18n();
+const profileStore = useProfileStore();
 
 const {
   loading,
@@ -28,6 +30,10 @@ const {
   permissionsRole: PermissionRole | null;
   loading?: boolean;
 }>();
+
+const savedPermissions = ref<string[]>([]);
+
+const { updateUserPermissions, updateUserRole } = useAdminPanelRequests();
 
 const userRolesList = computed<RoleOption[]>(() => [
   { key: "admin", label: t("roles.admin"), value: "admin" },
@@ -57,6 +63,9 @@ const category = computed<Category[]> (() => [
   },
 ]);
 
+const manageRole = computed(() => profileStore.hasAccess("manage:roles"));
+const managePermissions = computed(() => profileStore.hasAccess("manage:permissions"));
+
 const userRole = ref<string | null>(null);
 
 const {
@@ -69,22 +78,25 @@ const {
 
 
 const {
-  execute: updateUserPermissions,
+  execute: updateUserPermissionsExecute,
   loading: updateUserPermissionsLoad,
   data: updateUserPermissionsData,
-} = useUpdateUserPermissions(userId, {
+} = updateUserPermissions(userId, {
   lazy: true,
   data: () => ({ permissions: getActivePermissions() }),
   onSuccess: () => {
-    setPermissions(updateUserPermissionsData.value.permissions);
+    const newPermissions = updateUserPermissionsData.value?.permissions ?? [];
+    setPermissions(newPermissions);
+    savedPermissions.value = [...newPermissions].sort();
   },
 });
 
 const {
-  execute: updateUserRole,
+  execute: updateUserRoleExecute,
   loading: updateUserRoleLoad,
   data: updateUserRoleData,
-} = useUpdateUserRole(userId, {
+} = updateUserRole(userId, {
+  lazy: true,
   onSuccess: () => {
     userRole.value = updateUserRoleData.value.role;
   },
@@ -94,11 +106,11 @@ const handleSubmit = async () => {
   try {
     const promises = [];
     if (isRoleChanged.value) {
-      promises.push(updateUserRole({
+      promises.push(updateUserRoleExecute({
         data: { role: userRole.value ?? "" },
       }));
     }
-    promises.push(updateUserPermissions());
+    promises.push(updateUserPermissionsExecute());
 
     await Promise.all(promises);
     toast.success(t("userInfo.saveSuccess"));
@@ -113,19 +125,21 @@ const isRoleChanged = computed(() => userRole.value !== userData?.role);
 
 const isDataChanged = computed(() => {
   if (!userData) return false;
-  const currentPermissions = getActivePermissions();
-  const initialPermissions = [...userData.permissions]?.sort();
-  const isPermissionsChanged = !sameArray(currentPermissions, initialPermissions);
+  const current = [...getActivePermissions()].sort();
+  const isPermissionsChanged = !sameArray(current, savedPermissions.value);
 
   return isRoleChanged.value || isPermissionsChanged;
 });
 
 watch(
-  [() => userData, () => permissions],
-  ([newUser, allPermissions]) => {
-    if (!newUser || !allPermissions?.length) return;
-    setPermissions(newUser.permissions);
+  () => userData,
+  (newUser) => {
+    if (!newUser) return;
     userRole.value = newUser.role;
+    savedPermissions.value = [...newUser.permissions].sort();
+
+    setPermissions(savedPermissions.value);
+    console.log("savedPermissions ",savedPermissions.value);
   },
   { immediate: true },
 );
@@ -142,7 +156,7 @@ watch(
       :role-options="userRolesList"
       :all-selected="areAllSelected"
       :loading="loading"
-      :disabled="isUpdating"
+      :disabled="isUpdating || !manageRole"
       @update:all-selected="toggleAllPermissions"
       @update:role="(value) => setPermissions(permissionsRole[value.toUpperCase()])"
     />
@@ -151,7 +165,7 @@ watch(
       :categories="category"
       :all-permissions="permissions"
       :loading="loading"
-      :disabled="isUpdating"
+      :disabled="isUpdating || !managePermissions"
     />
     <div class="ml-auto">
       <VButton

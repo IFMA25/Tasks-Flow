@@ -5,6 +5,7 @@ const emit = defineEmits<{ (e: "close"): void }>();
 
 const props = withDefaults(defineProps<{
   isOpen: boolean;
+  rect: DOMRect | null;
   width?: string;
   placement?: keyof typeof placeVariant;
 }>(), {
@@ -12,30 +13,43 @@ const props = withDefaults(defineProps<{
   placement: "bottom",
 });
 
-const placeVariant = {
-  bottom: "top-full right-0",
-  bottomRight: "top-full left-[-1rem]",
-  top: "bottom-full right-3",
+const placeVariant: Record<string, string> = {
+  bottom: "",
+  bottomRight: "",
+  top: "-translate-y-full",
 };
 
 const propContentClass = computed(() => {
-  const placement = placeVariant[props.placement];
-  return [placement, props.width].join(" ");
+  const placementClass = placeVariant[props.placement] ?? "";
+  return [props.width, placementClass].join(" ");
+});
+
+const positionStyle = computed(() => {
+  if (!props.rect) return {};
+  const r = props.rect;
+
+  return {
+    top: `${props.placement === "top" ? r.top : r.bottom}px`,
+    left: `${props.placement === "bottomRight" ? r.right : r.left - 40}px`,
+  };
 });
 </script>
 
 <template>
-  <Transition name="dropdown">
-    <div
-      v-if="props.isOpen"
-      class="absolute text-nowrap min-w-40 border border-default bg-bgBase
-        shadow-dropdown rounded text-primary text-base z-10
-        translate-all duration-300"
-      :class="propContentClass"
-      v-bind="$attrs"
-      @click="emit('close')"
-    >
-      <slot />
-    </div>
-  </Transition>
+  <Teleport to="body">
+    <Transition name="dropdown">
+      <div
+        v-if="props.isOpen && props.rect"
+        class="fixed text-nowrap min-w-40 border border-default bg-bgBase
+            shadow-dropdown rounded text-primary text-base
+            translate-all duration-50 z-[1000]"
+        :class="propContentClass"
+        :style="positionStyle"
+        v-bind="$attrs"
+        @click="emit('close')"
+      >
+        <slot />
+      </div>
+    </Transition>
+  </Teleport>
 </template>

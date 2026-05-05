@@ -8,13 +8,12 @@ import {
 import { useI18n } from "vue-i18n";
 import { useRouter } from "vue-router";
 
-import {
-  useUsersDataRequest,
-} from "./api/useAdminPanelRequests";
+import { useAdminPanelRequests } from "./api/useAdminPanelRequests";
 import DeleteUserModal from "./components/DeleteUserModal.vue";
 import UsersTableToolbar from "./components/UsersTableToolbar.vue";
 import { formatDate } from "./utils";
 
+import { useProfileStore } from "@/shared/stores/useProfileStore";
 import {
   ActionKey,
   Actions,
@@ -28,6 +27,7 @@ import VTitle from "@/shared/ui/common/VTitle.vue";
 import VTable from "@/shared/ui/table/VTable.vue";
 
 const { t } = useI18n();
+const profileStore = useProfileStore();
 
 const tableHeads = computed(() => [
   { key: "member", label: t("table.tableHeads.member"), position: "text-left" },
@@ -35,11 +35,25 @@ const tableHeads = computed(() => [
   { key: "createdAt", label: t("table.tableHeads.createdAt"), position: "text-left" },
   { key: "action", label: t("table.tableHeads.action"), position: "text-center" },
 ]);
+const canEditUsers = computed(() => profileStore.hasAccess("update:user"));
+const canDeleteUsers = computed(() => profileStore.hasAccess("delete:user"));
 
-const actions = computed<Actions[]>(() => [
-  { key: "edit", label: t("usersList.userProfile") },
-  { key: "delete", label: t("deleteModal.title", { entityName: t("usersList.user") }) },
-]);
+const actions = computed<Actions[]>(() => {
+  const items: Actions[] = [];
+
+  if (canEditUsers.value) {
+    items.push({ key: "edit", label: t("usersList.userProfile") });
+  }
+
+  if (canDeleteUsers.value) {
+    items.push({
+      key: "delete",
+      label: t("deleteModal.title", { entityName: t("usersList.user") }),
+    });
+  }
+
+  return items;
+});
 
 const roleOptions = computed<RoleOption[]>(() => [
   { key: "allRoles", label: t("filters.allRoles"), value: undefined },
@@ -63,6 +77,7 @@ const debouncedSearch = refDebounced(modelSearch, 800);
 const deleteModalRef = useTemplateRef<InstanceType<typeof DeleteUserModal>>("deleteModalRef");
 
 const router = useRouter();
+const { usersDataRequest } = useAdminPanelRequests();
 
 const fetchParams = computed(() => {
   const selectedSort = sortOptions.value.find(o => o.key === sortModel.value)?.params;
@@ -76,9 +91,9 @@ const fetchParams = computed(() => {
   };
 });
 
-const { execute, loading, data: usersData } = useUsersDataRequest({
+const { execute, loading, data: usersData } = usersDataRequest({
   immediate: true,
-  params: fetchParams,
+  params: () => fetchParams.value,
 });
 
 const loadMore = (limit: number) => {

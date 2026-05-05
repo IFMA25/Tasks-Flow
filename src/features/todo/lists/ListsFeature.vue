@@ -12,7 +12,6 @@ import ListItemSkeleton from "./components/skeleton/ListItemSkeleton.vue";
 import UsersListItemSkeleton from "./components/skeleton/UsersListItemSkeleton.vue";
 import { useListsFeature } from "./composable/useListsFeature";
 
-import { useProfileStore } from "@/shared/stores/useProfileStore";
 import type { Actions } from "@/shared/types";
 import VEmptyState from "@/shared/ui/EmptyState.vue";
 import VButton from "@/shared/ui/common/VButton.vue";
@@ -23,22 +22,47 @@ const skeletonCount = 6;
 
 const { t } = useI18n();
 
-const profileStore = useProfileStore();
-
 const formModalRef = useTemplateRef<InstanceType<typeof ListFormModal>>("formModalRef");
 const deleteModalRef = useTemplateRef<InstanceType<typeof DeleteListModal>>("deleteModalRef");
 
-const { activeTab, userLists, filters, sortOptions, listsStore, handleRequest } = useListsFeature();
+const {
+  activeTab,
+  userLists,
+  filters,
+  sortOptions,
+  listsStore,
+  canReadOwn,
+  canReadAll,
+  canCreateList,
+  canUpdateList,
+  canDeleteList,
+  handleRequest,
+} = useListsFeature();
 
-const actions = computed<Actions[]>(() => [
-  { key: "edit",   label: t("lists.editList") },
-  { key: "delete", label: t("deleteModal.title", { entityName: t("lists.list") }) },
-]);
+const actions = computed<Actions[]>(() => {
+  const items: Actions[] = [];
 
-const tabs = computed(() => [
-  { value: "myLists",    label: t("lists.myLists") },
-  { value: "usersLists", label: t("lists.usersLists") },
-]);
+  if (canUpdateList.value) {
+    items.push({ key: "edit", label: t("lists.editList") });
+  }
+
+  if (canDeleteList.value) {
+    items.push({
+      key: "delete",
+      label: t("deleteModal.title", { entityName: t("lists.list") }),
+    });
+  }
+
+  return items;
+});
+
+const tabs = computed(() => {
+  if (!(canReadOwn.value && canReadAll.value)) return [];
+  return [
+    { value: listsTabs.myLists,    label: t("lists.myLists") },
+    { value: listsTabs.usersLists, label: t("lists.usersLists") },
+  ];
+});
 
 const handleAction = (list: ListData, action: ListAction) => {
   if (action === "edit") {
@@ -47,6 +71,7 @@ const handleAction = (list: ListData, action: ListAction) => {
     deleteModalRef.value?.openModal(list);
   }
 };
+
 </script>
 
 <template>
@@ -55,7 +80,7 @@ const handleAction = (list: ListData, action: ListAction) => {
     defer
   >
     <VButton
-      v-if="activeTab === listsTabs.myLists"
+      v-if="activeTab === listsTabs.myLists && canCreateList"
       icon="icon-plus"
       variant="primary"
       :text="$t('lists.createListBtn')"
@@ -81,7 +106,6 @@ const handleAction = (list: ListData, action: ListAction) => {
 
   <div class="border border-subtle p-1 rounded-2xl w-fit mb-7">
     <VButtonGroup
-      v-if="profileStore.hasAccess('read:users')"
       v-model="activeTab"
       :group-items="tabs"
       label="Lists users"
@@ -120,8 +144,7 @@ const handleAction = (list: ListData, action: ListAction) => {
           />
         </template>
         <template
-          v-else-if="activeTab === listsTabs.usersLists &&
-            profileStore.hasAccess('read:users-lists')"
+          v-else-if="activeTab === listsTabs.usersLists"
         >
           <UsersListItem
             v-for="group in userLists"

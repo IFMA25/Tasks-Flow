@@ -35,7 +35,7 @@ const routes: RouteRecordRaw[] = [
             ? "lists.titleOverview"
             : "lists.title",
       }),
-      permission: "read:list",
+      permission: ["read:list", "read:all-lists"],
       titleMenu: "lists",
       iconMenu: "lists",
     },
@@ -45,7 +45,7 @@ const routes: RouteRecordRaw[] = [
     name: RouteNames.tasks,
     component: () => import("@/pages/Tasks.vue"),
     meta: {
-      permission: "read:list",
+      permission: ["read:all-tasks", "read:task"],
       showInMenu: false,
     },
   },
@@ -75,7 +75,7 @@ const routes: RouteRecordRaw[] = [
     name: RouteNames.users,
     component: () => import("@/pages/Users.vue"),
     meta: {
-      role: "admin",
+      // role: "admin",
       permission: "read:users",
       showHeader: false,
       titleMenu: "admin panel",

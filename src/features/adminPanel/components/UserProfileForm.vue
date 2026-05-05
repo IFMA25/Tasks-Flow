@@ -3,7 +3,7 @@ import { computed, ref, watch } from "vue";
 import { useI18n } from "vue-i18n";
 import { toast } from "vue-sonner";
 
-import { useUpdateUserProfile } from "../api/useAdminPanelRequests";
+import { useAdminPanelRequests } from "../api/useAdminPanelRequests";
 
 import { useProfileStore } from "@/shared/stores/useProfileStore";
 import VButton from "@/shared/ui/common/VButton.vue";
@@ -11,11 +11,12 @@ import VInput from "@/shared/ui/common/VInput.vue";
 
 
 const profileStore = useProfileStore();
+const { updateUserProfile } = useAdminPanelRequests();
 const { t } = useI18n();
 
 const userName = ref<string>("");
 
-const { execute, loading, data } = useUpdateUserProfile({
+const { execute, loading, data } = updateUserProfile({
   onSuccess: () => {
     profileStore.profileData = data.value;
     toast.success(t("userInfo.saveSuccess"));

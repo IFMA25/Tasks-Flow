@@ -6,7 +6,6 @@ import { RouteNames } from "@/shared/types/routeNames";
 
 export const guards = async (
   to: RouteLocationNormalized,
-  // from: RouteLocationNormalized,
 ) => {
   const hasToken = !!tokenManager.getAccessToken();
   const profileStore = useProfileStore();
@@ -27,10 +26,21 @@ export const guards = async (
     if (!tokenManager.getAccessToken()) {
       return { name: RouteNames.auth, query: { mode: "signin" } };
     }
+  }
 
-    const routePermission = to.meta.permission;
-    if (routePermission && !profileStore.hasAccess(routePermission)) {
-      console.warn(`[Guard] Access denied. Required: ${routePermission}`);
+  if (hasToken) {
+    const metaPermission = to.meta.permission;
+
+    let hasAccessRoute = true;
+
+    if (Array.isArray(metaPermission)) {
+      hasAccessRoute = metaPermission.some((p) => profileStore.hasAccess(p));
+    } else if (typeof metaPermission === "string") {
+      hasAccessRoute = profileStore.hasAccess(metaPermission);
+    }
+
+    if (!hasAccessRoute) {
+      console.warn("[Guard] Access denied.", metaPermission);
       return { name: RouteNames.notFound };
     }
 

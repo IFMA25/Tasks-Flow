@@ -3,7 +3,7 @@ import { ref } from "vue";
 import { useI18n } from "vue-i18n";
 import { toast } from "vue-sonner";
 
-import { useUserDelete } from "../api/useAdminPanelRequests";
+import { useAdminPanelRequests } from "../api/useAdminPanelRequests";
 
 import { useModal } from "@/shared/composables/useModal";
 import { User } from "@/shared/types";
@@ -11,6 +11,7 @@ import VConfirmDeleteModal from "@/shared/ui/VConfirmDeleteModal.vue";
 
 const { t } = useI18n();
 const { open, close } = useModal("userDeleteModal");
+const { userDelete } = useAdminPanelRequests();
 
 const emit = defineEmits<{
   deleted: []
@@ -24,7 +25,8 @@ const openModal = (user: User) => {
 };
 
 const { execute, loading  }
-= useUserDelete(() => selectedUser.value?.id, {
+= userDelete(() => selectedUser.value?.id, {
+  lazy: true,
   onSuccess: () => {
     emit("deleted");
     close();

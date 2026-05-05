@@ -33,10 +33,16 @@ export const useProfileStore = defineStore("profile", () => {
     await fetchProfileRequest();
   };
 
-  const hasAccess = (routePermission: string) => {
+  const hasAccess = (routePermission: string | string[]) => {
     if (!profileData.value?.permissions) return false;
-    return profileData.value.permissions.some(
-      (p: string) => p?.toLowerCase() === routePermission?.toLowerCase());
+
+    if (Array.isArray(routePermission)) {
+      return routePermission.some(
+        (permission: string) => profileData.value?.permissions?.includes(permission),
+      );
+    }
+
+    return profileData.value.permissions.includes(routePermission);
   };
 
   const handleLogout = () => {
