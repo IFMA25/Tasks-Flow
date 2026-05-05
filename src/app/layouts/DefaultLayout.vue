@@ -42,7 +42,7 @@ const showHeader = computed(() => route.meta.showHeader !== false);
         v-if="showHeader"
         class="flex-shrink-0 mb-6"
       />
-      <main class="flex-1 overflow-y-auto">
+      <main class="flex-1 overflow-y-auto scrollbar-hide">
         <router-view />
       </main>
     </div>

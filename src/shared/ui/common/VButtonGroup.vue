@@ -1,13 +1,11 @@
 <script setup lang="ts">
 import { computed } from "vue";
 
-
 interface ButtonGroupItem {
   value: string | number;
   label: string;
   disabled?: boolean;
 }
-
 
 const {
   groupItems,
@@ -19,22 +17,18 @@ const {
   variant?: string
 }>();
 
-
 const variantStyles = computed(() => ({
   main: "border-hover py-3 px-4 text-sm",
   charts: "py-1 px-3 text-xs",
 }));
 
-
 const modelValue = defineModel<string | number>({ required: true });
-
 
 const handleTabClick = (btn: ButtonGroupItem) => {
   if (btn.disabled || modelValue.value === btn.value) return;
   modelValue.value = btn.value;
 };
 </script>
-
 
 <template>
   <div class="w-full">

@@ -11,6 +11,7 @@
         "placeholderCreatePassword": "Створіть свій пароль",
         "signin": "Вхід",
         "signup": "Реєстрація",
+        "testUser": "Тестовий користувач",
         "supportTextPassword": "Використовуйте мінімум 8 символів",
         "registrationMsg": "Реєстрація успішна",
         "logout": {

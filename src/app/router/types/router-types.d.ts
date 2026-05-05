@@ -11,7 +11,7 @@ type HeaderTitleConfig = (context: {
 declare module 'vue-router' {
   interface RouteMeta {
    titleHeader?: string | HeaderTitleConfig;
-    permission?: string;
+    permission?: string | string[];
     role?: string;
     titleMenu?: string;
     iconMenu?: string;

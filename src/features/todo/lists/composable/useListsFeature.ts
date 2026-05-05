@@ -1,13 +1,13 @@
 import { watchIgnorable } from "@vueuse/core";
-import { computed, reactive } from "vue";
+import { computed, reactive, watch } from "vue";
 import { useI18n } from "vue-i18n";
 import { useRoute, useRouter } from "vue-router";
 
 import { useListsStore } from "../store/useListsStore";
 
+import { useProfileStore } from "@/shared/stores/useProfileStore";
 import { SortOption } from "@/shared/types";
 import { listsTabs } from "@/shared/variables/tabListsPage";
-
 
 const currentLimit = 20;
 const currentLimitUsers = 100;
@@ -21,6 +21,13 @@ export const useListsFeature = () => {
   const route = useRoute();
   const router = useRouter();
   const listsStore = useListsStore();
+  const profileStore = useProfileStore();
+
+  const canReadOwn = computed(() => profileStore.hasAccess("read:list"));
+  const canReadAll = computed(() => profileStore.hasAccess("read:all-lists"));
+  const canCreateList = computed(() => profileStore.hasAccess("create:list"));
+  const canUpdateList = computed(() => profileStore.hasAccess("update:list"));
+  const canDeleteList = computed(() => profileStore.hasAccess("delete:list"));
 
   const sortOptions = computed<SortOption[]>(() => [{ key: "recentlyCreated", label: t("filters.recentlyCreated"), params: { sort: "createdAt", order: "asc" } }, { key: "recentlyUpdated", label: t("filters.recentlyUpdated"), params: { sort: "updatedAt", order: "desc" } }]);
 
@@ -28,15 +35,47 @@ export const useListsFeature = () => {
     Object.assign(filters, defaultFilters);
   };
 
-  const activeTab = computed({
+  const activeTab = computed<string>({
     get: () => {
-      const tab = route.query.tab;
-      return typeof tab === "string" ? tab : listsTabs.myLists;
+      const tabFromQuery = route.query.tab;
+      const tab = typeof tabFromQuery === "string" ? tabFromQuery : undefined;
+
+      if (canReadOwn.value && canReadAll.value) {
+        return tab === listsTabs.usersLists ? listsTabs.usersLists : listsTabs.myLists;
+      }
+      if (canReadOwn.value) return listsTabs.myLists;
+      if (canReadAll.value) return listsTabs.usersLists;
+      return listsTabs.myLists;
     },
     set: (value) => {
-      router.replace({ query: { ...route.query, tab: value } });
+      if (!(canReadOwn.value && canReadAll.value)) return;
+
+      if (value === listsTabs.myLists) {
+        router.replace({ query: { ...route.query, tab: undefined } });
+      } else {
+        router.replace({ query: { ...route.query, tab: listsTabs.usersLists } });
+      }
     },
   });
+
+  const initTabQuery = () => {
+    if (canReadOwn.value && canReadAll.value) {
+      return;
+    }
+
+    if (canReadOwn.value && !canReadAll.value) {
+      if (route.query.tab) {
+        router.replace({ query: { ...route.query, tab: undefined } });
+      }
+      return;
+    }
+
+    if (!canReadOwn.value && canReadAll.value) {
+      if (route.query.tab !== listsTabs.usersLists) {
+        router.replace({ query: { ...route.query, tab: listsTabs.usersLists } });
+      }
+    }
+  };
 
   const userLists = computed(() => {
     const data = listsStore.dataLists?.data;
@@ -77,6 +116,12 @@ export const useListsFeature = () => {
     { immediate: true, deep: true },
   );
 
+  watch(
+    [canReadOwn, canReadAll],
+    () => initTabQuery(),
+    { immediate: true },
+  );
+
   return {
     activeTab,
     userLists,
@@ -84,6 +129,11 @@ export const useListsFeature = () => {
     filters,
     sortOptions,
     listsStore,
+    canReadOwn,
+    canReadAll,
+    canCreateList,
+    canUpdateList,
+    canDeleteList,
     ignoreUpdates,
     resetFilters,
     handleRequest,

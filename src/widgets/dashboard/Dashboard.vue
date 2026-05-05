@@ -29,11 +29,11 @@ const {
   cache: "todayData",
   invalidateCache: ["todayData"],
   immediate: true,
-  params: {
-    limit: limit,
+  params: () => ({
+    limit,
     startDate: getTodayDate(),
     endDate: getTomorrowDate(),
-  },
+  }),
 });
 
 const {
@@ -44,11 +44,11 @@ const {
   cache: "upcomingData",
   invalidateCache: ["upcomingData"],
   immediate: true,
-  params: {
-    limit: limit,
+  params: () => ({
+    limit,
     startDate: getTomorrowDate(),
     endDate: getWeekDate(),
-  },
+  }),
 });
 
 const {

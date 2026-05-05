@@ -30,7 +30,6 @@ const page = {
     />
     <component
       :is="page[pageMode]"
-      :page-mode="pageMode"
       @switch-mode="switchMode"
     />
   </section>

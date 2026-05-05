@@ -2,6 +2,7 @@
 import {
   computed,
   useTemplateRef,
+  watch,
 } from "vue";
 import { useRoute } from "vue-router";
 
@@ -13,7 +14,9 @@ import TasksListToolbar from "./components/TasksListToolbar.vue";
 import { useTasksListFeature } from "./composable/useTasksListFeature";
 import { useListsStore } from "../lists/store/useListsStore";
 
+import router from "@/app/router";
 import { ActionKey } from "@/shared/types";
+import { RouteNames } from "@/shared/types/routeNames";
 import VButton from "@/shared/ui/common/VButton.vue";
 import VSkeleton from "@/shared/ui/common/VSkeleton.vue";
 import { listsTabs } from "@/shared/variables/tabListsPage";
@@ -24,21 +27,32 @@ const deleteModalRef = useTemplateRef<InstanceType<typeof DeleteTaskModal>>("del
 const route = useRoute();
 const listStore = useListsStore();
 const listId = computed(() => String(route.params.listId));
+const isUsersListsTab = computed(() => route.query.tab === "usersLists");
 
 const {
   isLoading,
   rowActions,
-  handleStatusChange,
   sortOptions,
   priorityOptions,
   activeSortKey,
   activePriorityKey,
   tasksData,
+  canReadTasks,
+  canReadAllTasks,
+  canCreateTask,
+  handleStatusChange,
   createNewTaskExecute,
   updateSelectedTaskExecute,
   deleteTaskExecute,
   setSelectedTask,
 } = useTasksListFeature(listId.value);
+
+const canViewThisList = computed(() => {
+  if (isUsersListsTab.value) {
+    return canReadAllTasks.value;
+  }
+  return canReadTasks.value;
+});
 
 const backLink = computed(() => ({
   path: "/lists",
@@ -65,6 +79,16 @@ const handleFormSubmit = async (action: "create" | "edit", data: RequestBodyTask
     await updateSelectedTaskExecute({ data });
   }
 };
+
+watch(
+  canViewThisList,
+  (newValue) => {
+    if (!newValue) {
+      router.replace({ name: RouteNames.notFound });
+    }
+  },
+  { immediate: true },
+);
 </script>
 
 <template>
@@ -96,6 +120,7 @@ const handleFormSubmit = async (action: "create" | "edit", data: RequestBodyTask
     defer
   >
     <VButton
+      v-if="!isUsersListsTab && canCreateTask"
       icon="icon-plus"
       variant="primary"
       :text="$t('tasks.createTasksBtn')"

@@ -45,6 +45,7 @@ const emit = defineEmits<{
     <template #container-actions>
       <div class="absolute top-2 right-2">
         <VActionsDropdown
+          v-if="actions.length"
           :actions="actions"
           @action="(actionKey) => emit('action', data, actionKey)"
         />

@@ -29,6 +29,7 @@ const { t } = useI18n();
 const { register } = useAuth();
 
 const { execute, loading } = register({
+  lazy: true,
   onSuccess: () => {
     toast.success(t("auth.registrationMsg"));
     router.push({ name: RouteNames.auth, query: { mode: "signin" } });

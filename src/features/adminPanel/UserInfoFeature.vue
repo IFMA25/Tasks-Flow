@@ -8,11 +8,8 @@ import {
   useRouter,
 } from "vue-router";
 
-import {
-  usePermissionsRequest,
-  usePermissionsRoleRequest,
-  useUserInfoRequest,
-} from "./api/useAdminPanelRequests";
+
+import { useAdminPanelRequests } from "./api/useAdminPanelRequests";
 import UserProfileHeader from "./components/UserProfileHeader.vue";
 import { formatDate } from "./utils";
 
@@ -26,6 +23,8 @@ const UserProfileForm = defineAsyncComponent(() => import("./components/UserProf
 const route = useRoute();
 const router = useRouter();
 const profileStore = useProfileStore();
+const { permissionsRequest, permissionsRoleRequest, userInfoRequest } = useAdminPanelRequests();
+
 const userId = computed(() => {
   const id = route.query.id;
   return typeof id === "string" ? id : undefined;
@@ -34,23 +33,20 @@ const userId = computed(() => {
 const isAdminMode = computed(() => !!userId.value);
 
 const { loading: permissionsLoad, data: permissionsData }
-= usePermissionsRequest({
+= permissionsRequest({
   immediate: isAdminMode.value,
 });
 
 const {
   loading: permissionsRoleLoad,
   data: permissionsRole,
-} = usePermissionsRoleRequest({
+} = permissionsRoleRequest({
   immediate: isAdminMode.value,
 });
 
 const { execute: fetchUser, loading: loadingInfoUser, data: dataInfoUser }
-= useUserInfoRequest(() => userId.value, {
+= userInfoRequest(() => userId.value, {
   immediate: isAdminMode.value,
-  onSuccess: () => {
-    console.log(dataInfoUser.value.id);
-  },
   onError: () => {
     router.push({ name: RouteNames.notFound });
   },

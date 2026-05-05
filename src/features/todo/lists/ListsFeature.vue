@@ -25,17 +25,44 @@ const { t } = useI18n();
 const formModalRef = useTemplateRef<InstanceType<typeof ListFormModal>>("formModalRef");
 const deleteModalRef = useTemplateRef<InstanceType<typeof DeleteListModal>>("deleteModalRef");
 
-const { activeTab, userLists, filters, sortOptions, listsStore, handleRequest } = useListsFeature();
+const {
+  activeTab,
+  userLists,
+  filters,
+  sortOptions,
+  listsStore,
+  canReadOwn,
+  canReadAll,
+  canCreateList,
+  canUpdateList,
+  canDeleteList,
+  handleRequest,
+} = useListsFeature();
 
-const actions = computed<Actions[]>(() => [
-  { key: "edit",   label: t("lists.editList") },
-  { key: "delete", label: t("deleteModal.title", { entityName: t("lists.list") }) },
-]);
+const actions = computed<Actions[]>(() => {
+  const items: Actions[] = [];
 
-const tabs = computed(() => [
-  { value: "myLists",    label: t("lists.myLists")    },
-  { value: "usersLists", label: t("lists.usersLists") },
-]);
+  if (canUpdateList.value) {
+    items.push({ key: "edit", label: t("lists.editList") });
+  }
+
+  if (canDeleteList.value) {
+    items.push({
+      key: "delete",
+      label: t("deleteModal.title", { entityName: t("lists.list") }),
+    });
+  }
+
+  return items;
+});
+
+const tabs = computed(() => {
+  if (!(canReadOwn.value && canReadAll.value)) return [];
+  return [
+    { value: listsTabs.myLists,    label: t("lists.myLists") },
+    { value: listsTabs.usersLists, label: t("lists.usersLists") },
+  ];
+});
 
 const handleAction = (list: ListData, action: ListAction) => {
   if (action === "edit") {
@@ -44,6 +71,7 @@ const handleAction = (list: ListData, action: ListAction) => {
     deleteModalRef.value?.openModal(list);
   }
 };
+
 </script>
 
 <template>
@@ -52,7 +80,7 @@ const handleAction = (list: ListData, action: ListAction) => {
     defer
   >
     <VButton
-      v-if="activeTab === listsTabs.myLists"
+      v-if="activeTab === listsTabs.myLists && canCreateList"
       icon="icon-plus"
       variant="primary"
       :text="$t('lists.createListBtn')"
@@ -115,7 +143,9 @@ const handleAction = (list: ListData, action: ListAction) => {
             @action="handleAction"
           />
         </template>
-        <template v-else-if="activeTab === listsTabs.usersLists">
+        <template
+          v-else-if="activeTab === listsTabs.usersLists"
+        >
           <UsersListItem
             v-for="group in userLists"
             :key="group.owner.id"
