@@ -14,9 +14,6 @@ import { useProfileStore } from "@/shared/stores/useProfileStore";
 import { RoleOption, User } from "@/shared/types";
 import VButton from "@/shared/ui/common/VButton.vue";
 
-const { t } = useI18n();
-const profileStore = useProfileStore();
-
 const {
   loading,
   userId,
@@ -33,6 +30,7 @@ const {
 
 const savedPermissions = ref<string[]>([]);
 
+const { t } = useI18n();
 const { updateUserPermissions, updateUserRole } = useAdminPanelRequests();
 
 const userRolesList = computed<RoleOption[]>(() => [
@@ -63,16 +61,14 @@ const category = computed<Category[]> (() => [
   },
 ]);
 
-const manageRole = computed(() => profileStore.hasAccess("manage:roles"));
-const managePermissions = computed(() => profileStore.hasAccess("manage:permissions"));
-
 const userRole = ref<string | null>(null);
 
 const {
   userPermissions,
+  areAllSelected,
+  hasPermission,
   setPermissions,
   getActivePermissions,
-  areAllSelected,
   toggleAllPermissions,
 } = usePermissionsManager(() => permissions);
 
@@ -131,6 +127,12 @@ const isDataChanged = computed(() => {
   return isRoleChanged.value || isPermissionsChanged;
 });
 
+const isDisabled = computed(() => {
+  return isUpdating.value 
+    || (!hasPermission('manage:roles') && !hasPermission('manage:permissions'))
+    
+});
+
 watch(
   () => userData,
   (newUser) => {
@@ -139,7 +141,6 @@ watch(
     savedPermissions.value = [...newUser.permissions].sort();
 
     setPermissions(savedPermissions.value);
-    console.log("savedPermissions ",savedPermissions.value);
   },
   { immediate: true },
 );
@@ -156,7 +157,7 @@ watch(
       :role-options="userRolesList"
       :all-selected="areAllSelected"
       :loading="loading"
-      :disabled="isUpdating || !manageRole"
+      :disabled="isDisabled"
       @update:all-selected="toggleAllPermissions"
       @update:role="(value) => setPermissions(permissionsRole[value.toUpperCase()])"
     />
@@ -165,7 +166,7 @@ watch(
       :categories="category"
       :all-permissions="permissions"
       :loading="loading"
-      :disabled="isUpdating || !managePermissions"
+      :disabled="isDisabled || userData?.role === 'admin'"
     />
     <div class="ml-auto">
       <VButton

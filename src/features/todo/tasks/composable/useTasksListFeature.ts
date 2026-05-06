@@ -6,15 +6,31 @@ import { useTasksRequest } from "../api/useTasksRequest";
 import { useTasksStore } from "../store/useTasksStore";
 
 import { useProfileStore } from "@/shared/stores/useProfileStore";
-import { Actions, SortOption, PriorityOption } from "@/shared/types";
+import { Actions, SortOption, PriorityOption, ActionKey, TaskActionConfig } from "@/shared/types";
+import { usePermissionsRules } from "@/shared/composables/usePermissionsRules";
 
 export const useTasksListFeature = (listId: string) => {
-  const selectedTask = ref<TaskData | null>(null);
 
   const { t } = useI18n();
+
+  const actionsConfig:TaskActionConfig[]= [
+    {
+      key: "edit", 
+      label: t("tasks.editTask"),
+      permission:"update:task",
+    },
+     {
+        key: "delete",
+        label: t("deleteModal.title", { entityName: t("tasks.task") }),
+        permission:"delete:task",
+      }
+  ];
+
+  const selectedTask = ref<TaskData | null>(null);
+  
   const tasksStore = useTasksStore();
-  const profileStore = useProfileStore();
   const { getAllTasks, createNewTask, updateTask, deleteTask } = useTasksRequest();
+  const { rowActions, hasPermission } = usePermissionsRules(actionsConfig)
 
   const sortOptions = computed<SortOption[]>(() => [
     { key: "recentlyAdded", label: t("filters.recentlyAdded"), params: { sort: "createdAt", order: "desc" } },
@@ -30,31 +46,8 @@ export const useTasksListFeature = (listId: string) => {
     { key: "high",   label: t("filters.high"),          params: { priority: "high"    } },
   ]);
 
-  const canReadTasks = computed(() => profileStore.hasAccess("read:task"));
-  const canReadAllTasks = computed(() => profileStore.hasAccess("read:all-tasks"));
-  const canCreateTask = computed(() => profileStore.hasAccess("create:task"));
-  const canUpdateTask = computed(() => profileStore.hasAccess("update:task"));
-  const canDeleteTask = computed(() => profileStore.hasAccess("delete:task"));
-
-  const rowActions = computed<Actions[]>(() => {
-  const items: Actions[] = [];
-
-  if (canUpdateTask.value) {
-    items.push({ key: "edit", label: t("tasks.editTask") });
-  }
-
-  if (canDeleteTask.value) {
-    items.push({
-      key: "delete",
-      label: t("deleteModal.title", { entityName: t("tasks.task") }),
-    });
-  }
-
-  return items;
-});
   const activeSortKey = ref(sortOptions.value[0].key);
   const activePriorityKey = ref(priorityOptions.value[0].key);
-
 
   const fetchParams = computed(() => {
     const sort = sortOptions.value.find((o) => o.key === activeSortKey.value)!;
@@ -103,9 +96,16 @@ export const useTasksListFeature = (listId: string) => {
     });
 
   const handleStatusChange = async (task: TaskData, value: boolean) => {
-    await tasksStore.completeTaskById(task.id, value, async () => {
-      await fetchTasks();
-    });
+    const originalStatus = task.status;
+    task.status = value ? "done" : "todo";
+
+    try {
+      await tasksStore.completeTaskById(task.id, value, async () => {
+        await fetchTasks();
+      });
+    } catch (e) {
+      task.status = originalStatus;
+    }
   };
 
   const isLoading = computed(
@@ -128,12 +128,7 @@ export const useTasksListFeature = (listId: string) => {
     activeSortKey,
     activePriorityKey,
     rowActions,
-    canReadTasks,
-    canReadAllTasks,
-    canCreateTask,
-    canUpdateTask,
-    canDeleteTask,
-    fetchTasks,
+    hasPermission,
     handleStatusChange,
     createNewTaskExecute,
     updateSelectedTaskExecute,

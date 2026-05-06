@@ -21,6 +21,11 @@ import VButton from "@/shared/ui/common/VButton.vue";
 import VSkeleton from "@/shared/ui/common/VSkeleton.vue";
 import { listsTabs } from "@/shared/variables/tabListsPage";
 
+const tabPermissions = {
+  usersLists: "tasks.readAll",
+  myLists: "tasks.read",
+};
+
 const formModalRef = useTemplateRef<InstanceType<typeof TaskFormModal>>("formModalRef");
 const deleteModalRef = useTemplateRef<InstanceType<typeof DeleteTaskModal>>("deleteModalRef");
 
@@ -37,9 +42,7 @@ const {
   activeSortKey,
   activePriorityKey,
   tasksData,
-  canReadTasks,
-  canReadAllTasks,
-  canCreateTask,
+  hasPermission,
   handleStatusChange,
   createNewTaskExecute,
   updateSelectedTaskExecute,
@@ -47,11 +50,14 @@ const {
   setSelectedTask,
 } = useTasksListFeature(listId.value);
 
+const currentTab = computed(
+  () => (route.query.tab as string) || listsTabs.myLists,
+);
+
 const canViewThisList = computed(() => {
-  if (isUsersListsTab.value) {
-    return canReadAllTasks.value;
-  }
-  return canReadTasks.value;
+  const permission = tabPermissions[currentTab.value];
+  if (!permission) return false;
+  return hasPermission(permission);
 });
 
 const backLink = computed(() => ({
@@ -120,7 +126,7 @@ watch(
     defer
   >
     <VButton
-      v-if="!isUsersListsTab && canCreateTask"
+      v-if="!isUsersListsTab && hasPermission('create:task')"
       icon="icon-plus"
       variant="primary"
       :text="$t('tasks.createTasksBtn')"

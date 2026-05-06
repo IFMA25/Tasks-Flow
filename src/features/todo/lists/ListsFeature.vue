@@ -12,7 +12,6 @@ import ListItemSkeleton from "./components/skeleton/ListItemSkeleton.vue";
 import UsersListItemSkeleton from "./components/skeleton/UsersListItemSkeleton.vue";
 import { useListsFeature } from "./composable/useListsFeature";
 
-import type { Actions } from "@/shared/types";
 import VEmptyState from "@/shared/ui/EmptyState.vue";
 import VButton from "@/shared/ui/common/VButton.vue";
 import VButtonGroup from "@/shared/ui/common/VButtonGroup.vue";
@@ -31,33 +30,13 @@ const {
   filters,
   sortOptions,
   listsStore,
-  canReadOwn,
-  canReadAll,
-  canCreateList,
-  canUpdateList,
-  canDeleteList,
+  rowActions,
+  hasPermission,
   handleRequest,
 } = useListsFeature();
 
-const actions = computed<Actions[]>(() => {
-  const items: Actions[] = [];
-
-  if (canUpdateList.value) {
-    items.push({ key: "edit", label: t("lists.editList") });
-  }
-
-  if (canDeleteList.value) {
-    items.push({
-      key: "delete",
-      label: t("deleteModal.title", { entityName: t("lists.list") }),
-    });
-  }
-
-  return items;
-});
-
 const tabs = computed(() => {
-  if (!(canReadOwn.value && canReadAll.value)) return [];
+  if (!(hasPermission("read:list") && hasPermission("read:all-lists"))) return [];
   return [
     { value: listsTabs.myLists,    label: t("lists.myLists") },
     { value: listsTabs.usersLists, label: t("lists.usersLists") },
@@ -71,7 +50,6 @@ const handleAction = (list: ListData, action: ListAction) => {
     deleteModalRef.value?.openModal(list);
   }
 };
-
 </script>
 
 <template>
@@ -80,7 +58,7 @@ const handleAction = (list: ListData, action: ListAction) => {
     defer
   >
     <VButton
-      v-if="activeTab === listsTabs.myLists && canCreateList"
+      v-if="activeTab === listsTabs.myLists && hasPermission('create:list')"
       icon="icon-plus"
       variant="primary"
       :text="$t('lists.createListBtn')"
@@ -139,7 +117,7 @@ const handleAction = (list: ListData, action: ListAction) => {
             v-for="data in listsStore.dataLists?.data"
             :key="data.id"
             :data="data"
-            :actions="actions"
+            :actions="rowActions"
             @action="handleAction"
           />
         </template>

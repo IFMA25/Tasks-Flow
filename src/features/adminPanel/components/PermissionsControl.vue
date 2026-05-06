@@ -68,7 +68,7 @@ const labelCheckbox = computed(() =>
     >
       <VCheckbox
         :label="labelCheckbox"
-        :disabled="disabled"
+        :disabled="disabled || role === 'admin'"
         :model-value="allSelected"
         @update:model-value="(value) => emit('update:allSelected', value)"
       />

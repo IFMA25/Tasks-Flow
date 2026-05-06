@@ -75,7 +75,7 @@ const routes: RouteRecordRaw[] = [
     name: RouteNames.users,
     component: () => import("@/pages/Users.vue"),
     meta: {
-      // role: "admin",
+      role: "admin",
       permission: "read:users",
       showHeader: false,
       titleMenu: "admin panel",

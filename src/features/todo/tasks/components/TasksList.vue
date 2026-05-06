@@ -5,13 +5,13 @@ import { useRoute } from "vue-router";
 import TasksTable from "./TasksTable.vue";
 import type { TaskData } from "../../types";
 
-import type { ActionKey } from "@/shared/types";
+import type { ActionKey, Actions } from "@/shared/types";
 import VCollapseContainer from "@/shared/ui/VCollapseContainer.vue";
 
 const props = defineProps<{
   tasksData: TaskData[];
   isLoading: boolean;
-  rowActions: { key: ActionKey; label: string }[];
+  rowActions: Actions[];
 }>();
 
 const emit = defineEmits<{
