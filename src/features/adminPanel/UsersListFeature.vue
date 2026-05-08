@@ -13,6 +13,7 @@ import DeleteUserModal from "./components/DeleteUserModal.vue";
 import UsersTableToolbar from "./components/UsersTableToolbar.vue";
 import { formatDate } from "./utils";
 
+import { usePermissionsRules } from "@/shared/composables/usePermissionsRules";
 import {
   ActionKey,
   RoleOption,
@@ -24,13 +25,12 @@ import { RouteNames } from "@/shared/types/routeNames";
 import VActionsDropdown from "@/shared/ui/VActionsDropdown.vue";
 import VTitle from "@/shared/ui/common/VTitle.vue";
 import VTable from "@/shared/ui/table/VTable.vue";
-import { usePermissionsRules } from "@/shared/composables/usePermissionsRules";
 
 const { t } = useI18n();
 
 const actionsConfig:TaskActionConfig[]= [
     {
-      key: "edit", 
+      key: "edit",
       label: t("usersList.userProfile"),
       permission:"update:user",
     },
@@ -38,7 +38,7 @@ const actionsConfig:TaskActionConfig[]= [
         key: "delete",
         label: t("deleteModal.title", { entityName: t("usersList.user") }),
         permission:"delete:user",
-      }
+      },
   ];
 
 const { rowActions } = usePermissionsRules(actionsConfig);

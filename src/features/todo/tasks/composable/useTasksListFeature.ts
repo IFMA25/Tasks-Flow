@@ -5,32 +5,31 @@ import { TaskData } from "../../types";
 import { useTasksRequest } from "../api/useTasksRequest";
 import { useTasksStore } from "../store/useTasksStore";
 
-import { useProfileStore } from "@/shared/stores/useProfileStore";
-import { Actions, SortOption, PriorityOption, ActionKey, TaskActionConfig } from "@/shared/types";
 import { usePermissionsRules } from "@/shared/composables/usePermissionsRules";
+import { SortOption, PriorityOption, TaskActionConfig } from "@/shared/types";
 
 export const useTasksListFeature = (listId: string) => {
 
   const { t } = useI18n();
 
-  const actionsConfig:TaskActionConfig[]= [
+  const actionsConfig:TaskActionConfig[] = [
     {
-      key: "edit", 
+      key: "edit",
       label: t("tasks.editTask"),
-      permission:"update:task",
+      permission: "update:task",
     },
      {
         key: "delete",
         label: t("deleteModal.title", { entityName: t("tasks.task") }),
-        permission:"delete:task",
-      }
+        permission: "delete:task",
+      },
   ];
 
   const selectedTask = ref<TaskData | null>(null);
-  
+
   const tasksStore = useTasksStore();
   const { getAllTasks, createNewTask, updateTask, deleteTask } = useTasksRequest();
-  const { rowActions, hasPermission } = usePermissionsRules(actionsConfig)
+  const { rowActions, hasPermission } = usePermissionsRules(actionsConfig);
 
   const sortOptions = computed<SortOption[]>(() => [
     { key: "recentlyAdded", label: t("filters.recentlyAdded"), params: { sort: "createdAt", order: "desc" } },

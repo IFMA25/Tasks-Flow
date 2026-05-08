@@ -1,6 +1,7 @@
 import { ref, computed, MaybeRefOrGetter, toValue } from "vue";
 
 import type { Permission } from "../types/index";
+
 import { usePermissionsRules } from "@/shared/composables/usePermissionsRules";
 
 export const usePermissionsManager = (allAvailablePermissions: MaybeRefOrGetter<Permission[]>) => {
@@ -47,4 +48,4 @@ export const usePermissionsManager = (allAvailablePermissions: MaybeRefOrGetter<
     getActivePermissions,
     toggleAllPermissions,
   };
-}
+};

@@ -1,4 +1,5 @@
 import { computed } from "vue";
+
 import { useProfileStore } from "@/shared/stores/useProfileStore";
 import type { Actions, TaskActionConfig } from "@/shared/types";
 

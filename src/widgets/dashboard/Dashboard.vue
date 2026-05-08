@@ -1,7 +1,7 @@
 <script setup lang="ts">
+import { invalidateCache } from "@ametie/vue-muza-use";
 import { computed, ref, useTemplateRef } from "vue";
 import { useI18n } from "vue-i18n";
-import { invalidateCache } from "@ametie/vue-muza-use";
 
 import { useDashboardRequests } from "./api/useDashboardRequest";
 import ListDeadlineTasks from "./components/ListDeadlineTasks.vue";

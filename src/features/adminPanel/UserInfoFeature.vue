@@ -61,13 +61,8 @@ const userData = computed(() => {
   if (!isUserManagementMode.value) return profileStore.profileData;
   return dataInfoUser.value ? { ...dataInfoUser.value } : null;
 });
-const isLoading = computed(() => isUserManagementMode.value ? isLoadingPage.value : profileStore.loading);
-
-const isDataReady = computed(() => {
-  if (isUserManagementMode.value) {
-    return !!(userData.value && permissionsData.value && permissionsRole.value);
-  }
-  return !!userData.value;
+const isLoading = computed(() => {
+  return isUserManagementMode.value ? isLoadingPage.value : profileStore.loading;
 });
 </script>
 
@@ -83,7 +78,6 @@ const isDataReady = computed(() => {
     class="mb-6"
   />
   <component
-    v-if="isDataReady"
     :is="isUserManagementMode ? UserPermissionsForm : UserProfileForm"
     :user-id="userId"
     :user-data="userData"

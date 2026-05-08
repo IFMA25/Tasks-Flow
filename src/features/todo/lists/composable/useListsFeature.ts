@@ -5,10 +5,9 @@ import { useRoute, useRouter } from "vue-router";
 
 import { useListsStore } from "../store/useListsStore";
 
-import { useProfileStore } from "@/shared/stores/useProfileStore";
+import { usePermissionsRules } from "@/shared/composables/usePermissionsRules";
 import { SortOption, TaskActionConfig } from "@/shared/types";
 import { listsTabs } from "@/shared/variables/tabListsPage";
-import { usePermissionsRules } from "@/shared/composables/usePermissionsRules";
 
 const currentLimit = 20;
 const currentLimitUsers = 100;
@@ -22,22 +21,21 @@ export const useListsFeature = () => {
   const route = useRoute();
   const router = useRouter();
   const listsStore = useListsStore();
-  const profileStore = useProfileStore();
 
-  const actionsConfig: TaskActionConfig[]= [
+  const actionsConfig: TaskActionConfig[] = [
     {
-      key: "edit", 
+      key: "edit",
       label: t("lists.editList"),
-      permission:"update:list",
+      permission: "update:list",
     },
      {
         key: "delete",
         label: t("deleteModal.title", { entityName: t("lists.list") }),
-        permission:"delete:list",
+        permission: "delete:list",
       },
   ];
 
-  const { rowActions, hasPermission } = usePermissionsRules(actionsConfig)
+  const { rowActions, hasPermission } = usePermissionsRules(actionsConfig);
 
   const canReadOwn = hasPermission("read:list");
   const canReadAll = hasPermission("read:all-lists");
