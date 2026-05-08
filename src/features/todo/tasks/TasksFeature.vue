@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { invalidateCache } from "@ametie/vue-muza-use";
 import {
   computed,
   useTemplateRef,
@@ -19,6 +20,7 @@ import { ActionKey } from "@/shared/types";
 import { RouteNames } from "@/shared/types/routeNames";
 import VButton from "@/shared/ui/common/VButton.vue";
 import VSkeleton from "@/shared/ui/common/VSkeleton.vue";
+import { analyticsCacheKeys, dashboardCacheKeys } from "@/shared/variables/cacheKey";
 import { listsTabs } from "@/shared/variables/tabListsPage";
 
 const tabPermissions = {
@@ -48,7 +50,7 @@ const {
   updateSelectedTaskExecute,
   deleteTaskExecute,
   setSelectedTask,
-} = useTasksListFeature(listId.value);
+} = useTasksListFeature(listId);
 
 const currentTab = computed(
   () => (route.query.tab as string) || listsTabs.myLists,
@@ -84,16 +86,16 @@ const handleFormSubmit = async (action: "create" | "edit", data: RequestBodyTask
   } else {
     await updateSelectedTaskExecute({ data });
   }
+  invalidateCache([...Object.values(dashboardCacheKeys), ...Object.values(analyticsCacheKeys)]);
 };
 
 watch(
   canViewThisList,
   (newValue) => {
-    if (!newValue) {
+    if (newValue === false) {
       router.replace({ name: RouteNames.notFound });
     }
   },
-  { immediate: true },
 );
 </script>
 

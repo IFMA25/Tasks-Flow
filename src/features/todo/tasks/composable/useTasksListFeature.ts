@@ -1,4 +1,4 @@
-import { computed, ref } from "vue";
+import { computed, MaybeRefOrGetter, ref, toValue } from "vue";
 import { useI18n } from "vue-i18n";
 
 import { TaskData } from "../../types";
@@ -8,7 +8,7 @@ import { useTasksStore } from "../store/useTasksStore";
 import { usePermissionsRules } from "@/shared/composables/usePermissionsRules";
 import { SortOption, PriorityOption, TaskActionConfig } from "@/shared/types";
 
-export const useTasksListFeature = (listId: string) => {
+export const useTasksListFeature = (listId: MaybeRefOrGetter<string>) => {
 
   const { t } = useI18n();
 
@@ -63,7 +63,7 @@ export const useTasksListFeature = (listId: string) => {
     data: tasksData,
     loading: fetchTaskLoading,
   } = getAllTasks(
-    () => listId,
+    () => toValue(listId),
     {
       params: fetchParams,
       immediate: true,
@@ -71,7 +71,7 @@ export const useTasksListFeature = (listId: string) => {
   );
 
   const { execute: createNewTaskExecute, loading: createNewTaskLoading } =
-    createNewTask(() => listId, {
+    createNewTask(() => toValue(listId), {
       lazy: true,
       onSuccess: async () => {
         await fetchTasks();

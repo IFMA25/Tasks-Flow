@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import { invalidateCache } from "@ametie/vue-muza-use";
 import { computed, ref, useTemplateRef } from "vue";
 import { useI18n } from "vue-i18n";
 
@@ -11,6 +10,7 @@ import { DashboardData } from "./types";
 
 import { useListsStore } from "@/features/todo/lists/store/useListsStore";
 import { getTodayDate, getTomorrowDate, getWeekDate } from "@/shared/utils/dayDate";
+import { dashboardCacheKeys } from "@/shared/variables/cacheKey";
 
 const limit = 5;
 
@@ -27,8 +27,7 @@ const {
   loading: todayLoading,
   data: todayData,
 } = getTasksWithDeadlines({
-  cache: "todayData",
-  invalidateCache: ["todayData"],
+  cache: dashboardCacheKeys.todayData,
   immediate: true,
   params: () => ({
     limit,
@@ -42,8 +41,7 @@ const {
   loading: upcomingLoading,
   data: upcomingData,
 } = getTasksWithDeadlines({
-  cache: "upcomingData",
-  invalidateCache: ["upcomingData"],
+  cache: dashboardCacheKeys.upcomingData,
   immediate: true,
   params: () => ({
     limit,
@@ -57,8 +55,7 @@ const {
   loading: weeklyGoalsLoading,
   data: responseWeeklyGoalsData,
 } = getWeeklyGoal({
-  cache: "weeklyGoalsData",
-  invalidateCache: ["weeklyGoalsData"],
+  cache: dashboardCacheKeys.weeklyGoalsData,
   immediate: true,
   onSuccess: () => {
     weeklyGoalsData.value = responseWeeklyGoalsData?.value;

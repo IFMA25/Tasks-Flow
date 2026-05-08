@@ -1,5 +1,5 @@
 import { watchIgnorable } from "@vueuse/core";
-import { computed, reactive, watch } from "vue";
+import { computed, reactive } from "vue";
 import { useI18n } from "vue-i18n";
 import { useRoute, useRouter } from "vue-router";
 
@@ -128,12 +128,7 @@ export const useListsFeature = () => {
     { immediate: true, deep: true },
   );
 
-  watch(
-    [canReadOwn, canReadAll],
-    () => initTabQuery(),
-    { immediate: true },
-  );
-
+  initTabQuery();
   return {
     activeTab,
     userLists,

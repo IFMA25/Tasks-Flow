@@ -3,6 +3,7 @@ import { MaybeRefOrGetter, toValue } from "vue";
 
 import { Permission, PermissionRole } from "@/features/adminPanel/types";
 import { User, UsersResponse } from "@/shared/types";
+import { permissionsCacheKeys } from "@/shared/variables/cacheKey";
 
 export const useAdminPanelRequests = () => {
 
@@ -29,7 +30,7 @@ export const useAdminPanelRequests = () => {
     options?: UseApiOptions<Permission[]>,
   ) => {
     return useApiGet<Permission[]>("/permissions", {
-      cache: "permissions",
+      cache: permissionsCacheKeys.permissions,
       ...options,
     });
   };
@@ -38,7 +39,7 @@ export const useAdminPanelRequests = () => {
     options?: UseApiOptions<PermissionRole>,
   ) => {
     return useApiGet<PermissionRole>("/permissions/roles", {
-      cache: "permissions-roles",
+      cache: permissionsCacheKeys.permissionsRoles,
       ...options,
     });
   };

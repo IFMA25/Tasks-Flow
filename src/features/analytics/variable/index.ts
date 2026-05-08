@@ -6,3 +6,11 @@ export const chartColors = {
   series2: "#10B981",
   series3: "#fdb851ff",
 } as const;
+
+export const periodAnalitics = ["week", "month"] as const;
+
+export const tagsAnalitics = {
+  5: "Top 5",
+  10: "Top 10",
+  15: "Top 15",
+} as const;
