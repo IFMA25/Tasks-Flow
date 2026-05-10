@@ -8,6 +8,7 @@ const { task, goals, loading } = defineProps<{
   task: DashboardTask;
   loading?: boolean;
   goals?: boolean;
+  optimisticStatuses?: Record<string, boolean>;
 }>();
 
 const emit = defineEmits<{
@@ -30,7 +31,7 @@ const emit = defineEmits<{
       v-if="goals"
       variant="round"
       class="[grid-area:checkbox]"
-      :model-value="task.status === 'done'"
+      :model-value="optimisticStatuses?.[task.id] ?? (task.status === 'done')"
       :disabled="loading"
       @update:model-value="(value: boolean) => emit('statusChange', task, value)"
     />

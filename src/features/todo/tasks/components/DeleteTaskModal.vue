@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { computed, ref } from "vue";
 import { useI18n } from "vue-i18n";
+import { toast } from "vue-sonner";
 
 import type { TaskData } from "../../types";
 
@@ -26,6 +27,7 @@ const openModal = (task: TaskData) => {
 const handleConfirm = () => {
   emit("confirm-delete");
   close();
+  toast.warning(t("tasks.msgDeleteSuccess"));
 };
 
 defineExpose({ openModal });

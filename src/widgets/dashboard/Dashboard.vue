@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { invalidateCache } from "@ametie/vue-muza-use";
 import { computed, ref, useTemplateRef } from "vue";
 import { useI18n } from "vue-i18n";
 
@@ -95,6 +96,8 @@ const handleOpenModal = async (mode: "edit" | "add") => {
 };
 
 const handleUpdateDashboard = async () => {
+  invalidateCache([...Object.values(dashboardCacheKeys)]);
+
   await Promise.all([
     weeklyGoalsExecute(),
     tasksWithDeadlinesExecute(),

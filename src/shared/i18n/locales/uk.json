@@ -138,7 +138,8 @@
         "completed": "Виконано",
         "msgCreateSuccess": "Завдання успішно створено",
         "msgUpdateSuccess": "Завдання успішно оновлено",
-        "msgDeleteSuccess": "Завдання успішно видалено"
+        "msgDeleteSuccess": "Завдання успішно видалено",
+        "msgUpdateError": "Помилка при оновленні статусу завдання"
     },
     "filters": {
         "role": "Роль",

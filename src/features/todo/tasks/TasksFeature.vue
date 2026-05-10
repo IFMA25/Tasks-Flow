@@ -5,7 +5,9 @@ import {
   useTemplateRef,
   watch,
 } from "vue";
+import { useI18n } from "vue-i18n";
 import { useRoute } from "vue-router";
+import { toast } from "vue-sonner";
 
 import { RequestBodyTaskData, TaskData } from "../types";
 import DeleteTaskModal from "./components/DeleteTaskModal.vue";
@@ -13,6 +15,7 @@ import TaskFormModal from "./components/TaskFormModal.vue";
 import TasksList from "./components/TasksList.vue";
 import TasksListToolbar from "./components/TasksListToolbar.vue";
 import { useTasksListFeature } from "./composable/useTasksListFeature";
+import { useTasksStore } from "./store/useTasksStore";
 import { useListsStore } from "../lists/store/useListsStore";
 
 import router from "@/app/router";
@@ -31,8 +34,11 @@ const tabPermissions = {
 const formModalRef = useTemplateRef<InstanceType<typeof TaskFormModal>>("formModalRef");
 const deleteModalRef = useTemplateRef<InstanceType<typeof DeleteTaskModal>>("deleteModalRef");
 
+const { t } = useI18n();
 const route = useRoute();
 const listStore = useListsStore();
+const tasksStore = useTasksStore();
+
 const listId = computed(() => String(route.params.listId));
 const isUsersListsTab = computed(() => route.query.tab === "usersLists");
 
@@ -44,8 +50,8 @@ const {
   activeSortKey,
   activePriorityKey,
   tasksData,
+  fetchTasks,
   hasPermission,
-  handleStatusChange,
   createNewTaskExecute,
   updateSelectedTaskExecute,
   deleteTaskExecute,
@@ -83,8 +89,10 @@ const handleAction = (task: TaskData, key: ActionKey) => {
 const handleFormSubmit = async (action: "create" | "edit", data: RequestBodyTaskData) => {
   if (action === "create") {
     await createNewTaskExecute({ data });
+    toast.success(t("tasks.msgCreateSuccess"));
   } else {
     await updateSelectedTaskExecute({ data });
+    toast.success(t("tasks.msgUpdateSuccess"));
   }
   invalidateCache([...Object.values(dashboardCacheKeys), ...Object.values(analyticsCacheKeys)]);
 };
@@ -157,7 +165,7 @@ watch(
     :tasks-data="tasksData?.data ?? []"
     :row-actions="rowActions"
     :is-loading="isLoading"
-    @status-change="handleStatusChange"
+    @status-change="(task, value) => tasksStore.handleStatusChange(task, value, fetchTasks)"
     @action="handleAction"
   />
 </template>

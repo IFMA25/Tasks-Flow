@@ -3,7 +3,6 @@ import { useI18n } from "vue-i18n";
 
 import { TaskData } from "../../types";
 import { useTasksRequest } from "../api/useTasksRequest";
-import { useTasksStore } from "../store/useTasksStore";
 
 import { usePermissionsRules } from "@/shared/composables/usePermissionsRules";
 import { SortOption, PriorityOption, TaskActionConfig } from "@/shared/types";
@@ -27,7 +26,6 @@ export const useTasksListFeature = (listId: MaybeRefOrGetter<string>) => {
 
   const selectedTask = ref<TaskData | null>(null);
 
-  const tasksStore = useTasksStore();
   const { getAllTasks, createNewTask, updateTask, deleteTask } = useTasksRequest();
   const { rowActions, hasPermission } = usePermissionsRules(actionsConfig);
 
@@ -94,18 +92,19 @@ export const useTasksListFeature = (listId: MaybeRefOrGetter<string>) => {
       },
     });
 
-  const handleStatusChange = async (task: TaskData, value: boolean) => {
-    const originalStatus = task.status;
-    task.status = value ? "done" : "todo";
+  // const handleStatusChange = async (task: TaskData, value: boolean) => {
+  //   const completed = value;
+  //   optimisticStatuses.value[task.id] = completed;
 
-    try {
-      await tasksStore.completeTaskById(task.id, value, async () => {
-        await fetchTasks();
-      });
-    } catch (e) {
-      task.status = originalStatus;
-    }
-  };
+  //   try {
+  //     await tasksStore.completeTaskById(task.id, completed);
+  //   } catch (e) {
+  //     toast.error(t("tasks.msgUpdateError"));
+  //   } finally {
+  //     delete optimisticStatuses.value[task.id];
+  //     await fetchTasks();
+  //   }
+  // };
 
   const isLoading = computed(
     () =>
@@ -127,8 +126,9 @@ export const useTasksListFeature = (listId: MaybeRefOrGetter<string>) => {
     activeSortKey,
     activePriorityKey,
     rowActions,
+    fetchTasks,
     hasPermission,
-    handleStatusChange,
+    // handleStatusChange,
     createNewTaskExecute,
     updateSelectedTaskExecute,
     deleteTaskExecute,
