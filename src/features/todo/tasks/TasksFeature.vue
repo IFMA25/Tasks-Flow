@@ -1,10 +1,13 @@
 <script setup lang="ts">
+import { invalidateCache } from "@ametie/vue-muza-use";
 import {
   computed,
   useTemplateRef,
   watch,
 } from "vue";
+import { useI18n } from "vue-i18n";
 import { useRoute } from "vue-router";
+import { toast } from "vue-sonner";
 
 import { RequestBodyTaskData, TaskData } from "../types";
 import DeleteTaskModal from "./components/DeleteTaskModal.vue";
@@ -12,6 +15,7 @@ import TaskFormModal from "./components/TaskFormModal.vue";
 import TasksList from "./components/TasksList.vue";
 import TasksListToolbar from "./components/TasksListToolbar.vue";
 import { useTasksListFeature } from "./composable/useTasksListFeature";
+import { useTasksStore } from "./store/useTasksStore";
 import { useListsStore } from "../lists/store/useListsStore";
 
 import router from "@/app/router";
@@ -19,13 +23,22 @@ import { ActionKey } from "@/shared/types";
 import { RouteNames } from "@/shared/types/routeNames";
 import VButton from "@/shared/ui/common/VButton.vue";
 import VSkeleton from "@/shared/ui/common/VSkeleton.vue";
+import { analyticsCacheKeys, dashboardCacheKeys } from "@/shared/variables/cacheKey";
 import { listsTabs } from "@/shared/variables/tabListsPage";
+
+const tabPermissions = {
+  usersLists: "tasks.readAll",
+  myLists: "tasks.read",
+};
 
 const formModalRef = useTemplateRef<InstanceType<typeof TaskFormModal>>("formModalRef");
 const deleteModalRef = useTemplateRef<InstanceType<typeof DeleteTaskModal>>("deleteModalRef");
 
+const { t } = useI18n();
 const route = useRoute();
 const listStore = useListsStore();
+const tasksStore = useTasksStore();
+
 const listId = computed(() => String(route.params.listId));
 const isUsersListsTab = computed(() => route.query.tab === "usersLists");
 
@@ -37,21 +50,22 @@ const {
   activeSortKey,
   activePriorityKey,
   tasksData,
-  canReadTasks,
-  canReadAllTasks,
-  canCreateTask,
-  handleStatusChange,
+  fetchTasks,
+  hasPermission,
   createNewTaskExecute,
   updateSelectedTaskExecute,
   deleteTaskExecute,
   setSelectedTask,
-} = useTasksListFeature(listId.value);
+} = useTasksListFeature(listId);
+
+const currentTab = computed(
+  () => (route.query.tab as string) || listsTabs.myLists,
+);
 
 const canViewThisList = computed(() => {
-  if (isUsersListsTab.value) {
-    return canReadAllTasks.value;
-  }
-  return canReadTasks.value;
+  const permission = tabPermissions[currentTab.value];
+  if (!permission) return false;
+  return hasPermission(permission);
 });
 
 const backLink = computed(() => ({
@@ -75,19 +89,21 @@ const handleAction = (task: TaskData, key: ActionKey) => {
 const handleFormSubmit = async (action: "create" | "edit", data: RequestBodyTaskData) => {
   if (action === "create") {
     await createNewTaskExecute({ data });
+    toast.success(t("tasks.msgCreateSuccess"));
   } else {
     await updateSelectedTaskExecute({ data });
+    toast.success(t("tasks.msgUpdateSuccess"));
   }
+  invalidateCache([...Object.values(dashboardCacheKeys), ...Object.values(analyticsCacheKeys)]);
 };
 
 watch(
   canViewThisList,
   (newValue) => {
-    if (!newValue) {
+    if (newValue === false) {
       router.replace({ name: RouteNames.notFound });
     }
   },
-  { immediate: true },
 );
 </script>
 
@@ -120,7 +136,7 @@ watch(
     defer
   >
     <VButton
-      v-if="!isUsersListsTab && canCreateTask"
+      v-if="!isUsersListsTab && hasPermission('create:task')"
       icon="icon-plus"
       variant="primary"
       :text="$t('tasks.createTasksBtn')"
@@ -149,7 +165,7 @@ watch(
     :tasks-data="tasksData?.data ?? []"
     :row-actions="rowActions"
     :is-loading="isLoading"
-    @status-change="handleStatusChange"
+    @status-change="(task, value) => tasksStore.handleStatusChange(task, value, fetchTasks)"
     @action="handleAction"
   />
 </template>

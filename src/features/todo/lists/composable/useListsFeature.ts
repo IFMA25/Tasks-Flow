@@ -1,12 +1,12 @@
 import { watchIgnorable } from "@vueuse/core";
-import { computed, reactive, watch } from "vue";
+import { computed, reactive } from "vue";
 import { useI18n } from "vue-i18n";
 import { useRoute, useRouter } from "vue-router";
 
 import { useListsStore } from "../store/useListsStore";
 
-import { useProfileStore } from "@/shared/stores/useProfileStore";
-import { SortOption } from "@/shared/types";
+import { usePermissionsRules } from "@/shared/composables/usePermissionsRules";
+import { SortOption, TaskActionConfig } from "@/shared/types";
 import { listsTabs } from "@/shared/variables/tabListsPage";
 
 const currentLimit = 20;
@@ -21,13 +21,25 @@ export const useListsFeature = () => {
   const route = useRoute();
   const router = useRouter();
   const listsStore = useListsStore();
-  const profileStore = useProfileStore();
 
-  const canReadOwn = computed(() => profileStore.hasAccess("read:list"));
-  const canReadAll = computed(() => profileStore.hasAccess("read:all-lists"));
-  const canCreateList = computed(() => profileStore.hasAccess("create:list"));
-  const canUpdateList = computed(() => profileStore.hasAccess("update:list"));
-  const canDeleteList = computed(() => profileStore.hasAccess("delete:list"));
+  const actionsConfig: TaskActionConfig[] = [
+    {
+      key: "edit",
+      label: t("lists.editList"),
+      permission: "update:list",
+    },
+     {
+        key: "delete",
+        label: t("deleteModal.title", { entityName: t("lists.list") }),
+        permission: "delete:list",
+      },
+  ];
+
+  const { rowActions, hasPermission } = usePermissionsRules(actionsConfig);
+
+  const canReadOwn = hasPermission("read:list");
+  const canReadAll = hasPermission("read:all-lists");
+
 
   const sortOptions = computed<SortOption[]>(() => [{ key: "recentlyCreated", label: t("filters.recentlyCreated"), params: { sort: "createdAt", order: "asc" } }, { key: "recentlyUpdated", label: t("filters.recentlyUpdated"), params: { sort: "updatedAt", order: "desc" } }]);
 
@@ -40,15 +52,15 @@ export const useListsFeature = () => {
       const tabFromQuery = route.query.tab;
       const tab = typeof tabFromQuery === "string" ? tabFromQuery : undefined;
 
-      if (canReadOwn.value && canReadAll.value) {
+      if (canReadOwn && canReadAll) {
         return tab === listsTabs.usersLists ? listsTabs.usersLists : listsTabs.myLists;
       }
-      if (canReadOwn.value) return listsTabs.myLists;
-      if (canReadAll.value) return listsTabs.usersLists;
+      if (canReadOwn) return listsTabs.myLists;
+      if (canReadAll) return listsTabs.usersLists;
       return listsTabs.myLists;
     },
     set: (value) => {
-      if (!(canReadOwn.value && canReadAll.value)) return;
+      if (!(canReadOwn && canReadAll)) return;
 
       if (value === listsTabs.myLists) {
         router.replace({ query: { ...route.query, tab: undefined } });
@@ -59,18 +71,18 @@ export const useListsFeature = () => {
   });
 
   const initTabQuery = () => {
-    if (canReadOwn.value && canReadAll.value) {
+    if (canReadOwn && canReadAll) {
       return;
     }
 
-    if (canReadOwn.value && !canReadAll.value) {
+    if (canReadOwn && !canReadAll) {
       if (route.query.tab) {
         router.replace({ query: { ...route.query, tab: undefined } });
       }
       return;
     }
 
-    if (!canReadOwn.value && canReadAll.value) {
+    if (!canReadOwn && canReadAll) {
       if (route.query.tab !== listsTabs.usersLists) {
         router.replace({ query: { ...route.query, tab: listsTabs.usersLists } });
       }
@@ -116,12 +128,7 @@ export const useListsFeature = () => {
     { immediate: true, deep: true },
   );
 
-  watch(
-    [canReadOwn, canReadAll],
-    () => initTabQuery(),
-    { immediate: true },
-  );
-
+  initTabQuery();
   return {
     activeTab,
     userLists,
@@ -129,11 +136,8 @@ export const useListsFeature = () => {
     filters,
     sortOptions,
     listsStore,
-    canReadOwn,
-    canReadAll,
-    canCreateList,
-    canUpdateList,
-    canDeleteList,
+    rowActions,
+    hasPermission,
     ignoreUpdates,
     resetFilters,
     handleRequest,

@@ -129,7 +129,8 @@
         "completed": "Completed",
         "msgCreateSuccess": "Task successfully created",
         "msgUpdateSuccess": "Task successfully updated",
-        "msgDeleteSuccess": "Task successfully deleted"
+        "msgDeleteSuccess": "Task successfully deleted",
+        "msgUpdateError": "Error completing task"
     },
     "filters": {
         "role": "Roles",

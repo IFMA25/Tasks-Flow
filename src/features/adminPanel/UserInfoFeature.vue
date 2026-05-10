@@ -8,7 +8,6 @@ import {
   useRouter,
 } from "vue-router";
 
-
 import { useAdminPanelRequests } from "./api/useAdminPanelRequests";
 import UserProfileHeader from "./components/UserProfileHeader.vue";
 import { formatDate } from "./utils";
@@ -30,23 +29,23 @@ const userId = computed(() => {
   return typeof id === "string" ? id : undefined;
 });
 
-const isAdminMode = computed(() => !!userId.value);
+const isUserManagementMode = computed(() => !!userId.value);
 
 const { loading: permissionsLoad, data: permissionsData }
 = permissionsRequest({
-  immediate: isAdminMode.value,
+  immediate: isUserManagementMode.value,
 });
 
 const {
   loading: permissionsRoleLoad,
   data: permissionsRole,
 } = permissionsRoleRequest({
-  immediate: isAdminMode.value,
+  immediate: isUserManagementMode.value,
 });
 
 const { execute: fetchUser, loading: loadingInfoUser, data: dataInfoUser }
 = userInfoRequest(() => userId.value, {
-  immediate: isAdminMode.value,
+  immediate: isUserManagementMode.value,
   onError: () => {
     router.push({ name: RouteNames.notFound });
   },
@@ -59,10 +58,12 @@ const isLoadingPage = computed(() =>
 );
 
 const userData = computed(() => {
-  if (!isAdminMode.value) return profileStore.profileData;
+  if (!isUserManagementMode.value) return profileStore.profileData;
   return dataInfoUser.value ? { ...dataInfoUser.value } : null;
 });
-const isLoading = computed(() => isAdminMode.value ? isLoadingPage.value : profileStore.loading);
+const isLoading = computed(() => {
+  return isUserManagementMode.value ? isLoadingPage.value : profileStore.loading;
+});
 </script>
 
 <template>
@@ -73,11 +74,11 @@ const isLoading = computed(() => isAdminMode.value ? isLoadingPage.value : profi
     :date="formatDate(userData?.createdAt, { month: 'long', year: 'numeric' })"
   />
   <VTitle
-    :text="isAdminMode ? $t('userInfo.titleUserAcc') : $t('userInfo.titleOwnAcc')"
+    :text="isUserManagementMode ? $t('userInfo.titleUserAcc') : $t('userInfo.titleOwnAcc')"
     class="mb-6"
   />
   <component
-    :is="isAdminMode ? UserPermissionsForm : UserProfileForm"
+    :is="isUserManagementMode ? UserPermissionsForm : UserProfileForm"
     :user-id="userId"
     :user-data="userData"
     :permissions-role="permissionsRole"

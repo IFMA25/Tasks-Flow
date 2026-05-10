@@ -10,11 +10,13 @@ import VSkeleton from "@/shared/ui/common/VSkeleton.vue";
 const {
   roleOptions,
   allSelected=false,
+  disabledAdmin,
 } = defineProps<{
   roleOptions: RoleOption[];
   allSelected: boolean;
   loading?: boolean;
   disabled?: boolean;
+  disabledAdmin?: boolean;
 }>();
 
 const { t } = useI18n();
@@ -68,7 +70,7 @@ const labelCheckbox = computed(() =>
     >
       <VCheckbox
         :label="labelCheckbox"
-        :disabled="disabled"
+        :disabled="disabled || disabledAdmin"
         :model-value="allSelected"
         @update:model-value="(value) => emit('update:allSelected', value)"
       />

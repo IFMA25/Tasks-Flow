@@ -107,7 +107,7 @@ const isSubmitDisabled = computed(
   );
 
 const handleSubmit = () => {
-  const mode = selectedTask.value ? "edit" as const : "create" as const;
+  const mode = selectedTask.value ? "edit"  : "create" ;
   emit("submit", mode, submitData.value);
   close();
 };

@@ -2,8 +2,12 @@ import { ref, computed, MaybeRefOrGetter, toValue } from "vue";
 
 import type { Permission } from "../types/index";
 
-export function usePermissionsManager(allAvailablePermissions: MaybeRefOrGetter<Permission[]>) {
+import { usePermissionsRules } from "@/shared/composables/usePermissionsRules";
+
+export const usePermissionsManager = (allAvailablePermissions: MaybeRefOrGetter<Permission[]>) => {
   const userPermissions = ref<Record<string, boolean>>({});
+
+  const { hasPermission } = usePermissionsRules();
 
   const setPermissions = (activePermissions: string[]) => {
     const permissionsMap: Record<string, boolean> = {};
@@ -38,9 +42,10 @@ export function usePermissionsManager(allAvailablePermissions: MaybeRefOrGetter<
 
   return {
     userPermissions,
+    areAllSelected,
+    hasPermission,
     setPermissions,
     getActivePermissions,
-    areAllSelected,
     toggleAllPermissions,
   };
-}
+};

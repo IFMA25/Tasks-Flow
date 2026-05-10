@@ -16,6 +16,8 @@ import {
   TasksResponse,
 } from "../../types";
 
+import { analyticsCacheKeys, dashboardCacheKeys } from "@/shared/variables/cacheKey";
+
 export const useTasksRequest = () => {
   const getAllTasks = (
     listId: MaybeRefOrGetter<string>,
@@ -30,13 +32,7 @@ export const useTasksRequest = () => {
     options?: UseApiOptions<TasksResponse, RequestBodyTaskData>,
   ) => {
     return useApiPatch(() => `/tasks/${toValue(taskId)}`, {
-      invalidateCache: [
-        "todayData",
-        "upcomingData",
-        "weeklyGoalsData",
-        "analyticsSummary",
-        "tasksByPriority",
-      ],
+      invalidateCache: [...Object.values(dashboardCacheKeys), ...Object.values(analyticsCacheKeys)],
       ...options,
     });
   };

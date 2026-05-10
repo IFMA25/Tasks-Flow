@@ -58,3 +58,9 @@ export interface Actions {
   key: ActionKey;
   label: string;
 }
+
+export interface TaskActionConfig {
+    key: ActionKey;
+    label: string;
+    permission: string;
+  }

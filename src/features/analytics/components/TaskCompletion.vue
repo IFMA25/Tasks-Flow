@@ -1,35 +1,39 @@
 <script setup lang="ts">
+import { invalidateCache } from "@ametie/vue-muza-use";
 import { format, parseISO } from "date-fns";
 import type { EChartsOption } from "echarts";
-import { ref, computed } from "vue";
+import { computed, watch } from "vue";
 import { useI18n } from "vue-i18n";
 
 import { useAnalyticsRequests } from "../api/useAnaliticsRequests";
-import { chartColors } from "../variable";
+import { chartColors, periodAnalitics } from "../variable";
 import EmptyStateAnalitics from "./EmptyStateAnalitics.vue";
 
 import VButtonGroup from "@/shared/ui/common/VButtonGroup.vue";
 import VSkeleton from "@/shared/ui/common/VSkeleton.vue";
 import VTitle from "@/shared/ui/common/VTitle.vue";
 import { getLastMonthDate, getLastWeekDate, getTodayDate  } from "@/shared/utils/dayDate";
-
-const { t } = useI18n();
+import { analyticsCacheKeys } from "@/shared/variables/cacheKey";
 
 const countMaxSeries = 5;
 
-const periodItems = computed(() => [
-  { value: "week", label: t("analytics.week") },
-  { value: "month", label: t("analytics.month") },
-]);
+const { period } = defineProps<{ period: string }>();
+const emit = defineEmits<{ changePeriod: [value: string] }>();
 
-const period = ref<string>(periodItems.value[0].value);
-
+const { t } = useI18n();
 const { dailyActivity } = useAnalyticsRequests();
 
-const { data, loading } = dailyActivity({
+const periodItems = computed(() =>
+  periodAnalitics.map((value) => ({
+    value,
+    label: t(`analytics.${value}`),
+  })),
+);
+
+const { execute, data, loading } = dailyActivity({
   immediate: true,
   params: () => ({
-    startDate: period.value === "week" ? getLastWeekDate() : getLastMonthDate(),
+    startDate: period === periodAnalitics[0] ? getLastWeekDate() : getLastMonthDate(),
     endDate: getTodayDate(),
   }),
 });
@@ -120,6 +124,14 @@ const option = computed<EChartsOption>(() => ({
     ],
   }));
 
+  const onPeriodChange = (value: string) => {
+    emit("changePeriod", value);
+  };
+
+  watch(() => period, () => {
+    invalidateCache(analyticsCacheKeys.dailyActivity);
+    execute();
+  });
 </script>
 
 <template>
@@ -129,10 +141,11 @@ const option = computed<EChartsOption>(() => ({
   />
   <div class="relative h-[19rem] bg-bgCards border border-surface rounded-2xl p-3 overflow-hidden">
     <VButtonGroup
-      v-model="period"
       :group-items="periodItems"
+      :model-value="period"
       label="Time period"
       variant="charts"
+      @update:model-value="onPeriodChange"
     />
     <div
       v-if="loading"

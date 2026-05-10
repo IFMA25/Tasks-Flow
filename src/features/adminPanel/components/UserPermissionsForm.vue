@@ -10,12 +10,8 @@ import { sameArray } from "../utils";
 import PermissionsList from "./PermissionsList.vue";
 import { useAdminPanelRequests } from "../api/useAdminPanelRequests";
 
-import { useProfileStore } from "@/shared/stores/useProfileStore";
 import { RoleOption, User } from "@/shared/types";
 import VButton from "@/shared/ui/common/VButton.vue";
-
-const { t } = useI18n();
-const profileStore = useProfileStore();
 
 const {
   loading,
@@ -33,6 +29,7 @@ const {
 
 const savedPermissions = ref<string[]>([]);
 
+const { t } = useI18n();
 const { updateUserPermissions, updateUserRole } = useAdminPanelRequests();
 
 const userRolesList = computed<RoleOption[]>(() => [
@@ -63,16 +60,14 @@ const category = computed<Category[]> (() => [
   },
 ]);
 
-const manageRole = computed(() => profileStore.hasAccess("manage:roles"));
-const managePermissions = computed(() => profileStore.hasAccess("manage:permissions"));
-
 const userRole = ref<string | null>(null);
 
 const {
   userPermissions,
+  areAllSelected,
+  hasPermission,
   setPermissions,
   getActivePermissions,
-  areAllSelected,
   toggleAllPermissions,
 } = usePermissionsManager(() => permissions);
 
@@ -94,12 +89,8 @@ const {
 const {
   execute: updateUserRoleExecute,
   loading: updateUserRoleLoad,
-  data: updateUserRoleData,
 } = updateUserRole(userId, {
   lazy: true,
-  onSuccess: () => {
-    userRole.value = updateUserRoleData.value.role;
-  },
 });
 
 const handleSubmit = async () => {
@@ -128,18 +119,27 @@ const isDataChanged = computed(() => {
   const current = [...getActivePermissions()].sort();
   const isPermissionsChanged = !sameArray(current, savedPermissions.value);
 
-  return isRoleChanged.value || isPermissionsChanged;
+  return isPermissionsChanged;
+});
+
+const isDisabled = computed(() => {
+  return !hasPermission("manage:roles") && !hasPermission("manage:permissions") || isUpdating.value ;
+});
+
+const isEditingAdmin = computed(() => {
+  return userRole.value === "admin";
 });
 
 watch(
-  () => userData,
-  (newUser) => {
-    if (!newUser) return;
-    userRole.value = newUser.role;
-    savedPermissions.value = [...newUser.permissions].sort();
+  () => ({ userData, permissions }),
+  ({ userData, permissions }) => {
+    if (!userData || !permissions) return;
 
-    setPermissions(savedPermissions.value);
-    console.log("savedPermissions ",savedPermissions.value);
+    userRole.value = userData.role;
+
+    const initial = [...userData.permissions].sort();
+    savedPermissions.value = initial;
+    setPermissions(initial);
   },
   { immediate: true },
 );
@@ -156,7 +156,8 @@ watch(
       :role-options="userRolesList"
       :all-selected="areAllSelected"
       :loading="loading"
-      :disabled="isUpdating || !manageRole"
+      :disabled="isDisabled || isUpdating"
+      :disabled-admin="isEditingAdmin"
       @update:all-selected="toggleAllPermissions"
       @update:role="(value) => setPermissions(permissionsRole[value.toUpperCase()])"
     />
@@ -165,7 +166,7 @@ watch(
       :categories="category"
       :all-permissions="permissions"
       :loading="loading"
-      :disabled="isUpdating || !managePermissions"
+      :disabled="isDisabled || isEditingAdmin"
     />
     <div class="ml-auto">
       <VButton
@@ -173,7 +174,7 @@ watch(
         variant="primary"
         :text="$t('saveBtnText')"
         :loading="isUpdating"
-        :disabled="!isDataChanged || isUpdating || loading"
+        :disabled="!isDataChanged || isDisabled"
       />
     </div>
   </form>

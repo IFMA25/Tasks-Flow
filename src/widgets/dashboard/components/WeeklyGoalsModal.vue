@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { invalidateCache } from "@ametie/vue-muza-use";
 import { computed, ref, watch } from "vue";
 
 import { useDashboardRequests } from "../api/useDashboardRequest";
@@ -12,6 +13,7 @@ import VModal from "@/shared/ui/common/VModal.vue";
 import VSkeleton from "@/shared/ui/common/VSkeleton.vue";
 import VAccordion from "@/shared/ui/common/accordion/VAccordion.vue";
 import VAccordionItem from "@/shared/ui/common/accordion/VAccordionItem.vue";
+import { dashboardCacheKeys } from "@/shared/variables/cacheKey";
 
 const maxGoals = 3;
 
@@ -78,6 +80,7 @@ const handleSelectTask = (taskId: string, checked: boolean) => {
 
 const handleSave = () => {
   if(!tasksToUpdate.value.length) return close();
+  invalidateCache([...Object.values(dashboardCacheKeys)]);
   batchUpdateWeeklyGoalsExecute();
 };
 

@@ -1,20 +1,33 @@
-import { computed, ref } from "vue";
+import { computed, MaybeRefOrGetter, ref, toValue } from "vue";
 import { useI18n } from "vue-i18n";
 
 import { TaskData } from "../../types";
 import { useTasksRequest } from "../api/useTasksRequest";
-import { useTasksStore } from "../store/useTasksStore";
 
-import { useProfileStore } from "@/shared/stores/useProfileStore";
-import { Actions, SortOption, PriorityOption } from "@/shared/types";
+import { usePermissionsRules } from "@/shared/composables/usePermissionsRules";
+import { SortOption, PriorityOption, TaskActionConfig } from "@/shared/types";
 
-export const useTasksListFeature = (listId: string) => {
-  const selectedTask = ref<TaskData | null>(null);
+export const useTasksListFeature = (listId: MaybeRefOrGetter<string>) => {
 
   const { t } = useI18n();
-  const tasksStore = useTasksStore();
-  const profileStore = useProfileStore();
+
+  const actionsConfig:TaskActionConfig[] = [
+    {
+      key: "edit",
+      label: t("tasks.editTask"),
+      permission: "update:task",
+    },
+     {
+        key: "delete",
+        label: t("deleteModal.title", { entityName: t("tasks.task") }),
+        permission: "delete:task",
+      },
+  ];
+
+  const selectedTask = ref<TaskData | null>(null);
+
   const { getAllTasks, createNewTask, updateTask, deleteTask } = useTasksRequest();
+  const { rowActions, hasPermission } = usePermissionsRules(actionsConfig);
 
   const sortOptions = computed<SortOption[]>(() => [
     { key: "recentlyAdded", label: t("filters.recentlyAdded"), params: { sort: "createdAt", order: "desc" } },
@@ -30,31 +43,8 @@ export const useTasksListFeature = (listId: string) => {
     { key: "high",   label: t("filters.high"),          params: { priority: "high"    } },
   ]);
 
-  const canReadTasks = computed(() => profileStore.hasAccess("read:task"));
-  const canReadAllTasks = computed(() => profileStore.hasAccess("read:all-tasks"));
-  const canCreateTask = computed(() => profileStore.hasAccess("create:task"));
-  const canUpdateTask = computed(() => profileStore.hasAccess("update:task"));
-  const canDeleteTask = computed(() => profileStore.hasAccess("delete:task"));
-
-  const rowActions = computed<Actions[]>(() => {
-  const items: Actions[] = [];
-
-  if (canUpdateTask.value) {
-    items.push({ key: "edit", label: t("tasks.editTask") });
-  }
-
-  if (canDeleteTask.value) {
-    items.push({
-      key: "delete",
-      label: t("deleteModal.title", { entityName: t("tasks.task") }),
-    });
-  }
-
-  return items;
-});
   const activeSortKey = ref(sortOptions.value[0].key);
   const activePriorityKey = ref(priorityOptions.value[0].key);
-
 
   const fetchParams = computed(() => {
     const sort = sortOptions.value.find((o) => o.key === activeSortKey.value)!;
@@ -71,7 +61,7 @@ export const useTasksListFeature = (listId: string) => {
     data: tasksData,
     loading: fetchTaskLoading,
   } = getAllTasks(
-    () => listId,
+    () => toValue(listId),
     {
       params: fetchParams,
       immediate: true,
@@ -79,7 +69,7 @@ export const useTasksListFeature = (listId: string) => {
   );
 
   const { execute: createNewTaskExecute, loading: createNewTaskLoading } =
-    createNewTask(() => listId, {
+    createNewTask(() => toValue(listId), {
       lazy: true,
       onSuccess: async () => {
         await fetchTasks();
@@ -102,11 +92,19 @@ export const useTasksListFeature = (listId: string) => {
       },
     });
 
-  const handleStatusChange = async (task: TaskData, value: boolean) => {
-    await tasksStore.completeTaskById(task.id, value, async () => {
-      await fetchTasks();
-    });
-  };
+  // const handleStatusChange = async (task: TaskData, value: boolean) => {
+  //   const completed = value;
+  //   optimisticStatuses.value[task.id] = completed;
+
+  //   try {
+  //     await tasksStore.completeTaskById(task.id, completed);
+  //   } catch (e) {
+  //     toast.error(t("tasks.msgUpdateError"));
+  //   } finally {
+  //     delete optimisticStatuses.value[task.id];
+  //     await fetchTasks();
+  //   }
+  // };
 
   const isLoading = computed(
     () =>
@@ -128,13 +126,9 @@ export const useTasksListFeature = (listId: string) => {
     activeSortKey,
     activePriorityKey,
     rowActions,
-    canReadTasks,
-    canReadAllTasks,
-    canCreateTask,
-    canUpdateTask,
-    canDeleteTask,
     fetchTasks,
-    handleStatusChange,
+    hasPermission,
+    // handleStatusChange,
     createNewTaskExecute,
     updateSelectedTaskExecute,
     deleteTaskExecute,

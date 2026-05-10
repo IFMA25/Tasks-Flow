@@ -1,3 +1,5 @@
+import { periodAnalitics } from "../variable";
+
 export interface AnalyticsSummaryResponse {
    lists: {
     total: number;
@@ -27,3 +29,5 @@ export interface DailyActivityResponse {
   created: number;
   completed: number;
 }
+
+export type PeriodAnalytics = (typeof periodAnalitics)[number];

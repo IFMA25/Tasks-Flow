@@ -50,7 +50,7 @@ const displayDeadline = (deadline: string) => {
   >
     <template #cell-status="{ row }">
       <VCheckbox
-        :model-value="row.status === 'done'"
+        :model-value="tasksStore.optimisticStatuses[row.id] ?? (row.status === 'done')"
         box-class="group-hover:border-primaryBg"
         :disabled="tasksStore.completingTaskId === row.id"
         @update:model-value="(val) => emit('statusChange', row, val)"

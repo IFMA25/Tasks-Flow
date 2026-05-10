@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import ItemDashboardList from "./ItemDashboardList.vue";
-import { DashboardData, DashboardTask } from "../types";
+import { DashboardData } from "../types";
 import SkeletonWeeklyGoals from "./skeleton/SkeletonWeeklyGoals.vue";
 
 import { useTasksStore } from "@/features/todo/tasks/store/useTasksStore";
@@ -17,12 +17,6 @@ const emit = defineEmits<{
 }>();
 
 const tasksStore = useTasksStore();
-
-const handleStatusChange = async (task: DashboardTask, value: boolean) => {
-  await tasksStore.completeTaskById(task.id, value, () => {
-    emit("updateDashboard");
-  });
-};
 </script>
 
 <template>
@@ -58,7 +52,9 @@ const handleStatusChange = async (task: DashboardTask, value: boolean) => {
         :goals="true"
         :loading="tasksStore.completingTaskId === task.id"
         :task="task"
-        @status-change="handleStatusChange"
+        :optimistic-statuses="tasksStore.optimisticStatuses"
+        @status-change="(task, value) =>
+          tasksStore.handleStatusChange(task, value, () => emit('updateDashboard'))"
       />
     </ul>
     <div

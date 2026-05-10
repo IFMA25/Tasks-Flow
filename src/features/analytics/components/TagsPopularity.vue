@@ -1,30 +1,35 @@
 <script setup lang="ts">
+import { invalidateCache } from "@ametie/vue-muza-use";
 import type { EChartsOption } from "echarts";
-import { computed, ref } from "vue";
+import { computed, watch } from "vue";
 
 import { useAnalyticsRequests } from "../api/useAnaliticsRequests";
-import { chartColors } from "../variable";
+import { chartColors, tagsAnalitics } from "../variable";
 import EmptyStateAnalitics from "./EmptyStateAnalitics.vue";
 
 import VButtonGroup from "@/shared/ui/common/VButtonGroup.vue";
 import VSkeleton from "@/shared/ui/common/VSkeleton.vue";
 import VTitle from "@/shared/ui/common/VTitle.vue";
+import { analyticsCacheKeys } from "@/shared/variables/cacheKey";
 
 const countMaxSeries = 10;
 
-const topCountItems = [
-  { value: 5, label: "Top 5" },
-  { value: 10, label: "Top 10" },
-  { value: 15, label: "Top 15" },
-];
+const topCountItems = Object.entries(tagsAnalitics).map(
+  ([key, label]) => ({
+    value: Number(key),
+    label,
+  }),
+);
 
-const countTagValue = ref(topCountItems[0].value);
+const { topTag } = defineProps<{ topTag: number }>();
+const emit = defineEmits<{ changeTopTag: [value: number] }>();
+
 
 const { popularTags } = useAnalyticsRequests();
 
-const { data, loading } = popularTags({
+const { execute, data, loading } = popularTags({
   immediate: true,
-  params: () => ({ limit: countTagValue.value }),
+  params: () => ({ limit: topTag }),
 });
 
 const categories = computed(() => data.value?.map(item => item.tag) ?? []);
@@ -82,6 +87,15 @@ const option = computed<EChartsOption>(() => ({
   animationDuration: 600,
   animationEasing: "cubicOut",
 }));
+
+  const onCountTagChange = (value: number) => {
+      emit("changeTopTag", value);
+    };
+
+  watch(() => topTag, () => {
+    invalidateCache(analyticsCacheKeys.popularTags);
+    execute();
+  });
 </script>
 
 <template>
@@ -92,10 +106,11 @@ const option = computed<EChartsOption>(() => ({
     />
     <div class="h-[19rem] bg-bgCards border border-surface rounded-2xl p-2 overflow-hidden">
       <VButtonGroup
-        v-model="countTagValue"
         :group-items="topCountItems"
+        :model-value="topTag"
         label="Top tags"
         variant="charts"
+        @update:model-value="onCountTagChange"
       />
       <div
         v-if="loading"
