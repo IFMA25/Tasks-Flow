@@ -1,10 +1,12 @@
+<script setup lang="ts">
+import VIcon from "./common/VIcon.vue";
+</script>
 <template>
   <div class="flex items-center gap-2">
-    <img
-      class="w-[1.75rem] h-[1.75rem]"
-      src="@/shared/assets/icons/logo.svg"
-      alt="logo"
-    >
+    <VIcon
+      type="logo"
+      size="w-6 h-6"
+    />
     <p class="text-lg font-bold text-title">
       TasksFlow
     </p>
