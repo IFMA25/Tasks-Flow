@@ -76,7 +76,7 @@ const closeOnSelectComputed = computed(() =>
 </script>
 
 <template>
-  <div class="flex gap-2 items-center text-[1rem] leading-6 text-primary">
+  <div class="flex gap-2 items-center leading-6 text-primary">
     <label
       v-if="labelText"
       :for="id"

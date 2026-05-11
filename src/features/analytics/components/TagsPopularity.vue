@@ -120,7 +120,7 @@ const option = computed<EChartsOption>(() => ({
           v-for="value in countMaxSeries"
           :key="value"
           width="w-full"
-          height="h-[1rem]"
+          height="h-4"
           rounded="md"
         />
       </div>
