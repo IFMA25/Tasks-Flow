@@ -40,12 +40,16 @@ const isAppLoading = computed(() => {
 
 <template>
   <div class="bg-bgBase text-primary h-screen">
-    <VTransitionLoader
+    <div
       v-if="isAppLoading"
-      :is-loading="isAppLoading"
-      variant="fullscreen"
-      loader-type="dots"
-    />
+      class="text-loaderColor"
+    >
+      <VTransitionLoader
+        :is-loading="isAppLoading"
+        variant="fullscreen"
+        loader-type="dots"
+      />
+    </div>
     <component
       :is="routeLayout"
       v-else
