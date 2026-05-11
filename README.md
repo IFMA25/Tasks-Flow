@@ -22,6 +22,10 @@
 
 ---
 
+## 🌐 Деплой
+ 
+https://ifma25.github.io/Tasks-Flow/
+
 ## 🚀 Запуск локально
 
 ```bash
