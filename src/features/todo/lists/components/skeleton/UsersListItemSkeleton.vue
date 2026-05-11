@@ -4,8 +4,8 @@ import VSkeleton from "@/shared/ui/common/VSkeleton.vue";
 
 <template>
   <div
-    class="relative rounded-xl border border-surface
-    shadow p-6 flex flex-col gap-4 bg-bgBase h-40"
+    class="relative rounded-xl border border-borders
+    p-6 flex flex-col gap-4 bg-bgBase h-40"
   >
     <div class="flex gap-2 items-center">
       <VSkeleton

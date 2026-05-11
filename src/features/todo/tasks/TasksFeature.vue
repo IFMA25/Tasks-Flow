@@ -125,7 +125,7 @@ watch(
       />
       <h2
         v-else
-        class="text-3xl font-bold text-primary"
+        class="hidden sm:block text-fluid-h3 font-emibold text-primary"
       >
         {{ tasksData?.listInfo?.title }}
       </h2>

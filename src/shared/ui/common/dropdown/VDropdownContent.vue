@@ -40,7 +40,7 @@ const positionStyle = computed(() => {
     <Transition name="dropdown">
       <div
         v-if="props.isOpen && props.rect"
-        class="fixed text-nowrap min-w-40 border border-default bg-bgBase
+        class="fixed text-nowrap min-w-40 border border-default bg-bgCards
             shadow-dropdown rounded text-primary text-base
             translate-all duration-50 z-[1000]"
         :class="propContentClass"

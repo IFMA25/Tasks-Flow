@@ -24,7 +24,7 @@ const permissionsForCategory  =
 </script>
 
 <template>
-  <div class="grid grid-cols-[max-content_max-content] gap-y-8 gap-x-32 ">
+  <div class="grid grid-cols-1 xl:grid-cols-[max-content_max-content] gap-y-8 sm:gap-x-32 ">
     <template v-if="loading">
       <div
         v-for="i in 4"

@@ -33,11 +33,15 @@ const emit = defineEmits<{
 
 <style scoped>
 :deep(.auth-btn-wrapper) {
-  @apply relative;
+  @apply relative font-medium;
 }
 
 :deep(.auth-btn-wrapper::after) {
-  @apply bg-primaryBg shadow-tabHover;
+  @apply bg-primaryTextDark;
+}
+
+:deep(.auth-btn-wrapper.active button) {
+  @apply text-primaryTextDark text-lg font-semibold;
 }
 
 .auth-btn-wrapper::after {

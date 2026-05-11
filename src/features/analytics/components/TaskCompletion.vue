@@ -139,7 +139,7 @@ const option = computed<EChartsOption>(() => ({
     :text="$t('analytics.taskCompletion')"
     class="capitalize"
   />
-  <div class="relative h-[19rem] bg-bgCards border border-surface rounded-2xl p-3 overflow-hidden">
+  <div class="relative h-[19rem] border bg-bgCards border-borders rounded-2xl p-3 overflow-hidden">
     <VButtonGroup
       :group-items="periodItems"
       :model-value="period"
@@ -155,7 +155,7 @@ const option = computed<EChartsOption>(() => ({
         v-for="value in countMaxSeries"
         :key="value"
         width="w-full"
-        height="h-[2rem]"
+        height="h-8"
         rounded="md"
       />
     </div>

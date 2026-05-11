@@ -16,7 +16,7 @@ const sort = defineModel<string>("sort");
 </script>
 
 <template>
-  <div class="flex items-center gap-5">
+  <div class="flex flex-col md:flex-row items-start md:items-center gap-5">
     <VSelect
       id="priority-select"
       v-model="priority"

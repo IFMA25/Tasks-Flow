@@ -21,7 +21,7 @@ const onSearchInput = useDebounceFn((value: string) => {
 </script>
 
 <template>
-  <div class="flex items-center gap-5 mb-6">
+  <div class="flex flex-col md:flex-row items-start md:items-center gap-5 mb-6">
     <VInput
       v-if="showSearch"
       :model-value="search"

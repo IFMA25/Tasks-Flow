@@ -48,8 +48,8 @@ const handleTabClick = (btn: ButtonGroupItem) => {
         :class="[
           variantStyles[variant],
           modelValue === btn.value
-            ? ['border-hover', { 'bg-surface': variant === 'charts' }]
-            : 'text-secondary hover:text-primary border-subtle',
+            ? ['border-primaryBg', { 'bg-surface': variant === 'charts' }]
+            : 'text-secondary hover:text-primary border-hover',
           btn.disabled
             ? 'cursor-not-allowed'
             : 'cursor-pointer'

@@ -5,9 +5,9 @@ const { text, variant = "base" } = defineProps<{
 }>();
 
 const variantStyle = {
-  auth: "text-5xl text-primaryTextDark font-semibold font-rubik text-center",
-  base: "text-left font-semibold text-[2rem]",
-  headerTitle: "text-2xl text-intro font-medium leading-[1.2] ",
+  auth: "text-5xl text-title font-semibold font-rubik text-center",
+  base: "text-left font-semibold text-3xl",
+  headerTitle: "text-fluid-h3 text-intro font-medium leading-[1.2] ",
   containerTitle: "text-left text-xl font-semibold leading-[1.3]",
 };
 </script>

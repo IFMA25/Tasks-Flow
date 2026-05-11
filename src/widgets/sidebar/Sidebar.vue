@@ -1,10 +1,13 @@
 <script setup lang="ts">
-import { ref } from "vue";
+import { useMediaQuery } from "@vueuse/core";
+import { ref, watch } from "vue";
 
 import SidebarFooter from "./components/SidebarFooter.vue";
 import SidebarHeader from "./components/SidebarHeader.vue";
 import SidebarNavItem from "./components/SidebarNavItem.vue";
 import type { NavItem } from "./types/index";
+
+import { useProfileStore } from "@/shared/stores/useProfileStore";
 
 interface Props {
   navItems: NavItem[];
@@ -12,9 +15,16 @@ interface Props {
 
 defineProps<Props>();
 
-const isOpen = ref(true);
+const isDesktop = useMediaQuery("(min-width: 1024px)");
+const profileStore = useProfileStore();
+
+const isOpen = ref(isDesktop.value);
 
 const toggle = () => { isOpen.value = !isOpen.value; };
+
+watch(isDesktop, (newValue) => {
+  isOpen.value = newValue;
+});
 </script>
 
 <template>
@@ -26,15 +36,33 @@ const toggle = () => { isOpen.value = !isOpen.value; };
     <div
       class="sidebar relative flex flex-col h-full rounded-r-2xl p-6"
     >
-      <div class="flex justify-end mb-6">
+      <div class="flex justify-end pb-6 border-b border-borders">
         <SidebarHeader
           :is-open="isOpen"
           @toggle="toggle"
         />
       </div>
-      <nav class="flex-1">
+      <div
+        class="flex flex-col items-center gap-2 pb-6 pt-6 border-b border-borders"
+        :class="isOpen ? 'block' : 'hidden'"
+      >
+        <div
+          class="w-12 h-12 rounded-full bg-btn-gradient flex
+        items-center justify-center text-white font-bold"
+        >
+          {{ profileStore.profileData?.name?.split(' ')[0][0]
+            + profileStore.profileData?.name?.split(' ')[1][0] }}
+        </div>
+        <p class="text-sm font-semibold text-base">
+          {{ profileStore.profileData?.name }}
+        </p>
+        <p class="text-sm font-semibold text-primaryText">
+          {{ profileStore.profileData?.role }}
+        </p>
+      </div>
+      <nav class="flex-1 pt-6">
         <ul
-          class="flex flex-col gap-4"
+          class="flex flex-col gap-3"
         >
           <SidebarNavItem
             v-for="item in navItems"
@@ -58,7 +86,7 @@ const toggle = () => { isOpen.value = !isOpen.value; };
 
 <style scoped>
 .sidebar {
-  background: linear-gradient(180deg, rgb(16, 22, 45) 0%, rgb(32, 43, 65) 100%);
+  background: linear-gradient(180deg, #111118 0%, #181824 100%);
 }
 
 .sidebar::before,

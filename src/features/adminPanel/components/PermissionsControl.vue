@@ -33,7 +33,7 @@ const labelCheckbox = computed(() =>
 </script>
 
 <template>
-  <div class="flex justify-between items-center ">
+  <div class="flex flex-col sm:flex-row  sm:items-center sm:justify-between gap-2">
     <VSkeleton
       v-if="loading"
       height="h-10"
@@ -52,7 +52,7 @@ const labelCheckbox = computed(() =>
       :disabled="disabled"
     />
     <template v-if="loading">
-      <div class="flex items-center gap-3 min-w-[20%]">
+      <div class="flex flex-col sm:flex-row items-center gap-3 min-w-[20%]">
         <VSkeleton
           height="h-5"
           width="w-5"
@@ -66,7 +66,7 @@ const labelCheckbox = computed(() =>
     </template>
     <div
       v-else
-      class="w-[35%]"
+      class="w-full sm:w-[35%]"
     >
       <VCheckbox
         :label="labelCheckbox"

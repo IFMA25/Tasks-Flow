@@ -90,6 +90,7 @@ const handleSubmit = async() => {
     @submit.prevent="handleSubmit"
   >
     <VInput
+
       v-for="field in signinFormFields"
       :key="field.name"
       v-model="formData[field.name]"
@@ -116,9 +117,9 @@ const handleSubmit = async() => {
   <p
     class="relative my-4 text-center text-secondaryText
          before:absolute before:left-0 before:top-1/2 before:h-px
-         before:w-[20%] before:-translate-y-1/2 before:bg-surface
+         before:w-[10%] before:-translate-y-1/2 before:bg-surface
          after:absolute after:right-0 after:top-1/2 after:h-px
-         after:w-[20%] after:-translate-y-1/2 after:bg-surface"
+         after:w-[10%] after:-translate-y-1/2 after:bg-surface"
   >
     or log in with test account
   </p>

@@ -15,10 +15,10 @@ const isOpen = ref(true);
 </script>
 
 <template>
-  <div class="overflow-y-auto border-2 border-default rounded-xl">
+  <div class="overflow-y-auto border-2 border-borders rounded-xl">
     <h3
       v-if="count || loading"
-      class="sticky top-0 left-0 flex items-center gap-2 cursor-pointer p-4 bg-bgBase z-10"
+      class="sticky top-0 left-0 flex items-center gap-2 cursor-pointer p-4 bg-bgCards z-10"
     >
       <template v-if="loading">
         <VSkeleton

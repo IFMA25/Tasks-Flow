@@ -104,7 +104,7 @@ const option = computed<EChartsOption>(() => ({
       :text="$t('analytics.tagsPopularity')"
       class="capitalize"
     />
-    <div class="h-[19rem] bg-bgCards border border-surface rounded-2xl p-2 overflow-hidden">
+    <div class="h-[19rem] bg-bgCards border border-borders rounded-2xl p-2 overflow-hidden">
       <VButtonGroup
         :group-items="topCountItems"
         :model-value="topTag"
@@ -120,7 +120,7 @@ const option = computed<EChartsOption>(() => ({
           v-for="value in countMaxSeries"
           :key="value"
           width="w-full"
-          height="h-[1rem]"
+          height="h-4"
           rounded="md"
         />
       </div>
