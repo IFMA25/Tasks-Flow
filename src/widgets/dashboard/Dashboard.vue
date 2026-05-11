@@ -114,8 +114,11 @@ const handleUpdateDashboard = async () => {
     @update-weekly-goals="weeklyGoalsExecute"
   />
   <div
-    class="grid gap-6 [grid-template-areas:'todayDeadlines_upcomingDeadlines'_'goals_goals']
-           [grid-template-columns:2fr_50%]"
+    class="grid gap-6
+         grid-cols-1
+         [grid-template-areas:'todayDeadlines'_'upcomingDeadlines'_'goals']
+         lg:[grid-template-columns:2fr_50%]
+         lg:[grid-template-areas:'todayDeadlines_upcomingDeadlines'_'goals_goals']"
   >
     <ListDeadlineTasks
       v-for="value in listsDeadlineTasks"

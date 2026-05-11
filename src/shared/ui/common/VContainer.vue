@@ -19,7 +19,8 @@ const {
 <template>
   <component
     :is="as"
-    class="relative rounded-xl border border-surface shadow transition hover:shadow-md p-6"
+    class="relative rounded-xl border border-surface
+      shadow transition hover:shadow-md p-6 bg-bgCards"
   >
     <div class="flex gap-2 items-center">
       <slot

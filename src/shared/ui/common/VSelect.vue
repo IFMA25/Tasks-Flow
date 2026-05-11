@@ -80,7 +80,7 @@ const closeOnSelectComputed = computed(() =>
     <label
       v-if="labelText"
       :for="id"
-      class="whitespace-nowrap font-medium"
+      class="whitespace-nowrap"
     >{{ labelText }}</label>
     <Multiselect
       :id="id"
@@ -127,9 +127,9 @@ const closeOnSelectComputed = computed(() =>
 }
 
 :deep(.multiselect__tags) {
-  @apply min-h-8 border-2 border-default rounded-lg leading-6
+  @apply min-h-8 border-borders rounded-lg leading-6
     focus:outline-none transition-colors duration-300
-  ease-in-out text-primary bg-secondaryBg;
+  ease-in-out text-primary bg-bgCards;
 }
 
 :deep(.multiselect__tags:focus-within) {
@@ -151,7 +151,7 @@ const closeOnSelectComputed = computed(() =>
 }
 
 :deep(.multiselect__content-wrapper) {
-  @apply min-w-full w-auto mt-[4px] rounded-lg border-2 border-default bg-secondaryBg shadow-lg;
+  @apply min-w-full w-auto mt-[4px] rounded-lg border-borders bg-bgCards shadow-lg;
   border-top-style: solid;
   border-top-width: 2px;
 }
@@ -180,7 +180,7 @@ const closeOnSelectComputed = computed(() =>
 }
 
 :deep(.multiselect__option--selected) {
-  @apply  text-primaryText bg-secondaryBg;
+  @apply  text-primaryText bg-bgCards;
 }
 
 :deep(.multiselect--active:not(.multiselect--above) .multiselect__tags) {

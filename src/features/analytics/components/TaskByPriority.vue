@@ -88,7 +88,7 @@ const option = computed<EChartsOption>(() => ({
     />
     <div
       class="flex flex-col items-center justify-center gap-4 h-[19rem]
-      bg-bgCards border border-surface rounded-2xl"
+      bg-bgCards border border-borders rounded-2xl"
     >
       <VSkeleton
         v-if="loading"

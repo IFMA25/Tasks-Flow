@@ -46,7 +46,7 @@ watch(
 <template>
   <form
     id="formOwnProfile"
-    class="gap-6 p-6 border border-surface rounded-xl"
+    class="gap-6 p-6 border border-borders rounded-xl"
     @submit.prevent="handleSubmit()"
   >
     <div class="flex flex-col gap-4 max-w-[22.5rem] mb-6 text-secondary">

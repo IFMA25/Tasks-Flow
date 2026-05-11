@@ -148,7 +148,7 @@ watch(
 <template>
   <form
     id="userInfoForm"
-    class="flex flex-col gap-6 p-6 border border-surface rounded-xl"
+    class="flex flex-col gap-6 p-6 border border-borders rounded-xl bg-bgCards"
     @submit.prevent="handleSubmit()"
   >
     <PermissionsControl

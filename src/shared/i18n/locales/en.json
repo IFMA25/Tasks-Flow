@@ -1,14 +1,22 @@
 {
+    "welcome": {
+        "title1": "Organize work.",
+        "title2": "Stay focused.",
+        "subtitle": "The all-in-one task management platform for productive modern workflows.",
+        "point1": "Keep all your tasks in one place",
+        "point2": "Visual analytics, dashboards and reporting",
+        "point3": "Goal tracking with weekly goals"
+    },
     "auth": {
         "titleSignIn": "Welcome back",
         "titleSignup": "Create your account",
-        "placeholderEmail": "Enter your email",
-        "placeholderPassword": "Enter your password",
+        "placeholderEmail": "your email",
+        "placeholderPassword": "your password",
         "labelName": "Full name",
-        "placeholderName": "Enter your name",
+        "placeholderName": "your name",
         "labelEmail": "Email",
         "labelPassword": "Password",
-        "placeholderCreatePassword": "Create your password",
+        "placeholderCreatePassword": "create your password",
         "signin": "Log In",
         "signup": "Sign Up",
         "testUser": "Test user",

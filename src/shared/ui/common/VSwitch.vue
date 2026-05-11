@@ -31,15 +31,15 @@ const variantStyles = computed(() => {
 
   let defaultThumbColor = isChecked ? "bg-elevated" : "bg-toggle";
   let defaultSwitchColor = isChecked
-    ? "bg-primaryBg border-primaryBg"
-    : "bg-base border-toggle";
+    ? "bg-primaryText border-primaryBg"
+    : "bg-default border-toggle";
 
   if (props.disabled) {
     defaultThumbColor = "bg-subtle";
     defaultSwitchColor = "bg-elevated border-subtle";
   }
 
-  const themeBaseThumb = "w-7 h-7 bg-thumb bg-default";
+  const themeBaseThumb = "w-7 h-7 bg-thumb";
   const themeBaseSwitch = "w-[3.75rem] h-9 bg-switch bg-cover bg-center border-2 border-themeSwitch";
 
   return {

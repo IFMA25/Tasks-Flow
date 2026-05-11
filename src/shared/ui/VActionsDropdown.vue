@@ -21,7 +21,7 @@ const emit = defineEmits<{
       <VButton
         icon="actions-btn"
         icon-size="w-8 h-8"
-        class="w-full justify-center text-primaryBg font-bold text-lg"
+        class="w-full justify-center text-primaryTextDark font-bold text-lg"
         @click="toggle"
       />
     </template>
@@ -32,7 +32,7 @@ const emit = defineEmits<{
         :class="
           action.key === 'delete'
             ? 'text-danger hover:text-dangerHover'
-            : 'hover:text-primaryBg'
+            : 'hover:text-primaryTextDark'
         "
         @click="emit('action', action.key)"
       >

@@ -71,7 +71,7 @@ defineEmits<{
         </colgroup>
         <thead
           v-if="heads.some(h => h.label)"
-          class="sticky top-0 left-0 z-10 bg-subtle"
+          class="sticky top-0 left-0 z-10 bg-bgCards"
         >
           <tr>
             <th

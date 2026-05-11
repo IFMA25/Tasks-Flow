@@ -1,14 +1,22 @@
 {
+    "welcome": {
+        "title1": "Організуйте роботу.",
+        "title2": "Залишайтеся сфокусованими.",
+        "subtitle": "Універсальна платформа для керування завданнями для продуктивних сучасних робочих процесів.",
+        "point1": "Тримайте всі ваші завдання в одному місці",
+        "point2": "Візуальна аналітика, дашборди та звітність",
+        "point3": "Трекінг цілей з щотижневими планами"
+    },
     "auth": {
         "titleSignIn": "З поверненням",
         "titleSignup": "Створіть свій аккаунт",
-        "placeholderEmail": "Введіть email",
-        "placeholderPassword": "Введіть пароль",
+        "placeholderEmail": "ваш email",
+        "placeholderPassword": "ваш пароль",
         "labelName": "Повне ім'я",
-        "placeholderName": "Введіть ваше ім'я",
+        "placeholderName": "ваше ім'я",
         "labelEmail": "Email",
         "labelPassword": "Пароль",
-        "placeholderCreatePassword": "Створіть свій пароль",
+        "placeholderCreatePassword": "створіть свій пароль",
         "signin": "Вхід",
         "signup": "Реєстрація",
         "testUser": "Тестовий користувач",

@@ -82,7 +82,7 @@ const handleAction = (list: ListData, action: ListAction) => {
     :show-search="activeTab === listsTabs.myLists"
   />
 
-  <div class="border border-subtle p-1 rounded-2xl w-fit mb-7">
+  <div class="border border-borders p-1 rounded-2xl w-fit mb-7">
     <VButtonGroup
       v-model="activeTab"
       :group-items="tabs"
@@ -110,7 +110,7 @@ const handleAction = (list: ListData, action: ListAction) => {
     <template v-else>
       <div
         v-if="listsStore.dataLists?.data.length"
-        class="grid grid-cols-[repeat(auto-fill,minmax(20rem,1fr))] gap-6"
+        class="grid grid-cols-[repeat(auto-fill,minmax(16rem,1fr))] gap-6"
       >
         <template v-if="activeTab === listsTabs.myLists">
           <ListItem

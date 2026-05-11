@@ -20,7 +20,7 @@ const sort = defineModel<string>("sort");
 </script>
 
 <template>
-  <div class="flex items-center gap-4 mb-6">
+  <div class="flex flex-col md:flex-row items-start md:items-center gap-4 mb-6">
     <VInput
       v-model="search"
       :placeholder="$t('usersList.searchPlaceholder')"

@@ -15,14 +15,14 @@ const { period, topTag } = useAnalytics();
       :period="period"
       @change-period="(value) => (period = value)"
     />
-    <div class="flex gap-4">
+    <div class="flex flex-col lg:flex-row gap-4">
       <TagsPopularity
         :top-tag="topTag"
-        class="w-3/5"
+        class="w-full lg:w-3/5"
         @change-top-tag="(value) => (topTag = value)"
       />
       <TaskByPriority
-        class="w-2/5"
+        class="w-full lg:w-2/5"
       />
     </div>
   </div>

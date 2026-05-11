@@ -31,6 +31,7 @@ const localeOptions = computed(
     label="label"
     track-by="key"
     :close-on-select="true"
+    size="sm"
     @update:model-value="(value: string) => language.setLanguage(value)"
   />
 </template>

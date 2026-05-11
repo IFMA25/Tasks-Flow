@@ -44,10 +44,10 @@ const handleToggle = () => {
 const slots = useSlots();
 
 const inputStyles = {
-  main: "bg-base rounded-lg border-2 border-default focus:border-2 focus:border-borderFocus focus:outline-none focus:bg-secondaryBg placeholder:text-muted text-primary leading-[1.3] hover:border-hover",
-  error: "bg-base rounded-lg border-2 border-danger placeholder:text-muted text-primary leading-[1.3]",
-  search: "max-w-[20rem] border-2 border-default rounded-lg placeholder-disabled focus:border-borderFocus focus:outline-none hover:border-hover",
-  readonly: "bg-base rounded-lg border-2 border-subtle placeholder:text-subtle text-primary leading-[1.3] cursor-default",
+  main: "rounded-lg border border-borders focus:border focus:border-borderFocus focus:outline-none  placeholder:text-muted text-primary leading-[1.3] hover:border-hover",
+  error: "rounded-lg border border-danger placeholder:text-muted text-primary leading-[1.3]",
+  search: "max-w-[20rem] border border-borders rounded-lg placeholder-disabled focus:border-borderFocus focus:outline-none hover:border-hover",
+  readonly: "rounded-lg border border-borders placeholder:text-subtle text-primary leading-[1.3] cursor-default",
 };
 
 const hasError = computed(() => props.validation?.$error ?? false);
@@ -111,7 +111,7 @@ const inputClass = computed(() => {
         :type="props.type === 'password'
           ? (visible ? 'text' : 'password')
           : props.type"
-        class="w-full bg-secondaryBg outline-none
+        class="w-full bg-bgCards outline-none
         focus:outline-none  transition-all duration-300 px-4 py-3"
         :class="inputClass"
         :placeholder="props.placeholder"
@@ -148,7 +148,7 @@ const inputClass = computed(() => {
     <p
       v-if="hasError || props.supportText"
       class="text-sm mt-1"
-      :class="hasError || props.supportTextVariant === 'error' ? 'text-danger' : 'text-mutedText'"
+      :class="hasError || props.supportTextVariant === 'error' ? 'text-danger' : 'text-muted'"
     >
       {{ hasError ? errorMessage : props.supportText }}
     </p>

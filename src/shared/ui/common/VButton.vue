@@ -33,13 +33,13 @@ const props = withDefaults(
 );
 
 const btnStyles = {
-  primary: "justify-center bg-primaryBg px-3 py-3 text-base font-medium border-2 border-primaryBg rounded-xl hover:shadow-btnHover disabled:bg-disabled disabled:text-muted disabled:border-disabled ",
-  outline: "bg-secondaryBg py-3 px-4 text-primaryBg font-medium border-2 border-primaryBg rounded-xl hover:shadow-btnHover hover:text-primaryTextDark disabled:border-disabled disabled:text-disabled",
-  navItem: "py-3 text-secondaryText font-medium hover:text-primaryBg disabled:text-disabled ",
+  primary: "justify-center bg-btn-gradient px-3 py-3 text-base font-medium rounded-xl hover:shadow-btnHover disabled:bg-disabled disabled:text-muted",
+  outline: "bg-transparent py-3 px-4 text-primaryTextDark font-medium border-2 border-borders rounded-xl hover:shadow-btnHover hover:border-borderFocus disabled:border-disabled disabled:text-disabled",
+  navItem: "py-3 text-mutedText font-medium hover:text-borderFocus disabled:text-disabled ",
   "navItem-active": "py-3 text-primaryTextDark font-medium",
-  authMode: "text-primaryTextDark font-medium hover:text-primaryBg",
-  cardTitle: "text-lg font-semibold text-primary hover:text-primaryBg",
-  dashboardNav: "font-medium text-primaryBg hover:text-primary disabled:text-disabled",
+  authMode: "text-title hover:text-title",
+  cardTitle: "text-lg font-semibold text-primary hover:text-borderFocus",
+  dashboardNav: "font-medium text-primaryTextDark hover:text-primary disabled:text-disabled",
   danger: "bg-danger py-3 px-4 text-base font-medium border-2 border-danger rounded-xl hover:bg-dangerHover disabled:bg-disabled disabled:text-muted disabled:border-disabled",
 };
 

@@ -26,9 +26,9 @@ const variantMap: Record<string, string> = {
 
 const stateClass = computed(() => {
   if (validation?.error) return "border-danger";
-  if (modelValue.value) return "border-primaryBg bg-primaryBg text-white";
-  if (disabled) return "border-subtle bg-subtle";
-  return "border-default hover:border-hover";
+  if (modelValue.value) return "border-primaryTextDark bg-primaryTextDark text-white";
+  if (disabled) return "border border-default bg-subtle";
+  return "border border-primaryTextDark hover:border-hover";
 });
 
 const checkboxClass = computed(() => [

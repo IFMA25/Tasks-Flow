@@ -38,12 +38,12 @@ const analiticsCards = computed(() => ([
     :text="$t('analytics.statusOverview')"
     class="capitalize"
   />
-  <div class="flex gap-4">
+  <div class="flex flex-col items-center sm:flex-row gap-4">
     <div
       v-for="card in analiticsCards"
       :key="card.title"
-      class="w-[300px] flex flex-col items-start gap-4
-             border border-surface rounded-2xl bg-bgCards p-8"
+      class="w-[300px] flex flex-col items-center gap-4
+             border border-borders rounded-2xl bg-bgCards p-8"
     >
       <p class="text-sm leading-[1.2] font-medium text-secondary">
         {{ card.title }}
