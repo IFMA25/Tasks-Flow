@@ -13,7 +13,7 @@ export default ({mode}: any) => {
     process.env = {...process.env, ...loadEnv(mode, process.cwd())};
 
     return defineConfig({
-        base: "/ToDoList-Vue/",
+        base: "/Tasks-Flow/",
         plugins: [
             vue(),
             svgLoader({
