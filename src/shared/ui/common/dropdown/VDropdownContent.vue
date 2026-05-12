@@ -1,49 +1,59 @@
 <script setup lang="ts">
-import { computed } from "vue";
+import { computed, ref, watch } from "vue";
+
+import { calculatePosition } from "@/shared/utils/calculatePosition";
 
 const emit = defineEmits<{ (e: "close"): void }>();
 
-const props = withDefaults(defineProps<{
+const dropdownEl = ref<HTMLElement | null>(null);
+const dropdownWidth = ref(0);
+const dropdownHeight = ref(0);
+
+const { isOpen, rect } = defineProps<{
   isOpen: boolean;
   rect: DOMRect | null;
-  width?: string;
-  placement?: keyof typeof placeVariant;
-}>(), {
-  width: "w-fit",
-  placement: "bottom",
-});
-
-const placeVariant: Record<string, string> = {
-  bottom: "",
-  bottomRight: "",
-  top: "-translate-y-full",
-};
-
-const propContentClass = computed(() => {
-  const placementClass = placeVariant[props.placement] ?? "";
-  return [props.width, placementClass].join(" ");
-});
+}>();
 
 const positionStyle = computed(() => {
-  if (!props.rect) return {};
-  const r = props.rect;
+  if (!rect || !dropdownWidth.value || !dropdownHeight.value) return {};
+
+  const { top, left } = calculatePosition({
+    rect,
+    dropdownWidth: dropdownWidth.value,
+    dropdownHeight: dropdownHeight.value,
+    margin: 8,
+  });
 
   return {
-    top: `${props.placement === "top" ? r.top : r.bottom}px`,
-    left: `${props.placement === "bottomRight" ? r.right : r.left - 40}px`,
+    top: `${top}px`,
+    left: `${left}px`,
   };
 });
+
+watch(
+  () => dropdownEl.value,
+  (el) => {
+    if (!el || !isOpen || !rect) return;
+
+    requestAnimationFrame(() => {
+      const box = el.getBoundingClientRect();
+      dropdownWidth.value = box.width;
+      dropdownHeight.value = box.height;
+    });
+  },
+  { immediate: true },
+);
 </script>
 
 <template>
   <Teleport to="body">
     <Transition name="dropdown">
       <div
-        v-if="props.isOpen && props.rect"
+        v-if="isOpen && rect"
+        ref="dropdownEl"
         class="fixed text-nowrap min-w-40 border border-default bg-bgCards
             shadow-dropdown rounded text-primary text-base
             translate-all duration-50 z-[1000]"
-        :class="propContentClass"
         :style="positionStyle"
         v-bind="$attrs"
         @click="emit('close')"

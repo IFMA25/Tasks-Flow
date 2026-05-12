@@ -32,6 +32,7 @@ export default {
             sidebarOverlay: "var(--color-sidebarOverlay)",
             'border-gradient': 'linear-gradient(to right, #3E0DA8, #5F86EF)',
             'btn-gradient': 'linear-gradient(#6366F1, #8B5CF6)',
+            'btn-gradient-hover': 'linear-gradient(to top, #6366F1, #8B5CF6)',
           },
           boxShadow: {
             dropdown: "0px 1px 6px 0px rgba(0,0,0,0.15)",

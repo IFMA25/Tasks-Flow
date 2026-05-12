@@ -1,9 +1,10 @@
 <script setup lang="ts">
 import { ActionKey, Actions } from "../types";
+import { capitalizeFirstLetter } from "../utils/capitalizeFirstLetter";
 
 import VButton from "@/shared/ui/common/VButton.vue";
 import VDropdown from "@/shared/ui/common/dropdown/VDropdown.vue";
-import { capitalizeFirstLetter } from "@/shared/utils";
+
 
 defineProps<{
   actions: Actions[];

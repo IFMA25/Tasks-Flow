@@ -2,7 +2,8 @@
 import { NavItem } from "../types";
 
 import VButton from "@/shared/ui/common/VButton.vue";
-import { capitalizeFirstLetter } from "@/shared/utils";
+import { capitalizeFirstLetter } from "@/shared/utils/capitalizeFirstLetter";
+
 
 defineProps<{
   item: NavItem

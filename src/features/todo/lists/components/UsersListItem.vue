@@ -9,7 +9,7 @@ import VButton from "@/shared/ui/common/VButton.vue";
 import VContainer from "@/shared/ui/common/VContainer.vue";
 import VIcon from "@/shared/ui/common/VIcon.vue";
 import VDropdown from "@/shared/ui/common/dropdown/VDropdown.vue";
-import { capitalizeFirstLetter } from "@/shared/utils";
+import { capitalizeFirstLetter } from "@/shared/utils/capitalizeFirstLetter";
 import { listsTabs } from "@/shared/variables/tabListsPage";
 
 const { data } = defineProps<{

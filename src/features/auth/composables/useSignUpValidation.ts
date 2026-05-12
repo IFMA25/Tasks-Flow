@@ -2,7 +2,7 @@ import useVuelidate from "@vuelidate/core";
 import { computed, reactive } from "vue";
 import { useI18n } from "vue-i18n";
 
-import { createValidationRules } from "@/shared/utils/index";
+import { createValidationRules } from "@/features/auth/utils/createValidationRules";
 
 export function useSignUpValidation() {
   const { t } = useI18n();
