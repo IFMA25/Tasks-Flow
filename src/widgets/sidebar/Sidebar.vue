@@ -61,8 +61,7 @@ watch(isDesktop, (newValue) => {
 </template>
 
 <style scoped>
-.sidebar::before,
-.sidebar::after {
+.sidebar::before{
   content: "";
   @apply absolute inset-0 pointer-events-none bg-no-repeat;
   background-size: 100% 100%;
