@@ -128,7 +128,7 @@ defineExpose({ openModal });
           </p>
         </div>
         <p
-          class="text-sm leading-[1.1] mt-2"
+          class="text-sm text-muted leading-[1.1] mt-2"
         >
           {{ $t('dashboard.weeklyGoalsModalSubtitle') }}
         </p>

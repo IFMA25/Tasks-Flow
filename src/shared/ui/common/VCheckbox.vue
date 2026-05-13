@@ -44,7 +44,7 @@ const checkboxClass = computed(() => [
     :class="disabled ? 'cursor-not-allowed opacity-60' : 'cursor-pointer'"
   >
     <div
-      class="relative flex items-center justify-center
+      class="relative flex shrink-0 items-center justify-center
              w-5 h-5 border-2 transition-colors duration-200 text-base"
       :class="checkboxClass"
     >

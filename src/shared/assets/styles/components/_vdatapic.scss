@@ -56,7 +56,7 @@
 
 .dp__theme_light .dp__input,
 .dp__theme_dark .dp__input {
-  background-color: var(--color-secondaryBg);
+  background-color: var(--color-bgCards);
   color: var(--color-primary);
   border: 2px solid var(--color-default);
   
@@ -67,7 +67,7 @@
 }
 
 .dp__input {
-  background-color: var(--color-secondaryBg);
+  background-color: var(--color-bgCards);
   color: var(--color-primary);
   border: 2px solid var(--color-default);
   border-radius: 8px;

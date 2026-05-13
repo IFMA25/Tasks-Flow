@@ -7,7 +7,6 @@ import { useDashboardRequests } from "./api/useDashboardRequest";
 import ListDeadlineTasks from "./components/ListDeadlineTasks.vue";
 import ListWeaklyGoals from "./components/ListWeaklyGoals.vue";
 import WeeklyGoalsModal from "./components/WeeklyGoalsModal.vue";
-import { DashboardData } from "./types";
 
 import { useListsStore } from "@/features/todo/lists/store/useListsStore";
 import { getTodayDate, getTomorrowDate, getWeekDate } from "@/shared/utils/dayDate";
@@ -16,7 +15,6 @@ import { dashboardCacheKeys } from "@/shared/variables/cacheKey";
 const limit = 5;
 
 const modalMode = ref<"edit" | "add">("add");
-const weeklyGoalsData = ref<DashboardData | null>(null);
 const weeklyGoalsModalRef = useTemplateRef<InstanceType<typeof WeeklyGoalsModal>>("weeklyGoalsModal");
 
 const { t } = useI18n();
@@ -58,9 +56,6 @@ const {
 } = getWeeklyGoal({
   cache: dashboardCacheKeys.weeklyGoalsData,
   immediate: true,
-  onSuccess: () => {
-    weeklyGoalsData.value = responseWeeklyGoalsData?.value;
-  },
 });
 
 const listsDeadlineTasks = computed(() => ([
@@ -110,7 +105,7 @@ const handleUpdateDashboard = async () => {
   <WeeklyGoalsModal
     ref="weeklyGoalsModal"
     :mode="modalMode"
-    :weekly-goals-data="weeklyGoalsData"
+    :weekly-goals-data="responseWeeklyGoalsData"
     @update-weekly-goals="weeklyGoalsExecute"
   />
   <div
@@ -131,7 +126,7 @@ const handleUpdateDashboard = async () => {
       :class="`[grid-area:${value.gridArea}]`"
     />
     <ListWeaklyGoals
-      :data="weeklyGoalsData"
+      :data="responseWeeklyGoalsData"
       :loading="weeklyGoalsLoading"
       class="[grid-area:goals]"
       @open-modal="handleOpenModal"
