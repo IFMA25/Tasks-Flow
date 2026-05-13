@@ -29,18 +29,18 @@ const variantStyles = computed(() => {
   const defaultBaseThumb = "w-5 h-5 shadow-sm";
   const defaultBaseSwitch = "w-11 h-6 border transition-colors";
 
-  let defaultThumbColor = isChecked ? "bg-elevated" : "bg-toggle";
+  let defaultThumbColor = isChecked ? "bg-bgBase" : "bg-primaryTextDark";
   let defaultSwitchColor = isChecked
-    ? "bg-primaryText border-primaryBg"
-    : "bg-default border-toggle";
+    ? "bg-primaryTextDark border-primaryTextDark"
+    : "bg-bgBase border-primaryTextDark";
 
   if (props.disabled) {
-    defaultThumbColor = "bg-subtle";
-    defaultSwitchColor = "bg-elevated border-subtle";
+    defaultThumbColor = "bg-bgBase";
+    defaultSwitchColor = "bg-primaryTextDark opacity-40 border-primaryText";
   }
 
   const themeBaseThumb = "w-7 h-7 bg-thumb";
-  const themeBaseSwitch = "w-[3.75rem] h-9 bg-switch bg-cover bg-center border-2 border-themeSwitch";
+  const themeBaseSwitch = "w-[3.75rem] h-9 bg-primaryTextDark bg-cover bg-center border-2 border-primaryTextDark";
 
   return {
     default: {
@@ -81,7 +81,7 @@ const thumbPositionClass = computed(() => {
       </span>
     </slot>
     <div
-      class="relative rounded-full transition-all duration-300"
+      class="relative rounded-2xl transition-all duration-300"
       :class="currentStyle.switch"
     >
       <slot />

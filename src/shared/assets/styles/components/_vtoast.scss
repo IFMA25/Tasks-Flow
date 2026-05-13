@@ -36,7 +36,7 @@
   // Custom toast styles using your project's design tokens
   .toast-custom {
     @apply flex items-center gap-3 py-3 px-4 rounded-lg shadow-toast border;
-    @apply bg-elevated border-default;
+    @apply bg-bgCards border-default;
     @apply min-w-[320px] max-w-[360px];
     @apply transition-all duration-300 ease-in-out;
     font-family: 'Inter', system-ui, sans-serif;

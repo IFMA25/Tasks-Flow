@@ -26,11 +26,11 @@ const { execute, loading, data } = updateUserProfile({
 
 const handleSubmit = () => {
   execute({
-    data: { name: userName.value },
+    data: { name: profileStore.profileData?.name },
   });
 };
 
-const isChanged = computed(() => profileStore.profileData.name !== userName.value);
+const isChanged = computed(() => profileStore.profileData?.name !== userName.value);
 
 watch(
   () => profileStore.profileData,
@@ -46,7 +46,7 @@ watch(
 <template>
   <form
     id="formOwnProfile"
-    class="gap-6 p-6 border border-borders rounded-xl"
+    class="gap-6 p-6 border border-surface rounded-xl bg-bgCards"
     @submit.prevent="handleSubmit()"
   >
     <div class="flex flex-col gap-4 max-w-[22.5rem] mb-6 text-secondary">

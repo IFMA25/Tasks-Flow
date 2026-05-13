@@ -18,7 +18,7 @@ const {
 }>();
 
 const variantStyles = computed(() => ({
-  main: "border-hover py-3 px-4 text-sm",
+  main: "py-3 px-4 text-sm",
   charts: "py-1 px-3 text-xs",
 }));
 
@@ -48,11 +48,8 @@ const handleTabClick = (btn: ButtonGroupItem) => {
         :class="[
           variantStyles[variant],
           modelValue === btn.value
-            ? ['border-primaryBg', { 'bg-surface': variant === 'charts' }]
-            : 'text-secondary hover:text-primary border-hover',
-          btn.disabled
-            ? 'cursor-not-allowed'
-            : 'cursor-pointer'
+            ? 'border-borderFocus'
+            : 'text-secondary hover:text-primary border-borders hover:border-borderFocus',
         ]"
         @click="handleTabClick(btn)"
       >

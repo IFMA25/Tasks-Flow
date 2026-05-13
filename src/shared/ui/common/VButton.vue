@@ -33,8 +33,8 @@ const props = withDefaults(
 );
 
 const btnStyles = {
-  primary: "justify-center bg-btn-gradient px-3 py-3 text-base font-medium rounded-xl hover:shadow-btnHover hover:bg-btn-gradient-hover disabled:opacity-30 disabled:text-muted",
-  outline: "bg-transparent py-3 px-4 text-primaryTextDark font-medium border-2 border-borders rounded-xl hover:shadow-btnHover hover:border-borderFocus disabled:border-disabled disabled:text-disabled",
+  primary: "justify-center bg-btn-gradient px-3 py-3 text-base font-medium rounded-xl disabled:bg-btn-disabled disabled:text-secondary hover:brightness-110 hover:shadow-btnHover",
+  outline: "bg-bgCards py-3 px-4 text-primaryTextDark font-medium border-2 border-borders rounded-xl hover:shadow-btnHover hover:border-borderFocus disabled:border-disabled disabled:text-disabled",
   navItem: "py-3 text-mutedText font-medium hover:text-borderFocus disabled:text-disabled ",
   "navItem-active": "py-3 text-primaryTextDark font-medium",
   authMode: "text-title hover:text-title",

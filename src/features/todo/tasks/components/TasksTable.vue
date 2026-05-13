@@ -46,7 +46,7 @@ const displayDeadline = (deadline: string) => {
     :rows="rows"
     :heads="heads"
     :show-empty-state="showEmptyState"
-    class="h-[35dvh]"
+    class="h-[35dvh] bg-bgCards"
   >
     <template #cell-status="{ row }">
       <VCheckbox
