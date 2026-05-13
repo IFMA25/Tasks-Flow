@@ -65,4 +65,6 @@ app.component("VueFeather", VueFeather);
 app.component("VueDatePicker", VueDatePicker);
 app.component("VChart", VChart);
 
-app.mount("#app");
+router.isReady().then(() => {
+  app.mount("#app");
+});
