@@ -29,7 +29,7 @@ const route = useRoute();
   </div>
   <div
     class="flex flex-col sm:flex-row gap-2 justify-between
-    items-start rounded-xl border border-borders p-6 mb-6"
+    items-start rounded-xl border border-surface p-6 mb-6 bg-bgCards"
   >
     <div>
       <template v-if="loading">

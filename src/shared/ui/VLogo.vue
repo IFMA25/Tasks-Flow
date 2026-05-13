@@ -7,7 +7,7 @@ import VIcon from "./common/VIcon.vue";
       type="logo"
       size="w-6 h-6"
     />
-    <p class="text-lg font-bold text-title">
+    <p class="text-lg font-bold text-logoText">
       TasksFlow
     </p>
   </div>

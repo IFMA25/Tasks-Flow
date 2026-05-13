@@ -46,6 +46,7 @@ const {
 const { execute: fetchUser, loading: loadingInfoUser, data: dataInfoUser }
 = userInfoRequest(() => userId.value, {
   immediate: isUserManagementMode.value,
+  lazy: isUserManagementMode.value,
   onError: () => {
     router.push({ name: RouteNames.notFound });
   },

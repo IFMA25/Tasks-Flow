@@ -16,7 +16,6 @@ import TasksList from "./components/TasksList.vue";
 import TasksListToolbar from "./components/TasksListToolbar.vue";
 import { useTasksListFeature } from "./composable/useTasksListFeature";
 import { useTasksStore } from "./store/useTasksStore";
-import { useListsStore } from "../lists/store/useListsStore";
 
 import router from "@/app/router";
 import { ActionKey } from "@/shared/types";
@@ -36,7 +35,6 @@ const deleteModalRef = useTemplateRef<InstanceType<typeof DeleteTaskModal>>("del
 
 const { t } = useI18n();
 const route = useRoute();
-const listStore = useListsStore();
 const tasksStore = useTasksStore();
 
 const listId = computed(() => String(route.params.listId));
@@ -119,8 +117,8 @@ watch(
         variant="navItem"
       />
       <VSkeleton
-        v-if="listStore.isLoading"
-        width="w-32"
+        v-if="isLoading"
+        width="w-52"
         height="h-10"
       />
       <h2

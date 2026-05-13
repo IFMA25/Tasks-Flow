@@ -39,12 +39,15 @@ const title = computed(() => {
         />
         <div id="header-content" />
       </div>
-      <div class="flex items-center flex-col sm:flex-row">
+      <div class="flex items-center flex-col sm:flex-row gap-3">
         <div
           id="header-actions"
-          class="border-muted border-b pb-3 sm:pb-0 sm:border-r sm:pr-3 sm:border-b-0"
+          class="border-b pb-3 sm:pb-0 sm:border-b-0"
         />
-        <div class="flex items-center gap-2 lg:flex-row pt-3 sm:pt-0 sm:pl-3">
+        <div
+          class="flex items-center gap-2 lg:flex-row pt-3
+          sm:pt-0 sm:pl-3 sm:pt-1 sm:pb-1 border-muted sm:border-l sm:pl-3"
+        >
           <ThemeToggle />
           <LangSwitcher size="sm" />
         </div>
