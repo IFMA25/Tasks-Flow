@@ -26,7 +26,7 @@ const { execute, loading, data } = updateUserProfile({
 
 const handleSubmit = () => {
   execute({
-    data: { name: profileStore.profileData?.name },
+    data: { name: userName.value },
   });
 };
 
