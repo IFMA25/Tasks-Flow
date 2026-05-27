@@ -47,7 +47,7 @@ const inputStyles = {
   main: "rounded-lg border border-borders focus:border focus:border-borderFocus focus:outline-none  placeholder:text-muted text-primary leading-[1.3] hover:border-hover",
   error: "rounded-lg border border-danger placeholder:text-muted text-primary leading-[1.3]",
   search: "max-w-[20rem] border border-borders rounded-lg placeholder-disabled focus:border-borderFocus focus:outline-none hover:border-hover",
-  readonly: "rounded-lg border border-borders placeholder:text-subtle text-primary leading-[1.3] cursor-default",
+  readonly: "rounded-lg border border-borders placeholder:text-subtle text-primary leading-[1.3] cursor-default focus:outline-none hover:border-borders focus:border-borders caret-transparent",
 };
 
 const hasError = computed(() => props.validation?.$error ?? false);
@@ -55,7 +55,6 @@ const hasError = computed(() => props.validation?.$error ?? false);
 const errorMessage = computed(() => {
   return props.validation?.$errors?.[0]?.$message ?? "";
 });
-
 
 const inputClass = computed(() => {
   const hasLeft = !!slots["icon-left"] || props.iconLeft;
@@ -65,13 +64,15 @@ const inputClass = computed(() => {
     hasRight ? "pr-11" : "",
   ].join(" ");
 
-  const stylesClass = hasError.value ?
-    inputStyles.error
-    : inputStyles[props.variant];
+  if (props.readonly) {
+    return `${paddingClass} ${inputStyles.readonly}`;
+  }
 
-  const disabledClass = props.readonly ? inputStyles.readonly : inputStyles[props.variant];
-  return `${paddingClass} ${stylesClass} ${disabledClass}`;
+  if (hasError.value) {
+    return `${paddingClass} ${inputStyles.error}`;
+  }
 
+  return `${paddingClass} ${inputStyles[props.variant]}`;
 });
 </script>
 

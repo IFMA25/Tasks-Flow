@@ -57,7 +57,7 @@ watch(
       <VInput
         label="Email"
         :model-value="profileStore.profileData?.email"
-        :readonly="true"
+        readonly
       />
     </div>
 
