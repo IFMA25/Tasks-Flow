@@ -35,7 +35,7 @@ const router = useRouter();
       </p>
     </div>
     <template #container-actions>
-      <VDropdown placement="bottomRight">
+      <VDropdown>
         <template #trigger="{toggle, isOpen}">
           <VButton
             :text="`${t('lists.lists')} (${data.lists.length})`"
@@ -51,12 +51,17 @@ const router = useRouter();
             </template>
           </VButton>
         </template>
-        <ul class="cursor-pointer flex flex-col">
+        <ul
+          class="grid grid-flow-col auto-cols-fr overflow-hidden cursor-pointer"
+          :style="{
+            gridTemplateRows: `repeat(${Math.min(data.lists.length || 1, 7)}, auto)`
+          }"
+        >
           <li
             v-for="list in data.lists"
             :key="list.id"
-            class="border-b border-default hover:bg-hover
-              py-3 px-5 last:border-none transition-all duration-300"
+            class="hover:bg-hover
+              py-3 px-5 transition-all duration-300"
             @click="router.push({
               name: RouteNames.tasks,
               params: { listId: list.id },

@@ -84,9 +84,12 @@ const handleSave = () => {
   batchUpdateWeeklyGoalsExecute();
 };
 
+const listsWithTasks = computed(() => {
+  return (listStore.dataLists?.data ?? []).filter(list => list.tasks?.length);
+});
+
 const computeOpenListIds = () => {
-  const lists = listStore.dataLists?.data ?? [];
-  openListIds.value = lists
+  openListIds.value = listsWithTasks.value
     .filter(list =>
       list.tasks?.some(task => selectedIds.value.includes(task.id)),
     )
@@ -153,7 +156,7 @@ defineExpose({ openModal });
         multiple
       >
         <VAccordionItem
-          v-for="list in listStore.dataLists?.data"
+          v-for="list in listsWithTasks"
           :id="list.id"
           :key="list.id"
           :toggle="toggle"

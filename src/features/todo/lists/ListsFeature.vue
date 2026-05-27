@@ -92,7 +92,7 @@ const handleAction = (list: ListData, action: ListAction) => {
 
   <div class="relative min-h-[12.5rem]">
     <template v-if="listsStore.isLoading">
-      <div class="grid grid-cols-[repeat(auto-fill,minmax(320px,1fr))] gap-6 h-full">
+      <div class="grid grid-cols-[repeat(auto-fill,minmax(16rem,1fr))] gap-6 h-full">
         <template v-if="activeTab === listsTabs.myLists">
           <ListItemSkeleton
             v-for="n in skeletonCount"

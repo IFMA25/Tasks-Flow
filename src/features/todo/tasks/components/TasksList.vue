@@ -51,8 +51,9 @@ const completedTasks = computed(() =>
 </script>
 
 <template>
-  <div class="relative flex flex-col gap-8 w-full h-full max-w-5xl mx-auto p-4">
+  <div class="relative flex flex-col gap-8 w-full max-w-5xl mx-auto p-4">
     <VCollapseContainer
+      v-if="pendingTasks.length || isLoading"
       :title="$t('tasks.pending')"
       :count="pendingTasks.length"
       :loading="isLoading"
